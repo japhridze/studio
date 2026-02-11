@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, ShoppingCart, User, Menu } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,13 +11,35 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from '@/components/ui/badge';
 import Logo from '@/components/logo';
 import { useCart } from '@/context/cart-context';
 import { categories } from '@/lib/data';
+import { useAuth, useUser } from '@/firebase';
+
 
 export default function Header() {
   const { cartCount } = useCart();
+  const { user } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    if (auth) {
+      await auth.signOut();
+      router.push('/');
+    }
+  };
+
   const navLinks = [
     { name: 'Home', href: '/' },
     ...categories.slice(0, 4).map(c => ({ name: c.name, href: `/category/${c.slug}`})),
@@ -72,12 +95,42 @@ export default function Header() {
               className="pl-8 sm:w-[200px] lg:w-[300px]"
             />
           </div>
-          <Button asChild variant="ghost" size="icon">
-            <Link href="/login">
-              <User className="h-5 w-5" />
-              <span className="sr-only">Login</span>
-            </Link>
-          </Button>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="overflow-hidden rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName || 'User'} />
+                    <AvatarFallback>{user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/account">My Account</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/login">
+                <User className="h-5 w-5" />
+                <span className="sr-only">Login</span>
+              </Link>
+            </Button>
+          )}
+
           <Button asChild variant="ghost" size="icon" className="relative">
             <Link href="/cart">
               <ShoppingCart className="h-5 w-5" />
