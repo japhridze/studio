@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A modern and bright hardware store interior",
+      "imageUrl": "https://images.unsplash.com/photo-1601598851547-4302969d0614?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aGFyZHdhcmUlMjBzdG9yZXxlbnwwfHx8fDE3NzA3MzMzMzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hardware store"
+    },
+    {
+      "id": "sale-banner",
+      "description": "Power tools neatly arranged on a workbench",
+      "imageUrl": "https://images.unsplash.com/photo-1592054286113-649ba108e968?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cG93ZXIlMjB0b29sc3xlbnwwfHx8fDE3NzA3MjA1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "power tools"
+    },
+    {
+      "id": "prod-drill",
+      "description": "A powerful cordless drill",
+      "imageUrl": "https://images.unsplash.com/photo-1645651964715-d200ce0939cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3JkbGVzcyUyMGRyaWxsfGVufDB8fHx8MTc3MDgxMTI1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cordless drill"
+    },
+    {
+      "id": "prod-paint",
+      "description": "A can of white wall paint",
+      "imageUrl": "https://images.unsplash.com/photo-1673297821205-e0575bbc2ab7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGFpbnQlMjBjYW58ZW58MHx8fHwxNzcwNzQzMzg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "paint can"
+    },
+    {
+      "id": "prod-saw",
+      "description": "A circular saw on a wooden plank",
+      "imageUrl": "https://images.unsplash.com/photo-1617571607645-dd7dd3bf7f6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjaXJjdWxhciUyMHNhd3xlbnwwfHx8fDE3NzA4MTEyNTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "circular saw"
+    },
+    {
+      "id": "prod-hammer",
+      "description": "A classic claw hammer",
+      "imageUrl": "https://images.unsplash.com/photo-1679210208120-1b6a008be9b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxoYW1tZXJ8ZW58MHx8fHwxNzcwNzMyMjgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hammer"
+    },
+    {
+      "id": "prod-toolbox",
+      "description": "A red metal toolbox",
+      "imageUrl": "https://images.unsplash.com/photo-1731694411560-050e5b91e943?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0b29sYm94fGVufDB8fHx8MTc3MDgxMTI1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "toolbox"
+    },
+    {
+      "id": "prod-lightbulb",
+      "description": "An energy-efficient LED lightbulb",
+      "imageUrl": "https://images.unsplash.com/photo-1632815804501-c43dfd1a4578?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxMRUQlMjBsaWdodGJ1bGJ8ZW58MHx8fHwxNzcwODExMjUxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "LED lightbulb"
+    },
+    {
+      "id": "prod-tape",
+      "description": "A measuring tape",
+      "imageUrl": "https://images.unsplash.com/photo-1703756291638-b1774ae3c186?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWFzdXJpbmclMjB0YXBlfGVufDB8fHx8MTc3MDc4ODAxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "measuring tape"
+    },
+    {
+      "id": "prod-wrench",
+      "description": "A set of adjustable wrenches",
+      "imageUrl": "https://images.unsplash.com/photo-1615746360032-1ecf87f250fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3cmVuY2glMjBzZXR8ZW58MHx8fHwxNzcwNzg4MDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wrench set"
+    },
+    {
+      "id": "prod-ladder",
+      "description": "A stepladder",
+      "imageUrl": "https://images.unsplash.com/photo-1725119574221-492633f52640?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdGVwbGFkZGVyfGVufDB8fHx8MTc3MDgxMTI1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "stepladder"
+    },
+    {
+      "id": "prod-gloves",
+      "description": "A pair of work gloves",
+      "imageUrl": "https://images.unsplash.com/photo-1582586131076-6c308a437385?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b3JrJTIwZ2xvdmVzfGVufDB8fHx8MTc3MDgxMTI1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "work gloves"
+    }
+  ]
 }
