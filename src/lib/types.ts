@@ -9,10 +9,17 @@ export type Product = {
   stock: number;
 };
 
+export type SubCategory = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
 export type Category = {
   id: string;
   name: string;
   slug: string;
+  subcategories?: SubCategory[];
 };
 
 export type User = {

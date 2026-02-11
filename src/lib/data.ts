@@ -1,8 +1,26 @@
 import type { Category, Order, Product, User } from './types';
 
 export const categories: Category[] = [
-  { id: '1', name: 'Power Tools', slug: 'power-tools' },
-  { id: '2', name: 'Hand Tools', slug: 'hand-tools' },
+  { 
+    id: '1', 
+    name: 'Power Tools', 
+    slug: 'power-tools',
+    subcategories: [
+      { id: '1-1', name: 'Drills', slug: 'drills' },
+      { id: '1-2', name: 'Saws', slug: 'saws' },
+      { id: '1-3', name: 'Sanders', slug: 'sanders' },
+    ]
+  },
+  { 
+    id: '2', 
+    name: 'Hand Tools', 
+    slug: 'hand-tools',
+    subcategories: [
+        { id: '2-1', name: 'Hammers', slug: 'hammers' },
+        { id: '2-2', name: 'Wrenches', slug: 'wrenches' },
+        { id: '2-3', name: 'Screwdrivers', slug: 'screwdrivers' },
+    ]
+  },
   { id: '3', name: 'Painting', slug: 'painting' },
   { id: '4', name: 'Building Materials', slug: 'building-materials' },
   { id: '5', name: 'Lighting', slug: 'lighting' },

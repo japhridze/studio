@@ -55,6 +55,14 @@
       "lighting": "Lighting",
       "safety-equipment": "Safety Equipment"
     },
+    "subcategories": {
+        "drills": "Drills",
+        "saws": "Saws",
+        "sanders": "Sanders",
+        "hammers": "Hammers",
+        "wrenches": "Wrenches",
+        "screwdrivers": "Screwdrivers"
+    },
     "productDetails": {
       "inStock": "{count} in stock",
       "outOfStock": "Out of stock",

@@ -55,6 +55,14 @@
       "lighting": "განათება",
       "safety-equipment": "უსაფრთხოების საშუალებები"
     },
+    "subcategories": {
+        "drills": "ბურღები",
+        "saws": "ხერხები",
+        "sanders": "სახეხები",
+        "hammers": "ჩაქუჩები",
+        "wrenches": "ქანჩის გასაღებები",
+        "screwdrivers": "სახრახნისები"
+    },
     "productDetails": {
       "inStock": "{count} მარაგშია",
       "outOfStock": "გაყიდულია",

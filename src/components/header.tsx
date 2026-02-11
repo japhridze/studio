@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, ShoppingCart, User, Menu, LogOut } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, LogOut, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from '@/components/ui/badge';
 import Logo from '@/components/logo';
@@ -44,7 +50,14 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
 
   const navLinks = [
     { name: dictionary.header.home, href: `/${lang}` },
-    ...categories.slice(0, 4).map(c => ({ name: (dictionary.categories as any)[c.slug] || c.name, href: `/${lang}/products`})),
+    ...categories.slice(0, 4).map(c => ({ 
+        name: (dictionary.categories as any)[c.slug] || c.name, 
+        href: `/${lang}/products`,
+        subcategories: c.subcategories?.map(sc => ({
+            name: (dictionary.subcategories as any)[sc.slug] || sc.name,
+            href: `/${lang}/products` // for now, point to the same page
+        }))
+    })),
     { name: dictionary.header.contact, href: '#' }
   ];
 
@@ -60,32 +73,77 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
-                    <nav className="grid gap-6 text-lg font-medium mt-8">
-                        {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            {link.name}
-                        </Link>
-                        ))}
+                    <nav className="grid text-lg font-medium mt-8">
+                        <Accordion type="single" collapsible className="w-full">
+                            {navLinks.map((link) => (
+                                (link.subcategories && link.subcategories.length > 0) ? (
+                                    <AccordionItem value={link.name} key={link.name} className="border-b">
+                                        <div className="flex w-full items-center justify-between">
+                                            <Link
+                                                href={link.href}
+                                                className="flex-1 py-4 text-muted-foreground hover:text-foreground font-normal text-base"
+                                            >
+                                                {link.name}
+                                            </Link>
+                                            <AccordionTrigger className="py-4 pl-4 pr-2 hover:no-underline" />
+                                        </div>
+                                        <AccordionContent className="pl-8 pb-2">
+                                            <ul className="flex flex-col gap-2">
+                                                {link.subcategories.map(subLink => (
+                                                    <li key={subLink.name}>
+                                                        <Link href={subLink.href} className="block py-2 text-muted-foreground hover:text-foreground text-sm">
+                                                            {subLink.name}
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ) : (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        className="flex items-center py-4 text-muted-foreground hover:text-foreground border-b font-normal text-base"
+                                    >
+                                        {link.name}
+                                    </Link>
+                                )
+                            ))}
+                        </Accordion>
                     </nav>
                 </SheetContent>
             </Sheet>
             <Logo lang={lang} dictionary={dictionary} />
         </div>
 
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium mx-auto">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="transition-colors hover:text-primary"
-            >
-              {link.name}
-            </Link>
-          ))}
+        <nav className="hidden lg:flex items-center gap-1 text-sm font-medium mx-auto">
+            {navLinks.map((link) => (
+                (link.subcategories && link.subcategories.length > 0) ? (
+                <DropdownMenu key={link.name}>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="transition-colors hover:text-primary data-[state=open]:bg-accent data-[state=open]:text-accent-foreground h-auto px-3 py-2">
+                            {link.name}
+                            <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                        {link.subcategories.map(subLink => (
+                            <DropdownMenuItem key={subLink.name} asChild>
+                                <Link href={subLink.href}>{subLink.name}</Link>
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ) : (
+                <Link
+                key={link.name}
+                href={link.href}
+                className="transition-colors hover:text-primary px-3 py-2"
+                >
+                {link.name}
+                </Link>
+            )
+            ))}
         </nav>
 
         <div className="flex items-center gap-4 ml-auto">
