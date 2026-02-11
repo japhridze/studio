@@ -22,7 +22,7 @@ export default function Logo({ className, isAdmin = false, lang = 'en', dictiona
       )}
     >
       <Building2 className="h-6 w-6" />
-      <span>{dictionary?.companyName || 'Gorgia Online'}</span>
+      <span>{dictionary?.companyName || 'Comfort House'}</span>
     </Link>
   );
 }

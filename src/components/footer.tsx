@@ -3,15 +3,33 @@ import { Facebook, Twitter, Instagram } from 'lucide-react';
 import Logo from './logo';
 import type { getDictionary } from '@/lib/dictionaries';
 
-export default function Footer({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>>['footer'] }) {
+const defaultDictionary = {
+  slogan: "Your one-stop shop for home and hardware.",
+  shop: "Shop",
+  support: "Support",
+  company: "Company",
+  contactUs: "Contact Us",
+  faq: "FAQ",
+  shippingReturns: "Shipping & Returns",
+  trackOrder: "Track Order",
+  aboutUs: "About Us",
+  careers: "Careers",
+  privacyPolicy: "Privacy Policy",
+  termsOfService: "Terms of Service",
+  copyright: "© {year} Comfort House. All Rights Reserved."
+};
+
+export default function Footer({ lang = 'en', dictionary }: { lang?: 'en' | 'ka', dictionary?: Awaited<ReturnType<typeof getDictionary>>['footer'] }) {
   const currentYear = new Date().getFullYear();
+  const dict = dictionary || defaultDictionary;
+
   return (
     <footer className="bg-card border-t">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Logo lang={lang} />
-            <p className="text-muted-foreground text-sm">{dictionary.slogan}</p>
+            <p className="text-muted-foreground text-sm">{dict.slogan}</p>
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook size={20} /></Link>
               <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter size={20} /></Link>
@@ -19,7 +37,7 @@ export default function Footer({ lang, dictionary }: { lang: 'en' | 'ka', dictio
             </div>
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-4">{dictionary.shop}</h3>
+            <h3 className="font-semibold text-foreground mb-4">{dict.shop}</h3>
             <ul className="space-y-2">
               <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">Power Tools</Link></li>
               <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">Hand Tools</Link></li>
@@ -28,26 +46,26 @@ export default function Footer({ lang, dictionary }: { lang: 'en' | 'ka', dictio
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-4">{dictionary.support}</h3>
+            <h3 className="font-semibold text-foreground mb-4">{dict.support}</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.contactUs}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.faq}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.shippingReturns}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.trackOrder}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.contactUs}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.faq}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.shippingReturns}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.trackOrder}</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-4">{dictionary.company}</h3>
+            <h3 className="font-semibold text-foreground mb-4">{dict.company}</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.aboutUs}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.careers}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.privacyPolicy}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dictionary.termsOfService}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.aboutUs}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.careers}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.privacyPolicy}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.termsOfService}</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t mt-8 pt-6 text-center text-sm text-muted-foreground">
-          <p>{dictionary.copyright.replace('{year}', currentYear.toString())}</p>
+          <p>{dict.copyright.replace('{year}', currentYear.toString())}</p>
         </div>
       </div>
     </footer>

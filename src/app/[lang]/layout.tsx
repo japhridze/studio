@@ -5,7 +5,7 @@ import "../globals.css";
 import { FirebaseClientProvider } from "@/firebase";
 
 export const metadata: Metadata = {
-  title: "Gorgia Online",
+  title: "Comfort House",
   description: "Your one-stop shop for home and hardware.",
 };
 

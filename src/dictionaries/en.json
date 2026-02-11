@@ -22,11 +22,11 @@
       "careers": "Careers",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service",
-      "copyright": "© {year} Gorgia Online. All Rights Reserved."
+      "copyright": "© {year} Comfort House. All Rights Reserved."
     },
     "homepage": {
       "heroTitle": "Everything for Your Home, All in One Place",
-      "heroSubtitle": "From building materials to home decor, find everything you need at Gorgia Online. Quality products, unbeatable prices.",
+      "heroSubtitle": "From building materials to home decor, find everything you need at Comfort House. Quality products, unbeatable prices.",
       "shopNow": "Shop Now",
       "shopByCategory": "Shop by Category",
       "shopByCategorySubtitle": "Explore our wide range of categories to find exactly what you're looking for.",
@@ -46,7 +46,7 @@
         "outOfStock": "Out of Stock",
         "addToCart": "Add to Cart"
     },
-    "companyName": "Gorgia Online",
+    "companyName": "Comfort House",
     "categories": {
       "power-tools": "Power Tools",
       "hand-tools": "Hand Tools",
