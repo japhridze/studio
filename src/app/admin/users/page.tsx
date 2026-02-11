@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
     Card,
     CardContent,
@@ -34,11 +35,13 @@ import { Badge } from "@/components/ui/badge";
                     <CardTitle>Users</CardTitle>
                     <CardDescription>Manage all user accounts.</CardDescription>
                 </div>
-                <Button size="sm" className="gap-1">
+                <Button size="sm" className="gap-1" asChild>
+                  <Link href="/admin/register">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                         Add User
                     </span>
+                  </Link>
                 </Button>
             </div>
         </CardHeader>
@@ -85,4 +88,3 @@ import { Badge } from "@/components/ui/badge";
       </Card>
     );
   }
-  
