@@ -1,4 +1,3 @@
-
 import { initializeApp, getApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getAuth, type Auth } from 'firebase/auth';
@@ -10,19 +9,16 @@ export * from './firestore/use-collection';
 export * from './firestore/use-doc';
 export * from './auth/use-user';
 
-let firebaseApp: FirebaseApp;
+type FirebaseInstances = {
+  firebaseApp: FirebaseApp;
+  auth: Auth;
+  firestore: Firestore;
+};
 
-if (getApps().length === 0) {
-  firebaseApp = initializeApp(firebaseConfig);
-} else {
-  firebaseApp = getApp();
-}
-
-const auth = getAuth(firebaseApp);
-const firestore = getFirestore(firebaseApp);
-
-function initializeFirebase() {
+export function initializeFirebase(): FirebaseInstances {
+  const apps = getApps();
+  const firebaseApp = apps.length > 0 ? getApp() : initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const firestore = getFirestore(firebaseApp);
   return { firebaseApp, auth, firestore };
 }
-
-export { initializeFirebase };

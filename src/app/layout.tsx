@@ -2,17 +2,12 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from "@/context/cart-context";
 import "./globals.css";
-import {
-  FirebaseClientProvider,
-  initializeFirebase,
-} from "@/firebase";
+import { FirebaseClientProvider } from "@/firebase";
 
 export const metadata: Metadata = {
   title: "Gorgia Online",
   description: "Your one-stop shop for home and hardware.",
 };
-
-const { firebaseApp, firestore, auth } = initializeFirebase();
 
 export default function RootLayout({
   children,
@@ -30,11 +25,11 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <FirebaseClientProvider app={firebaseApp} firestore={firestore} auth={auth}>
-            <CartProvider>
-              {children}
-              <Toaster />
-            </CartProvider>
+        <FirebaseClientProvider>
+          <CartProvider>
+            {children}
+            <Toaster />
+          </CartProvider>
         </FirebaseClientProvider>
       </body>
     </html>
