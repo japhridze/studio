@@ -5,12 +5,14 @@ import { cn } from '@/lib/utils';
 type LogoProps = {
   className?: string;
   isAdmin?: boolean;
+  lang?: 'en' | 'ka';
 };
 
-export default function Logo({ className, isAdmin = false }: LogoProps) {
+export default function Logo({ className, isAdmin = false, lang = 'en' }: LogoProps) {
+  const href = isAdmin ? `/${lang}/admin` : `/${lang}`;
   return (
     <Link
-      href={isAdmin ? "/admin" : "/"}
+      href={href}
       className={cn(
         "flex items-center gap-2 text-xl font-bold font-headline",
         isAdmin ? 'text-sidebar-foreground' : 'text-primary',

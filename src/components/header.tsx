@@ -25,9 +25,11 @@ import Logo from '@/components/logo';
 import { useCart } from '@/context/cart-context';
 import { categories } from '@/lib/data';
 import { useAuth, useUser } from '@/firebase';
+import type { getDictionary } from '@/lib/dictionaries';
+import LanguageSwitcher from './language-switcher';
 
 
-export default function Header() {
+export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
   const { cartCount } = useCart();
   const { user } = useUser();
   const auth = useAuth();
@@ -36,14 +38,14 @@ export default function Header() {
   const handleLogout = async () => {
     if (auth) {
       await auth.signOut();
-      router.push('/');
+      router.push(`/${lang}`);
     }
   };
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    ...categories.slice(0, 4).map(c => ({ name: c.name, href: `/category/${c.slug}`})),
-    { name: 'Contact', href: '#' }
+    { name: dictionary.header.home, href: `/${lang}` },
+    ...categories.slice(0, 4).map(c => ({ name: c.name, href: `/${lang}/category/${c.slug}`})),
+    { name: dictionary.header.contact, href: '#' }
   ];
 
   return (
@@ -54,7 +56,7 @@ export default function Header() {
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="lg:hidden mr-4">
                         <Menu className="h-6 w-6" />
-                        <span className="sr-only">Toggle navigation menu</span>
+                        <span className="sr-only">{dictionary.header.toggleNav}</span>
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
@@ -71,7 +73,7 @@ export default function Header() {
                     </nav>
                 </SheetContent>
             </Sheet>
-            <Logo />
+            <Logo lang={lang} />
         </div>
 
         <nav className="hidden lg:flex items-center gap-6 text-sm font-medium mx-auto">
@@ -87,11 +89,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4 ml-auto">
+          <LanguageSwitcher locale={lang} dictionary={dictionary.languageSwitcher}/>
           <div className="relative hidden md:block">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search products..."
+              placeholder={dictionary.header.searchPlaceholder}
               className="pl-8 sm:w-[200px] lg:w-[300px]"
             />
           </div>
@@ -114,27 +117,27 @@ export default function Header() {
                 <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/account">My Account</Link>
+                  <Link href={`/${lang}/account`}>{dictionary.header.myAccount}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+                  {dictionary.header.logout}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <Button asChild variant="ghost" size="icon">
-              <Link href="/login">
+              <Link href={`/${lang}/login`}>
                 <User className="h-5 w-5" />
-                <span className="sr-only">Login</span>
+                <span className="sr-only">{dictionary.header.login}</span>
               </Link>
             </Button>
           )}
 
           <Button asChild variant="ghost" size="icon" className="relative">
-            <Link href="/cart">
+            <Link href={`/${lang}/cart`}>
               <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">Shopping Cart</span>
+              <span className="sr-only">{dictionary.header.shoppingCart}</span>
               {cartCount > 0 && (
                 <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{cartCount}</Badge>
               )}

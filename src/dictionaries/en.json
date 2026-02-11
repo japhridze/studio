@@ -1,0 +1,49 @@
+{
+    "header": {
+      "home": "Home",
+      "contact": "Contact",
+      "searchPlaceholder": "Search products...",
+      "myAccount": "My Account",
+      "logout": "Logout",
+      "login": "Login",
+      "shoppingCart": "Shopping Cart",
+      "toggleNav": "Toggle navigation menu"
+    },
+    "footer": {
+      "slogan": "Your one-stop shop for home and hardware.",
+      "shop": "Shop",
+      "support": "Support",
+      "company": "Company",
+      "contactUs": "Contact Us",
+      "faq": "FAQ",
+      "shippingReturns": "Shipping & Returns",
+      "trackOrder": "Track Order",
+      "aboutUs": "About Us",
+      "careers": "Careers",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "copyright": "© {year} Gorgia Online. All Rights Reserved."
+    },
+    "homepage": {
+      "heroTitle": "Everything for Your Home, All in One Place",
+      "heroSubtitle": "From building materials to home decor, find everything you need at Gorgia Online. Quality products, unbeatable prices.",
+      "shopNow": "Shop Now",
+      "shopByCategory": "Shop by Category",
+      "shopByCategorySubtitle": "Explore our wide range of categories to find exactly what you're looking for.",
+      "featuredProducts": "Featured Products",
+      "featuredProductsSubtitle": "Check out our best-sellers and top-rated items.",
+      "summerSale": "Big Summer Sale!",
+      "summerSaleSubtitle": "Up to 40% off on selected power tools and garden equipment. Don't miss out!",
+      "shopSaleItems": "Shop Sale Items"
+    },
+    "languageSwitcher": {
+      "select": "Language",
+      "en": "English",
+      "ka": "Georgian"
+    },
+    "productCard": {
+        "lowStock": "Low Stock",
+        "outOfStock": "Out of Stock",
+        "addToCart": "Add to Cart"
+    }
+}
