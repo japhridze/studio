@@ -7,8 +7,8 @@ import { Product } from '@/lib/types';
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
+  addToCart: (product: Product, quantity: number, messages: { title: string; description: string; }) => void;
+  removeFromCart: (productId: string, messages: { title: string; description: string; }) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   cartCount: number;
@@ -32,7 +32,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: Product, quantity: number) => {
+  const addToCart = (product: Product, quantity: number, messages: { title: string; description: string; }) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       if (existingItem) {
@@ -53,23 +53,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return [...prevItems, newItem];
     });
     toast({
-        title: "Added to cart",
-        description: `${quantity} x ${product.name}`,
+        title: messages.title,
+        description: messages.description,
     })
   };
 
-  const removeFromCart = (productId: string) => {
+  const removeFromCart = (productId: string, messages: { title: string; description: string; }) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
     toast({
-        title: "Item removed",
-        description: `Item has been removed from your cart.`,
+        title: messages.title,
+        description: messages.description,
         variant: 'destructive',
     })
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      // Silently remove, or pass messages to updateQuantity as well
+      setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
       return;
     }
     setCartItems(prevItems =>

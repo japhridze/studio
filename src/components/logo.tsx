@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import { Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getDictionary } from '@/lib/dictionaries';
 
 type LogoProps = {
   className?: string;
   isAdmin?: boolean;
   lang?: 'en' | 'ka';
+  dictionary?: Awaited<ReturnType<typeof getDictionary>>
 };
 
-export default function Logo({ className, isAdmin = false, lang = 'en' }: LogoProps) {
+export default function Logo({ className, isAdmin = false, lang = 'en', dictionary }: LogoProps) {
   const href = isAdmin ? `/${lang}/admin` : `/${lang}`;
   return (
     <Link
@@ -20,7 +22,7 @@ export default function Logo({ className, isAdmin = false, lang = 'en' }: LogoPr
       )}
     >
       <Building2 className="h-6 w-6" />
-      <span>Gorgia Online</span>
+      <span>{dictionary?.companyName || 'Gorgia Online'}</span>
     </Link>
   );
 }

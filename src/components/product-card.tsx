@@ -13,13 +13,21 @@ import type { getDictionary } from '@/lib/dictionaries';
 
 type ProductCardProps = {
   product: Product;
-  dictionary: Awaited<ReturnType<typeof getDictionary>>['productCard'];
+  dictionary: Awaited<ReturnType<typeof getDictionary>>['productCard'] & Awaited<ReturnType<typeof getDictionary>>['productDetails'];
   lang: 'en' | 'ka';
 };
 
 export default function ProductCard({ product, dictionary, lang }: ProductCardProps) {
   const { addToCart } = useCart();
   const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+
+  const handleAddToCart = () => {
+    const messages = {
+      title: dictionary.addedToCartTitle,
+      description: dictionary.addedToCartDescription.replace('{quantity}', '1').replace('{productName}', product.name)
+    };
+    addToCart(product, 1, messages);
+  }
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -61,7 +69,7 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
         <Button 
             size="sm" 
             variant="outline" 
-            onClick={() => addToCart(product, 1)}
+            onClick={handleAddToCart}
             disabled={product.stock === 0}
         >
           <ShoppingCart className="mr-2 h-4 w-4" />

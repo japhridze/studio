@@ -3,19 +3,13 @@ import Link from "next/link";
 import { ArrowRight, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { categories, products } from "@/lib/data";
+import { products } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ProductCard from "@/components/product-card";
 import { getDictionary } from "@/lib/dictionaries";
+import { categories } from "@/lib/data";
 
 export default async function Home({ params: { lang } }: { params: { lang: 'en' | 'ka' } }) {
   const dict = await getDictionary(lang);
@@ -70,7 +64,7 @@ export default async function Home({ params: { lang } }: { params: { lang: 'en' 
                   <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                     <CardContent className="p-0 flex flex-col items-center justify-center text-center aspect-square">
                       <LayoutGrid className="w-10 h-10 text-primary mb-2 transition-transform duration-300 group-hover:scale-110" />
-                      <h3 className="font-semibold text-foreground">{category.name}</h3>
+                      <h3 className="font-semibold text-foreground">{(dict.categories as any)[category.slug] || category.name}</h3>
                     </CardContent>
                   </Card>
                 </Link>
@@ -91,7 +85,7 @@ export default async function Home({ params: { lang } }: { params: { lang: 'en' 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} dictionary={dict.productCard} lang={lang} />
+                <ProductCard key={product.id} product={product} dictionary={{...dict.productCard, ...dict.productDetails}} lang={lang} />
               ))}
             </div>
           </div>

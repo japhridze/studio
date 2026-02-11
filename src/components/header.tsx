@@ -44,7 +44,7 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
 
   const navLinks = [
     { name: dictionary.header.home, href: `/${lang}` },
-    ...categories.slice(0, 4).map(c => ({ name: c.name, href: `/${lang}/category/${c.slug}`})),
+    ...categories.slice(0, 4).map(c => ({ name: (dictionary.categories as any)[c.slug] || c.name, href: `/${lang}/products`})),
     { name: dictionary.header.contact, href: '#' }
   ];
 
@@ -73,7 +73,7 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
                     </nav>
                 </SheetContent>
             </Sheet>
-            <Logo lang={lang} />
+            <Logo lang={lang} dictionary={dictionary} />
         </div>
 
         <nav className="hidden lg:flex items-center gap-6 text-sm font-medium mx-auto">
