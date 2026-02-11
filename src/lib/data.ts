@@ -22,12 +22,12 @@ export const products: Product[] = [
   { id: '10', name: 'Leather Work Gloves', slug: 'leather-work-gloves', description: 'Durable leather gloves to protect your hands during tough jobs.', price: 15.99, images: ['prod-gloves'], categoryId: '6', stock: 250 },
 ];
 
-export const users: User[] = [
-    { id: '1', name: 'Admin User', email: 'admin@gorgia.com', role: 'admin' },
-    { id: '2', name: 'John Doe', email: 'john.doe@example.com', role: 'customer' },
-    { id: '3', name: 'Jane Smith', email: 'jane.smith@example.com', role: 'customer' },
-    { id: '4', name: 'Michael Johnson', email: 'michael.j@example.com', role: 'customer' },
-    { id: '5', name: 'Emily Davis', email: 'emily.d@example.com', role: 'customer' },
+export const users: Omit<User, 'id'>[] = [
+    { name: 'Admin User', email: 'admin@gorgia.com', role: 'admin' },
+    { name: 'John Doe', email: 'john.doe@example.com', role: 'customer' },
+    { name: 'Jane Smith', email: 'jane.smith@example.com', role: 'customer' },
+    { name: 'Michael Johnson', email: 'michael.j@example.com', role: 'customer' },
+    { name: 'Emily Davis', email: 'emily.d@example.com', role: 'customer' },
 ];
 
 export const orders: Order[] = [

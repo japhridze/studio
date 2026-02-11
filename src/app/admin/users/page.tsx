@@ -1,4 +1,6 @@
+'use client';
 import Link from "next/link";
+import { useMemo } from "react";
 import {
     Card,
     CardContent,
@@ -23,10 +25,19 @@ import {
     } from "@/components/ui/dropdown-menu"
   import { Button } from "@/components/ui/button";
   import { MoreHorizontal, PlusCircle } from "lucide-react";
-  import { users } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection } from "firebase/firestore";
+import type { User } from "@/lib/types";
   
   export default function AdminUsersPage() {
+    const firestore = useFirestore();
+    const usersQuery = useMemo(() => {
+      if (!firestore) return null;
+      return collection(firestore, 'users');
+    }, [firestore]);
+    const {data: users, loading} = useCollection<User>(usersQuery);
+
     return (
       <Card>
         <CardHeader>
@@ -58,7 +69,9 @@ import { Badge } from "@/components/ui/badge";
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {loading && <TableRow><TableCell colSpan={4} className="text-center">Loading...</TableCell></TableRow>}
+              {!loading && users?.length === 0 && <TableRow><TableCell colSpan={4} className="text-center">No users found.</TableCell></TableRow>}
+              {users?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
