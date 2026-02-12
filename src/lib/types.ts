@@ -9,6 +9,17 @@ export type Product = {
   stock: number;
 };
 
+export type FirestoreProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  categoryId: string;
+  stock: number;
+};
+
 export type SubCategory = {
   id: string;
   name: string;

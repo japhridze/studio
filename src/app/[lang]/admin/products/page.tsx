@@ -1,3 +1,6 @@
+'use client';
+import { useMemo } from 'react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -24,10 +27,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
-import { products } from "@/lib/data";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useFirestore, useCollection } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { FirestoreProduct } from '@/lib/types';
+import { useParams } from 'next/navigation';
 
-export default function AdminProductsPage({ params: { lang } }: { params: { lang: string } }) {
+export default function AdminProductsPage() {
+  const params = useParams();
+  const lang = params.lang as 'en' | 'ka';
+  const firestore = useFirestore();
+
+  const productsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'products');
+  }, [firestore]);
+
+  const { data: products, loading } = useCollection<FirestoreProduct>(productsQuery);
+
   return (
     <Card>
       <CardHeader>
@@ -36,11 +52,13 @@ export default function AdminProductsPage({ params: { lang } }: { params: { lang
                 <CardTitle>Products</CardTitle>
                 <CardDescription>Manage your products and view their sales performance.</CardDescription>
             </div>
-            <Button size="sm" className="gap-1">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Add Product
-                </span>
+            <Button size="sm" className="gap-1" asChild>
+                <Link href={`/${lang}/admin/products/new`}>
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                        Add Product
+                    </span>
+                </Link>
             </Button>
         </div>
       </CardHeader>
@@ -61,19 +79,18 @@ export default function AdminProductsPage({ params: { lang } }: { params: { lang
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => {
-              const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+            {loading && <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>}
+            {!loading && products?.map((product) => {
               return (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
-                  {productImage && 
+                  {product.imageUrl && 
                     <Image
                       alt={product.name}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={productImage.imageUrl}
+                      src={product.imageUrl}
                       width="64"
-                      data-ai-hint={productImage.imageHint}
                     />
                   }
                 </TableCell>

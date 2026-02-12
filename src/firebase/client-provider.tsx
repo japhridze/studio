@@ -5,10 +5,10 @@ import { initializeFirebase } from '.';
 import { FirebaseProvider } from './provider';
 
 export function FirebaseClientProvider({ children }: { children: ReactNode }) {
-  const { firebaseApp, auth, firestore } = initializeFirebase();
+  const { firebaseApp, auth, firestore, storage } = initializeFirebase();
 
   return (
-    <FirebaseProvider app={firebaseApp} auth={auth} firestore={firestore}>
+    <FirebaseProvider app={firebaseApp} auth={auth} firestore={firestore} storage={storage}>
       {children}
     </FirebaseProvider>
   );

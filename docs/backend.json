@@ -28,6 +28,51 @@
         "email",
         "role"
       ]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Represents a product in the store.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the product."
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-friendly slug for the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the product."
+        },
+        "stock": {
+          "type": "number",
+          "description": "The number of items in stock."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "The ID of the category this product belongs to."
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL of the product's main image in Firebase Storage."
+        }
+      },
+      "required": [
+        "name",
+        "slug",
+        "description",
+        "price",
+        "stock",
+        "categoryId",
+        "imageUrl"
+      ]
     }
   },
   "auth": {
@@ -42,6 +87,12 @@
         "$ref": "#/entities/UserProfile"
       },
       "description": "Stores public profile information for each user, keyed by their Firebase Auth UID."
+    },
+    "/products/{productId}": {
+      "schema": {
+        "$ref": "#/entities/Product"
+      },
+      "description": "Stores information about each product available in the store."
     }
   }
 }
