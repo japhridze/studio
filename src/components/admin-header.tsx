@@ -11,18 +11,20 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth, useUser } from "@/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { LogOut } from "lucide-react";
 
 export default function AdminHeader() {
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const lang = (params.lang as 'en' | 'ka') || 'en';
 
   const handleLogout = async () => {
     if (auth) {
       await auth.signOut();
-      router.push('/login');
+      router.push(`/${lang}/login`);
     }
   };
 
