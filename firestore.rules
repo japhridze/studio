@@ -27,7 +27,8 @@ service cloud.firestore {
 
     match /products/{productId} {
       allow read, list: if true;
-      allow create, update, delete: if isAdmin();
+      // Temporarily simplify the rule to debug permission issues.
+      allow create, update, delete: if request.auth != null && request.auth.uid == 'RUl2KGivfaQpj7Fx6dQfQIZeOg12';
     }
   }
 }

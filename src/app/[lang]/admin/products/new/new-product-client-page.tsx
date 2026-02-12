@@ -33,7 +33,7 @@ const formSchema = z.object({
 const createSlug = (name: string) => {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
     .replace(/(^-|-$)+/g, '');
 };
 
