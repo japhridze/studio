@@ -34,8 +34,43 @@ import { useAuth, useUser } from '@/firebase';
 import type { getDictionary } from '@/lib/dictionaries';
 import LanguageSwitcher from './language-switcher';
 
+const defaultDictionary = {
+    header: {
+      home: "Home",
+      contact: "Contact",
+      searchPlaceholder: "Search products...",
+      myAccount: "My Account",
+      logout: "Logout",
+      login: "Login",
+      shoppingCart: "Shopping Cart",
+      toggleNav: "Toggle navigation menu"
+    },
+    categories: {
+      "power-tools": "Power Tools",
+      "hand-tools": "Hand Tools",
+      "painting": "Painting",
+      "building-materials": "Building Materials",
+      "lighting": "Lighting",
+      "safety-equipment": "Safety Equipment"
+    },
+    subcategories: {
+        "drills": "Drills",
+        "saws": "Saws",
+        "sanders": "Sanders",
+        "hammers": "Hammers",
+        "wrenches": "Wrenches",
+        "screwdrivers": "Screwdrivers"
+    },
+    languageSwitcher: {
+        select: 'Language',
+        en: 'English',
+        ka: 'Georgian'
+    }
+};
 
-export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
+
+export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka', dictionary?: Awaited<ReturnType<typeof getDictionary>> }) {
+  const dict = dictionary || defaultDictionary;
   const { cartCount } = useCart();
   const { user } = useUser();
   const auth = useAuth();
@@ -49,16 +84,16 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
   };
 
   const navLinks = [
-    { name: dictionary.header.home, href: `/${lang}` },
+    { name: dict.header.home, href: `/${lang}` },
     ...categories.slice(0, 4).map(c => ({ 
-        name: (dictionary.categories as any)[c.slug] || c.name, 
+        name: (dict.categories as any)[c.slug] || c.name, 
         href: `/${lang}/products`,
         subcategories: c.subcategories?.map(sc => ({
-            name: (dictionary.subcategories as any)[sc.slug] || sc.name,
+            name: (dict.subcategories as any)[sc.slug] || sc.name,
             href: `/${lang}/products` // for now, point to the same page
         }))
     })),
-    { name: dictionary.header.contact, href: '#' }
+    { name: dict.header.contact, href: '#' }
   ];
 
   return (
@@ -69,7 +104,7 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="lg:hidden mr-4">
                         <Menu className="h-6 w-6" />
-                        <span className="sr-only">{dictionary.header.toggleNav}</span>
+                        <span className="sr-only">{dict.header.toggleNav}</span>
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
@@ -113,7 +148,7 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
                     </nav>
                 </SheetContent>
             </Sheet>
-            <Logo lang={lang} dictionary={dictionary} />
+            <Logo lang={lang} dictionary={dict} />
         </div>
 
         <nav className="hidden lg:flex items-center gap-1 text-sm font-medium mx-auto">
@@ -147,12 +182,12 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
         </nav>
 
         <div className="flex items-center gap-4 ml-auto">
-          <LanguageSwitcher locale={lang} dictionary={dictionary.languageSwitcher}/>
+          <LanguageSwitcher locale={lang} dictionary={dict.languageSwitcher}/>
           <div className="relative hidden md:block">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder={dictionary.header.searchPlaceholder}
+              placeholder={dict.header.searchPlaceholder}
               className="pl-8 sm:w-[200px] lg:w-[300px]"
             />
           </div>
@@ -175,11 +210,11 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
                 <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={`/${lang}/account`}>{dictionary.header.myAccount}</Link>
+                  <Link href={`/${lang}/account`}>{dict.header.myAccount}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  {dictionary.header.logout}
+                  {dict.header.logout}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -187,7 +222,7 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
             <Button asChild variant="ghost" size="icon">
               <Link href={`/${lang}/login`}>
                 <User className="h-5 w-5" />
-                <span className="sr-only">{dictionary.header.login}</span>
+                <span className="sr-only">{dict.header.login}</span>
               </Link>
             </Button>
           )}
@@ -195,7 +230,7 @@ export default function Header({ lang, dictionary }: { lang: 'en' | 'ka', dictio
           <Button asChild variant="ghost" size="icon" className="relative">
             <Link href={`/${lang}/cart`}>
               <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">{dictionary.header.shoppingCart}</span>
+              <span className="sr-only">{dict.header.shoppingCart}</span>
               {cartCount > 0 && (
                 <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{cartCount}</Badge>
               )}

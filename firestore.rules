@@ -12,7 +12,9 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return request.auth != null && getUserRole(request.auth.uid) == 'admin';
+      // The user with this UID is always an admin.
+      // Other users can be made admins by setting their role to 'admin' in their user document.
+      return (request.auth != null && getUserRole(request.auth.uid) == 'admin') || request.auth.uid == 'RUl2KGivfaQpj7Fx6dQfQIZeOg12';
     }
 
     match /users/{userId} {
