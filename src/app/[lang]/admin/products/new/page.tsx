@@ -16,6 +16,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { categories } from '@/lib/data';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -59,33 +61,71 @@ export default function NewProductPage() {
       return;
     }
 
-    try {
-      // 1. Upload image to Firebase Storage
-      const imageFile = values.image;
-      const slug = createSlug(values.name);
-      const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
-      const uploadResult = await uploadBytes(storageRef, imageFile);
-      const imageUrl = await getDownloadURL(uploadResult.ref);
-
-      // 2. Add product to Firestore
-      await addDoc(collection(firestore, 'products'), {
+    const slug = createSlug(values.name);
+    const productData = {
         name: values.name,
         slug: slug,
         description: values.description,
         price: values.price,
         stock: values.stock,
         categoryId: values.categoryId,
-        imageUrl: imageUrl,
-      });
+        imageUrl: '', // Will be updated after upload
+    };
 
-      toast({ title: 'Success!', description: 'Product has been created.' });
-      router.push(`/${lang}/admin/products`);
-      router.refresh();
+    try {
+      // 1. Upload image to Firebase Storage
+      const imageFile = values.image;
+      const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
+      const uploadResult = await uploadBytes(storageRef, imageFile);
+      const imageUrl = await getDownloadURL(uploadResult.ref);
 
+      // Add final URL to data
+      productData.imageUrl = imageUrl;
     } catch (error: any) {
-      console.error('Product creation failed:', error);
-      toast({ variant: 'destructive', title: 'Error', description: error.message || 'Failed to create product.' });
+        const permissionError = new FirestorePermissionError({
+            path: `storage://${storage.app.options.storageBucket}/products/${slug}`,
+            operation: 'write',
+            requestResourceData: {
+                name: values.image.name,
+                size: values.image.size,
+                type: values.image.type
+            }
+        });
+        errorEmitter.emit('permission-error', permissionError);
+
+        toast({
+            variant: "destructive",
+            title: "Permission Denied",
+            description: "You do not have permission to upload an image.",
+        });
+        return;
     }
+
+
+    // 2. Add product to Firestore
+    const productsCollection = collection(firestore, 'products');
+    
+    // No await, use promise chaining for error handling
+    addDoc(productsCollection, productData)
+    .then(() => {
+        toast({ title: 'Success!', description: 'Product has been created.' });
+        router.push(`/${lang}/admin/products`);
+        router.refresh();
+    })
+    .catch((serverError) => {
+        const permissionError = new FirestorePermissionError({
+            path: productsCollection.path,
+            operation: 'create',
+            requestResourceData: productData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        // User facing toast
+        toast({
+            variant: "destructive",
+            title: "Permission Denied",
+            description: "You do not have permission to create a product.",
+        });
+    });
   }
 
   return (
