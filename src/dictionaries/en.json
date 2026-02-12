@@ -1,3 +1,4 @@
+
 {
     "header": {
       "home": "Home",
@@ -139,5 +140,34 @@
         "accountCreatedDescription": "Your account has been created successfully.",
         "errorTitle": "Error",
         "firebaseNotInitialized": "Firebase not initialized."
+    },
+    "admin": {
+        "editUserTitle": "Edit User",
+        "editUserDescription": "Update the user's information and role.",
+        "updateUser": "Update User",
+        "updatingUser": "Updating...",
+        "userUpdated": "User Updated",
+        "userUpdatedDescription": "The user's profile has been successfully updated.",
+        "addNewProduct": "Add New Product",
+        "addNewProductDescription": "Fill out the form below to add a new product to your store.",
+        "productName": "Product Name",
+        "productNamePlaceholder": "e.g., Cordless Drill Pro",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe the product...",
+        "price": "Price",
+        "pricePlaceholder": "99.99",
+        "stock": "Stock",
+        "stockPlaceholder": "100",
+        "category": "Category",
+        "selectCategory": "Select a category",
+        "productImage": "Product Image",
+        "addProduct": "Add Product",
+        "addingProduct": "Adding Product...",
+        "cancel": "Cancel",
+        "productCreatedSuccess": "Success!",
+        "productCreatedSuccessDescription": "Product has been created.",
+        "permissionDenied": "Permission Denied",
+        "permissionDeniedImage": "You do not have permission to upload an image.",
+        "permissionDeniedProduct": "You do not have permission to create a product."
     }
 }

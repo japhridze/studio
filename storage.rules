@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function getUserRole(userId) {
+      return get(/databases/(default)/documents/users/$(userId)).data.role;
+    }
+
+    function isAdmin() {
+      return request.auth != null && getUserRole(request.auth.uid) == 'admin';
+    }
+
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

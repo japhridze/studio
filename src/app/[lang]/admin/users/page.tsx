@@ -91,7 +91,9 @@ import { useParams } from "next/navigation";
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link href={`/${lang}/admin/users/${user.id}/edit`}>Edit</Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>Delete</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

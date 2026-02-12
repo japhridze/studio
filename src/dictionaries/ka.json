@@ -1,3 +1,4 @@
+
 {
     "header": {
       "home": "მთავარი",
@@ -139,5 +140,34 @@
         "accountCreatedDescription": "თქვენი ანგარიში წარმატებით შეიქმნა.",
         "errorTitle": "შეცდომა",
         "firebaseNotInitialized": "Firebase არ არის ინიციალიზებული."
+    },
+    "admin": {
+        "editUserTitle": "მომხმარებლის რედაქტირება",
+        "editUserDescription": "განაახლეთ მომხმარებლის ინფორმაცია და როლი.",
+        "updateUser": "მომხმარებლის განახლება",
+        "updatingUser": "მიმდინარეობს განახლება...",
+        "userUpdated": "მომხმარებელი განახლდა",
+        "userUpdatedDescription": "მომხმარებლის პროფილი წარმატებით განახლდა.",
+        "addNewProduct": "ახალი პროდუქტის დამატება",
+        "addNewProductDescription": "შეავსეთ ქვემოთ მოცემული ფორმა თქვენს მაღაზიაში ახალი პროდუქტის დასამატებლად.",
+        "productName": "პროდუქტის სახელი",
+        "productNamePlaceholder": "მაგ., უსადენო ბურღი პრო",
+        "description": "აღწერა",
+        "descriptionPlaceholder": "აღწერეთ პროდუქტი...",
+        "price": "ფასი",
+        "pricePlaceholder": "99.99",
+        "stock": "მარაგი",
+        "stockPlaceholder": "100",
+        "category": "კატეგორია",
+        "selectCategory": "აირჩიეთ კატეგორია",
+        "productImage": "პროდუქტის სურათი",
+        "addProduct": "პროდუქტის დამატება",
+        "addingProduct": "პროდუქტი ემატება...",
+        "cancel": "გაუქმება",
+        "productCreatedSuccess": "წარმატება!",
+        "productCreatedSuccessDescription": "პროდუქტი შეიქმნა.",
+        "permissionDenied": "წვდომა აკრძალულია",
+        "permissionDeniedImage": "თქვენ არ გაქვთ სურათის ატვირთვის უფლება.",
+        "permissionDeniedProduct": "თქვენ არ გაქვთ პროდუქტის შექმნის უფლება."
     }
 }
