@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import Link from "next/link";
@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { orders } from "@/lib/data";
-import { useUser, useFirestore, useDoc } from "@/firebase";
+import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import type { UserProfile } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { getDictionary } from "@/lib/dictionaries";
@@ -32,7 +32,7 @@ export default function AccountClientPage({ lang, dictionary }: { lang: 'en' | '
     const router = useRouter();
     const firestore = useFirestore();
 
-    const userProfileRef = useMemo(() => {
+    const userProfileRef = useMemoFirebase(() => {
         if (!user || !firestore) return null;
         return doc(firestore, "users", user.uid);
     }, [user, firestore]);

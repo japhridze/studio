@@ -1,5 +1,4 @@
 'use client';
-import { useMemo } from 'react';
 import Link from 'next/link';
 import {
   Card,
@@ -27,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
-import { useFirestore, useCollection } from "@/firebase";
+import { useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
 import { useParams } from 'next/navigation';
@@ -37,7 +36,7 @@ export default function AdminProductsPage() {
   const lang = params.lang as 'en' | 'ka';
   const firestore = useFirestore();
 
-  const productsQuery = useMemo(() => {
+  const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return collection(firestore, 'products');
   }, [firestore]);

@@ -1,6 +1,5 @@
 'use client';
 import Link from "next/link";
-import { useMemo } from "react";
 import {
     Card,
     CardContent,
@@ -26,13 +25,13 @@ import {
   import { Button } from "@/components/ui/button";
   import { MoreHorizontal, PlusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useCollection, useFirestore } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import type { User } from "@/lib/types";
   
   export default function AdminUsersPage() {
     const firestore = useFirestore();
-    const usersQuery = useMemo(() => {
+    const usersQuery = useMemoFirebase(() => {
       if (!firestore) return null;
       return collection(firestore, 'users');
     }, [firestore]);
