@@ -1,46 +1,106 @@
 {
   "entities": {
     "UserProfile": {
-      "title": "User Profile",
-      "description": "Represents a user's profile information.",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
       "type": "object",
+      "description": "Represents a user's profile information within the Gorgia Online application. Authentication data (passwords, etc.) is managed externally.",
       "properties": {
-        "name": {
+        "id": {
           "type": "string",
-          "description": "The user's full name."
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The user's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The user's last name."
         },
         "email": {
           "type": "string",
-          "format": "email",
-          "description": "The user's email address."
+          "description": "The user's email address, used for communication.",
+          "format": "email"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The user's contact phone number."
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "The default shipping address for the user."
+        },
+        "billingAddress": {
+          "type": "string",
+          "description": "The default billing address for the user."
+        },
+        "registrationDate": {
+          "type": "string",
+          "description": "The date and time when the user registered.",
+          "format": "date-time"
         },
         "role": {
           "type": "string",
-          "description": "The user's role.",
-          "enum": [
-            "admin",
-            "customer"
-          ]
+          "description": "The role of the user (e.g., 'customer', 'admin'), determining access to features."
         }
       },
       "required": [
-        "name",
+        "id",
+        "firstName",
+        "lastName",
         "email",
+        "registrationDate",
         "role"
       ]
     },
-    "Product": {
-      "title": "Product",
-      "description": "Represents a product in the store.",
+    "Category": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Category",
       "type": "object",
+      "description": "Represents a classification for products, enabling organized browsing.",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Category entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product category."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the category."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to an image representing the category, often used for icons or banners.",
+          "format": "uri"
+        },
+        "parentCategoryId": {
+          "type": "string",
+          "description": "Reference to the parent category, enabling hierarchical category structures. (Relationship: Category 1:N Category - self-referencing)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a single product available for purchase in the catalog.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
         "name": {
           "type": "string",
           "description": "The name of the product."
-        },
-        "slug": {
-          "type": "string",
-          "description": "URL-friendly slug for the product."
         },
         "description": {
           "type": "string",
@@ -48,51 +108,368 @@
         },
         "price": {
           "type": "number",
-          "description": "The price of the product."
+          "description": "The current selling price of the product."
         },
-        "stock": {
+        "stockQuantity": {
           "type": "number",
-          "description": "The number of items in stock."
+          "description": "The number of units of this product currently in stock for inventory management."
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "An array of URLs for images showcasing the product.",
+          "items": {
+            "type": "string"
+          }
         },
         "categoryId": {
           "type": "string",
-          "description": "The ID of the category this product belongs to."
+          "description": "Reference to the category this product belongs to. (Relationship: Category 1:N Product)"
         },
-        "imageUrl": {
+        "sku": {
           "type": "string",
-          "format": "uri",
-          "description": "The URL of the product's main image in Firebase Storage."
+          "description": "Stock Keeping Unit, a unique code for internal inventory and tracking."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The date and time when the product was added to the catalog.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The date and time when the product information was last updated.",
+          "format": "date-time"
         }
       },
       "required": [
+        "id",
         "name",
-        "slug",
         "description",
         "price",
-        "stock",
+        "stockQuantity",
         "categoryId",
-        "imageUrl"
+        "sku",
+        "createdAt"
+      ]
+    },
+    "Cart": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Cart",
+      "type": "object",
+      "description": "Represents a shopping cart, holding products selected by a user before checkout.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Cart entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the user profile associated with this cart. (Relationship: UserProfile 1:N Cart)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The date and time when the cart was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The date and time when the cart was last updated.",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the cart (e.g., 'active', 'converted', 'abandoned')."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "createdAt",
+        "status"
+      ]
+    },
+    "CartItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CartItem",
+      "type": "object",
+      "description": "Represents a single product within a shopping cart, including quantity and price at time of addition.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CartItem entity."
+        },
+        "cartId": {
+          "type": "string",
+          "description": "Reference to the shopping cart this item belongs to. (Relationship: Cart 1:N CartItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the product added to the cart. (Relationship: Product 1:N CartItem)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of the product in the cart."
+        },
+        "priceAtTimeOfAddition": {
+          "type": "number",
+          "description": "The price of the product when it was added to the cart, to preserve historical pricing."
+        }
+      },
+      "required": [
+        "id",
+        "cartId",
+        "productId",
+        "quantity",
+        "priceAtTimeOfAddition"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a confirmed purchase made by a user, containing details about the transaction and shipping.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Order entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the user profile who placed the order. (Relationship: UserProfile 1:N Order)"
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "The date and time when the order was placed.",
+          "format": "date-time"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "The total monetary amount of the order, including shipping and taxes."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current fulfillment status of the order (e.g., 'pending', 'processing', 'shipped', 'delivered', 'cancelled')."
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "The address where the order will be shipped."
+        },
+        "billingAddress": {
+          "type": "string",
+          "description": "The address used for billing purposes for this order."
+        },
+        "paymentStatus": {
+          "type": "string",
+          "description": "The payment status of the order (e.g., 'paid', 'unpaid', 'refunded')."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "orderDate",
+        "totalAmount",
+        "status",
+        "shippingAddress",
+        "billingAddress",
+        "paymentStatus"
+      ]
+    },
+    "OrderItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OrderItem",
+      "type": "object",
+      "description": "Represents a single product purchased as part of an order, including quantity and price at time of purchase.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OrderItem entity."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Reference to the order this item belongs to. (Relationship: Order 1:N OrderItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the product included in the order. (Relationship: Product 1:N OrderItem)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of the product purchased in this order item."
+        },
+        "priceAtTimeOfPurchase": {
+          "type": "number",
+          "description": "The price of the product when the order was placed, to preserve historical pricing."
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "productId",
+        "quantity",
+        "priceAtTimeOfPurchase"
       ]
     }
   },
   "auth": {
     "providers": [
-      "email_password",
-      "google.com"
+      "password",
+      "anonymous"
     ]
   },
   "firestore": {
-    "/users/{userId}": {
-      "schema": {
-        "$ref": "#/entities/UserProfile"
+    "structure": [
+      {
+        "path": "/userProfiles/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores individual user profile information. Access is restricted to the owner (request.auth.uid == userId) for read/update. Creation of profiles should enforce a default 'customer' role, preventing arbitrary self-assignment of admin roles. Administrators can read and update all profiles.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user, matching their Firebase Authentication UID."
+            }
+          ]
+        }
       },
-      "description": "Stores public profile information for each user, keyed by their Firebase Auth UID."
-    },
-    "/products/{productId}": {
-      "schema": {
-        "$ref": "#/entities/Product"
+      {
+        "path": "/adminRoles/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "This collection signifies administrative privileges for a user. The existence of a document at this path for a given userId grants administrator access across the application, adhering to the 'existence over content' DBAC principle. Only existing administrators can create or delete documents in this collection.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user designated as an administrator, matching their Firebase Authentication UID."
+            }
+          ]
+        }
       },
-      "description": "Stores information about each product available in the store."
-    }
+      {
+        "path": "/categories/{categoryId}",
+        "definition": {
+          "entityName": "Category",
+          "schema": {
+            "$ref": "#/backend/entities/Category"
+          },
+          "description": "Publicly accessible collection for product categories. Read access is public for all users. Create, update, and delete operations are restricted to authenticated administrators.",
+          "params": [
+            {
+              "name": "categoryId",
+              "description": "The unique ID of the product category."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Publicly accessible collection for all products. Read access is public for catalog browsing and search. Create, update, and delete operations (including stock management) are restricted to authenticated administrators.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique ID of the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/carts/{cartId}",
+        "definition": {
+          "entityName": "Cart",
+          "schema": {
+            "$ref": "#/backend/entities/Cart"
+          },
+          "description": "Stores individual shopping carts belonging to a specific user. Access is strictly limited to the authenticated user (request.auth.uid == userId), ensuring private cart management.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user who owns the cart."
+            },
+            {
+              "name": "cartId",
+              "description": "The unique ID of the shopping cart."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/carts/{cartId}/cartItems/{cartItemId}",
+        "definition": {
+          "entityName": "CartItem",
+          "schema": {
+            "$ref": "#/backend/entities/CartItem"
+          },
+          "description": "Subcollection storing individual items within a user's shopping cart. Access is strictly limited to the authenticated user (request.auth.uid == userId) for their own cart items. Authorization independence is achieved by the userId being part of the document path, eliminating the need for 'get()' operations in security rules.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user who owns the cart."
+            },
+            {
+              "name": "cartId",
+              "description": "The unique ID of the shopping cart this item belongs to."
+            },
+            {
+              "name": "cartItemId",
+              "description": "The unique ID of the item within the cart."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/orders/{orderId}",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Stores individual orders placed by a specific user. Users can read their own orders. Authenticated administrators have full read and update access for order management. Authorization independence for user access is achieved by the userId being part of the document path.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user who placed the order."
+            },
+            {
+              "name": "orderId",
+              "description": "The unique ID of the order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/orders/{orderId}/orderItems/{orderItemId}",
+        "definition": {
+          "entityName": "OrderItem",
+          "schema": {
+            "$ref": "#/backend/entities/OrderItem"
+          },
+          "description": "Subcollection storing individual items within a user's order. Users can read their own order items. Authenticated administrators have full read access. Authorization independence for user access is achieved by the userId being part of the document path.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user who placed the order."
+            },
+            {
+              "name": "orderId",
+              "description": "The unique ID of the order this item belongs to."
+            },
+            {
+              "name": "orderItemId",
+              "description": "The unique ID of the item within the order."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure for Gorgia Online prioritizes secure, scalable, and debuggable authorization using a combination of path-based ownership and a dedicated collection for administrator roles. Authorization Independence is a cornerstone of this design, largely achieved by embedding the `userId` directly into document paths for user-specific data (e.g., `/users/{userId}/carts/{cartId}`). This eliminates the need for `get()` operations in security rules to check parent document ownership, simplifying rule logic and improving performance by allowing atomic write operations without complex rule dependencies. For example, a user's `CartItem` can be accessed by checking `request.auth.uid == userId` where `userId` is a wildcard in the path, rather than reading the parent `Cart` document.\n\nQueryability and Authorization Posture (QAPs) are supported by segregating data based on its security posture. Publicly accessible data like `categories` and `products` are in top-level collections, allowing for efficient and secure `list` queries by all users without requiring filtering logic in rules. Private user data, such as `userProfiles`, `carts`, and `orders`, is housed within `/userProfiles/{userId}` and `/users/{userId}/...` paths, ensuring that `list` operations implicitly scope to the authenticated user's data (`request.auth.uid`).\n\nFor administrator access, a specific collection, `/adminRoles/{userId}`, is introduced. This adheres to the DBAC principle of 'Existence over Content,' where the mere presence of a document at this path for a given `userId` grants administrative privileges. This method is highly secure and easy to debug, as security rules only need to check `exists(/databases/$(database)/documents/adminRoles/$(request.auth.uid))` to determine admin status. This design explicitly addresses the user's issue of 'registering as admin' – a new user cannot arbitrarily set their role to 'admin' in their `userProfile` during registration; instead, an existing administrator must create a document in the `/adminRoles` collection for the new user, thereby granting them admin status. This enforces a strict separation of concerns for role assignment and prevents privilege escalation.\n\nAll collections maintain homogeneous security requirements, further simplifying rule sets. For instance, all documents in `/products` are publicly readable, while all documents in `/users/{userId}/orders` are readable by the respective `userId` and by any admin. This structural segregation makes the authorization intent explicit and minimizes rule complexity.\n\nTimestamps (`createdAt`, `updatedAt`) and ownership (`userId` in paths) are consistently managed, ensuring data integrity. The use of clear, semantic wildcards (e.g., `{userId}`, `{productId}`) enhances readability and predictability across the data model."
   }
 }

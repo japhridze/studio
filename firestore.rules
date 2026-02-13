@@ -1,34 +1,215 @@
+/**
+ * # Core Philosophy
+ * This ruleset enforces a strict, dual-mode security model. User-specific data
+ * (profiles, carts, orders) is protected using an ownership model where access
+ * is granted only to the authenticated user corresponding to the data path.
+ * Administrative access is managed separately and explicitly through a dedicated
+ * `adminRoles` collection, preventing users from elevating their own privileges.
+ *
+ * # Data Structure
+ * The data is structurally segregated to enhance security and performance. All
+ * private user data is nested under the `/users/{userId}` path, making ownership
+ * checks simple and efficient. Publicly readable data, such as the product
+ * catalog (`/products`) and categories (`/categories`), resides in top-level
+ * collections. A dedicated top-level collection, `/adminRoles`, manages
+ * administrator privileges based on document existence.
+ *
+ * # Key Security Decisions
+ * - **Admin Roles via Existence**: A user is considered an admin only if a
+ *   document with their UID exists in the `/adminRoles` collection. This is
+ *   more secure than a 'role' field in a user profile, as users are explicitly
+ *   forbidden from writing to their own profile's 'role' field or creating
+ *   their own entry in `/adminRoles`. Only existing admins can grant admin
+ *   privileges to others.
+ * - **Strict User Data Scoping**: All access to data within `/users/{userId}`
+ *   is gated by checking if the authenticated user's ID matches the `{userId}`
+ *   wildcard in the path. This prevents any user from accessing another's data.
+ * - **Public Catalog**: The `/products` and `/categories` collections are
+ *   publicly readable to allow for unauthenticated browsing of the store's
+ *   catalog. All write operations (creating products, managing stock) are
+ *   strictly limited to administrators.
+ * - **No User Listing**: To protect user privacy and prevent data scraping,
+ *   listing the entire `/userProfiles` collection is disabled for non-admin users.
+ */
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // -------------------------------------------------------------------------
+    // Helper Functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user is the owner of a document
+     * identified by the given userId.
+     */
     function isOwner(userId) {
-      return request.auth != null && request.auth.uid == userId;
+      return isSignedIn() && request.auth.uid == userId;
     }
 
-    function getUserRole(userId) {
-      return get(/databases/$(database)/documents/users/$(userId)).data.role;
-    }
-
+    /**
+     * Checks if a user is an administrator by verifying the existence of
+     * their UID in the /adminRoles collection.
+     */
     function isAdmin() {
-      // The user with this UID is always an admin.
-      // Other users can be made admins by setting their role to 'admin' in their user document.
-      return (request.auth != null && getUserRole(request.auth.uid) == 'admin') || request.auth.uid == 'RUl2KGivfaQpj7Fx6dQfQIZeOg12';
+      return isSignedIn() && exists(/databases/$(database)/documents/adminRoles/$(request.auth.uid));
+    }
+    
+    /**
+     * A robust ownership check for update/delete operations, ensuring the
+     * document exists before proceeding.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+    
+    /**
+     * A robust admin check for update/delete operations, ensuring the
+     * document exists before proceeding.
+     */
+    function isExistingAdmin() {
+        return isAdmin() && resource != null;
     }
 
-    match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
+    // -------------------------------------------------------------------------
+    // User and Admin Collections
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Users can create and manage their own profile. Admins can manage any profile.
+     * @path /userProfiles/{userId}
+     * @allow (create) An authenticated user creates their own profile with `role: 'customer'`.
+     * @deny  (create) A new user tries to create their profile with `role: 'admin'`.
+     * @principle Prevents privilege escalation by disallowing self-assignment of admin roles.
+     */
+    match /userProfiles/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
-      allow create: if isOwner(userId) || isAdmin();
-      allow update: if isOwner(userId) || isAdmin();
-      allow delete: if isAdmin();
+      allow create: if isOwner(userId) && request.resource.data.role != 'admin' && request.resource.data.id == userId;
+      allow update: if (isExistingOwner(userId) && request.resource.data.role == resource.data.role) || isExistingAdmin();
+      allow delete: if isExistingOwner(userId) || isExistingAdmin();
     }
 
+    /**
+     * @description Manages admin privileges. Only existing admins can add or remove other admins.
+     * @path /adminRoles/{userId}
+     * @allow (create) An existing admin creates a document to grant another user admin rights.
+     * @deny  (create) A non-admin user tries to create a document for themselves to become an admin.
+     * @principle Enforces a strict chain of trust for granting administrative privileges.
+     */
+    match /adminRoles/{userId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if false;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    // -------------------------------------------------------------------------
+    // Public Catalog Collections
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Publicly readable product categories. Writable only by admins.
+     * @path /categories/{categoryId}
+     * @allow (get) Any user, signed in or not, can read a category document.
+     * @deny  (create) A regular authenticated user tries to create a new category.
+     * @principle Separates public read access from privileged write access.
+     */
+    match /categories/{categoryId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Publicly readable products. Writable only by admins.
+     * @path /products/{productId}
+     * @allow (list) Any user, signed in or not, can list all products.
+     * @deny  (update) A regular authenticated user tries to change a product's price.
+     * @principle Separates public read access from privileged write access.
+     */
     match /products/{productId} {
-      allow read, list: if true;
-      // Temporarily simplify the rule to debug permission issues.
-      allow create, update, delete: if request.auth != null && request.auth.uid == 'RUl2KGivfaQpj7Fx6dQfQIZeOg12';
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin();
+    }
+    
+    // -------------------------------------------------------------------------
+    // User-Specific Data
+    // -------------------------------------------------------------------------
+    
+    match /users/{userId} {
+      /**
+       * @description A user's shopping cart. Only the owner can access it.
+       * @path /users/{userId}/carts/{cartId}
+       * @allow (get) An authenticated user reads their own cart.
+       * @deny  (get) An authenticated user tries to read another user's cart.
+       * @principle Restricts access to a user's own private data tree.
+       */
+      match /carts/{cartId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+
+        /**
+         * @description Items within a user's shopping cart.
+         * @path /users/{userId}/carts/{cartId}/cartItems/{cartItemId}
+         * @allow (create) An authenticated user adds an item to their own cart.
+         * @deny  (list) A user tries to list items in someone else's cart.
+         * @principle Path-based security grants access without needing extra reads on parent documents.
+         */
+        match /cartItems/{cartItemId} {
+          allow get: if isOwner(userId);
+          allow list: if isOwner(userId);
+          allow create: if isOwner(userId) && request.resource.data.cartId == cartId;
+          allow update: if isExistingOwner(userId) && request.resource.data.cartId == resource.data.cartId;
+          allow delete: if isExistingOwner(userId);
+        }
+      }
+
+      /**
+       * @description A user's placed orders. Readable by the owner and admins.
+       * @path /users/{userId}/orders/{orderId}
+       * @allow (get) An authenticated user reads their own order history.
+       * @deny  (update) A user tries to change the status of their own shipped order.
+       * @principle Users can view their own data, but only admins can modify transactional records.
+       */
+      match /orders/{orderId} {
+        allow get: if isOwner(userId) || isAdmin();
+        allow list: if isOwner(userId) || isAdmin();
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingAdmin() && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingAdmin();
+
+        /**
+         * @description Items within a user's order. These are read-only for clients.
+         * @path /users/{userId}/orders/{orderId}/orderItems/{orderItemId}
+         * @allow (get) An admin reads the items of a user's order for fulfillment.
+         * @deny  (create) A user tries to add a new item to an order that has already been placed.
+         * @principle Confirmed transactional data (order items) should be immutable from the client-side.
+         */
+        match /orderItems/{orderItemId} {
+          allow get: if isOwner(userId) || isAdmin();
+          allow list: if isOwner(userId) || isAdmin();
+          allow create: if false;
+          allow update: if false;
+          allow delete: if false;
+        }
+      }
     }
   }
 }
