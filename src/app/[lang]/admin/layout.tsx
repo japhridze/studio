@@ -24,17 +24,17 @@ import AdminHeader from "@/components/admin-header";
 import Logo from "@/components/logo";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
 
 export default function AdminLayout({
   children,
-  params: { lang }
 }: {
   children: React.ReactNode;
-  params: { lang: 'en' | 'ka' }
 }) {
+  const params = useParams();
+  const lang = params.lang as 'en' | 'ka';
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();

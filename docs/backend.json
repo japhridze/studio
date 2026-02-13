@@ -318,33 +318,17 @@
   "firestore": {
     "structure": [
       {
-        "path": "/userProfiles/{userId}",
+        "path": "/users/{userId}",
         "definition": {
           "entityName": "UserProfile",
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores individual user profile information. Access is restricted to the owner (request.auth.uid == userId) for read/update. Creation of profiles should enforce a default 'customer' role, preventing arbitrary self-assignment of admin roles. Administrators can read and update all profiles.",
+          "description": "Stores individual user profile information. Access is restricted based on user role and ownership. Admins have full access.",
           "params": [
             {
               "name": "userId",
               "description": "The unique ID of the user, matching their Firebase Authentication UID."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/adminRoles/{userId}",
-        "definition": {
-          "entityName": "UserProfile",
-          "schema": {
-            "$ref": "#/backend/entities/UserProfile"
-          },
-          "description": "This collection signifies administrative privileges for a user. The existence of a document at this path for a given userId grants administrator access across the application, adhering to the 'existence over content' DBAC principle. Only existing administrators can create or delete documents in this collection.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique ID of the user designated as an administrator, matching their Firebase Authentication UID."
             }
           ]
         }
