@@ -27,6 +27,8 @@ const formSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+const SUPER_ADMIN_UID = "RUl2KGivfaQpj7Fx6dQfQIZeOg12";
+
 export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
   const auth = useAuth();
   const firestore = useFirestore();
@@ -42,9 +44,17 @@ export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!auth) return;
+    if (!auth || !firestore) return;
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+      // Ensure super admin role is set
+      if (user.uid === SUPER_ADMIN_UID) {
+        const userDocRef = doc(firestore, "users", user.uid);
+        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+      }
+      
       toast({
         title: dictionary.login.loggedInTitle,
         description: dictionary.login.loggedInDescription,
@@ -70,12 +80,20 @@ export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
 
+      const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
+      const role = isSuperAdmin ? 'admin' : 'customer';
+
       if (!userDoc.exists()) {
         await setDoc(userDocRef, {
             name: user.displayName,
             email: user.email,
-            role: "customer",
+            role: role,
         });
+      } else {
+        const userData = userDoc.data();
+        if (isSuperAdmin && userData.role !== 'admin') {
+            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+        }
       }
 
       toast({

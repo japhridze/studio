@@ -33,6 +33,8 @@ const formSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
+const SUPER_ADMIN_UID = "RUl2KGivfaQpj7Fx6dQfQIZeOg12";
+
 export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
   const auth = useAuth();
   const firestore = useFirestore();
@@ -86,10 +88,11 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
 
+      const role = user.uid === SUPER_ADMIN_UID ? 'admin' : 'customer';
       await setDoc(doc(firestore, "users", user.uid), {
         name: `${values.firstName} ${values.lastName}`,
         email: values.email,
-        role: "customer",
+        role: role,
       });
 
       toast({
@@ -120,12 +123,20 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
 
+      const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
+      const role = isSuperAdmin ? 'admin' : 'customer';
+
       if (!userDoc.exists()) {
         await setDoc(userDocRef, {
             name: user.displayName,
             email: user.email,
-            role: "customer",
+            role: role,
         });
+      } else {
+        const userData = userDoc.data();
+        if (isSuperAdmin && userData.role !== 'admin') {
+            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+        }
       }
 
       toast({
