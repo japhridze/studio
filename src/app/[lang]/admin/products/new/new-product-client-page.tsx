@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useFirestore, useStorage } from '@/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { useFirestore, useStorage, addDocumentNonBlocking } from '@/firebase';
+import { collection } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -16,8 +16,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { categories } from '@/lib/data';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
 import type { getDictionary } from '@/lib/dictionaries';
 
 const formSchema = z.object({
@@ -61,60 +59,43 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     }
 
     const slug = createSlug(values.name);
-    
+    let imageUrl = '';
+
     try {
-      // 1. Upload image to Firebase Storage
+      // 1. Upload image to Firebase Storage - this part remains blocking as we need the URL
       const imageFile = values.image;
       const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
       const uploadResult = await uploadBytes(storageRef, imageFile);
-      const imageUrl = await getDownloadURL(uploadResult.ref);
-
-      // 2. Prepare product data
-      const productData = {
-          name: values.name,
-          slug: slug,
-          description: values.description,
-          price: values.price,
-          stock: values.stock,
-          categoryId: values.categoryId,
-          imageUrl: imageUrl,
-      };
-
-      // 3. Add product to Firestore
-      const productsCollection = collection(firestore, 'products');
-      await addDoc(productsCollection, productData);
-      
-      toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
-      router.push(`/${lang}/admin/products`);
-
+      imageUrl = await getDownloadURL(uploadResult.ref);
     } catch (error: any) {
-        console.error("Error creating product:", error);
-
-        // Determine if it's a storage or firestore error to show a more specific message
-        const isStorageError = error.code?.includes('storage/');
-        
-        if (isStorageError) {
-             toast({
-                variant: "destructive",
-                title: dictionary.admin.permissionDenied,
-                description: dictionary.admin.permissionDeniedImage,
-            });
-        } else {
-            const productsCollection = collection(firestore, 'products');
-            const productData = { name: values.name, slug, description: values.description, price: values.price, stock: values.stock, categoryId: values.categoryId, imageUrl: '' };
-            const permissionError = new FirestorePermissionError({
-                path: productsCollection.path,
-                operation: 'create',
-                requestResourceData: productData,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-            toast({
-                variant: "destructive",
-                title: dictionary.admin.permissionDenied,
-                description: dictionary.admin.permissionDeniedProduct,
-            });
-        }
+        console.error("Error uploading image:", error);
+        toast({
+            variant: "destructive",
+            title: dictionary.admin.permissionDenied,
+            description: dictionary.admin.permissionDeniedImage,
+        });
+        // Stop execution if image upload fails
+        return;
     }
+
+    // 2. Prepare product data
+    const productData = {
+        name: values.name,
+        slug: slug,
+        description: values.description,
+        price: values.price,
+        stock: values.stock,
+        categoryId: values.categoryId,
+        imageUrl: imageUrl,
+    };
+
+    // 3. Add product to Firestore (non-blocking)
+    const productsCollection = collection(firestore, 'products');
+    addDocumentNonBlocking(productsCollection, productData);
+    
+    // 4. Immediately give feedback and navigate
+    toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
+    router.push(`/${lang}/admin/products`);
   }
 
   return (

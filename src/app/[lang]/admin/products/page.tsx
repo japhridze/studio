@@ -30,6 +30,7 @@ import { useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
 import { useParams } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminProductsPage() {
   const params = useParams();
@@ -42,6 +43,45 @@ export default function AdminProductsPage() {
   }, [firestore]);
 
   const { data: products, isLoading } = useCollection<FirestoreProduct>(productsQuery);
+
+  // The useParams() hook can return an empty object on the initial render.
+  // This check prevents constructing an invalid Link href like "/undefined/admin/..."
+  if (!lang) {
+      return (
+          <Card>
+              <CardHeader>
+                  <div className="flex items-center justify-between">
+                      <div>
+                          <CardTitle>Products</CardTitle>
+                          <CardDescription>Manage your products and view their sales performance.</CardDescription>
+                      </div>
+                      <Skeleton className="h-9 w-32" />
+                  </div>
+              </CardHeader>
+              <CardContent>
+                  <Table>
+                      <TableHeader>
+                          <TableRow>
+                              <TableHead className="hidden w-[100px] sm:table-cell">
+                                  <span className="sr-only">Image</span>
+                              </TableHead>
+                              <TableHead>Name</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead className="hidden md:table-cell">Price</TableHead>
+                              <TableHead className="hidden md:table-cell">Stock</TableHead>
+                              <TableHead>
+                                  <span className="sr-only">Actions</span>
+                              </TableHead>
+                          </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                          <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>
+                      </TableBody>
+                  </Table>
+              </CardContent>
+          </Card>
+      )
+  }
 
   return (
     <Card>
