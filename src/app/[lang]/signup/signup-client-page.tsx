@@ -1,5 +1,6 @@
 'use client';
 import Link from "next/link";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,10 +18,13 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { useAuth, useFirestore } from "@/firebase";
+import { useAuth, useFirestore, useUser, useDoc, useMemoFirebase } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import type { getDictionary } from "@/lib/dictionaries";
+import type { User } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -34,6 +38,34 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
+
+  const { user, isUserLoading } = useUser();
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc<User>(userDocRef);
+
+  useEffect(() => {
+    if (isUserLoading || isProfileLoading) {
+      return;
+    }
+
+    if (userProfile && userProfile.role === 'admin') {
+      toast({
+        title: "Already logged in as Admin",
+        description: "Redirecting to the admin dashboard.",
+      });
+      router.replace(`/${lang}/admin`);
+    } else if (user) {
+      toast({
+        title: "Already logged in",
+        description: "Redirecting to your account page.",
+      });
+      router.replace(`/${lang}/account`);
+    }
+  }, [user, userProfile, isUserLoading, isProfileLoading, router, lang, toast]);
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -110,6 +142,50 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
       });
     }
   }
+
+  if (isUserLoading || isProfileLoading) {
+    return (
+       <div className="flex flex-col min-h-screen">
+            <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
+               <div className="container mx-auto flex h-16 items-center px-4">
+                   <Logo lang={lang} dictionary={dictionary}/>
+               </div>
+           </header>
+           <main className="flex-1 flex items-center justify-center py-12">
+               <Card className="mx-auto max-w-sm w-full">
+                   <CardHeader>
+                       <Skeleton className="h-7 w-1/4" />
+                       <Skeleton className="h-4 w-3/4 mt-2" />
+                   </CardHeader>
+                   <CardContent className="grid gap-4">
+                       <div className="grid grid-cols-2 gap-4">
+                           <div className="space-y-2">
+                               <Skeleton className="h-4 w-1/3" />
+                               <Skeleton className="h-10 w-full" />
+                           </div>
+                            <div className="space-y-2">
+                               <Skeleton className="h-4 w-1/3" />
+                               <Skeleton className="h-10 w-full" />
+                           </div>
+                       </div>
+                       <div className="space-y-2">
+                           <Skeleton className="h-4 w-1/4" />
+                           <Skeleton className="h-10 w-full" />
+                       </div>
+                        <div className="space-y-2">
+                           <Skeleton className="h-4 w-1/4" />
+                           <Skeleton className="h-10 w-full" />
+                       </div>
+                       <Skeleton className="h-10 w-full" />
+                       <Skeleton className="h-10 w-full" />
+                   </CardContent>
+               </Card>
+           </main>
+           <Footer lang={lang} dictionary={dictionary.footer}/>
+       </div>
+   )
+ }
+
 
   return (
     <div className="flex flex-col min-h-screen">
