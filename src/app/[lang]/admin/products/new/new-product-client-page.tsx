@@ -81,22 +81,17 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       // Add final URL to data
       productData.imageUrl = imageUrl;
     } catch (error: any) {
-        const permissionError = new FirestorePermissionError({
-            path: `storage://${storage.app.options.storageBucket}/products/${slug}`,
-            operation: 'write',
-            requestResourceData: {
-                name: values.image.name,
-                size: values.image.size,
-                type: values.image.type
-            }
-        });
-        errorEmitter.emit('permission-error', permissionError);
-
+        // Log the actual storage error to the console for debugging
+        console.error("Firebase Storage Error:", error);
+        
+        // Display a user-friendly toast message
         toast({
             variant: "destructive",
             title: dictionary.admin.permissionDenied,
             description: dictionary.admin.permissionDeniedImage,
         });
+
+        // Stop the form submission
         return;
     }
 
