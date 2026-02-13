@@ -61,16 +61,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     }
 
     const slug = createSlug(values.name);
-    const productData = {
-        name: values.name,
-        slug: slug,
-        description: values.description,
-        price: values.price,
-        stock: values.stock,
-        categoryId: values.categoryId,
-        imageUrl: '', // Will be updated after upload
-    };
-
+    
     try {
       // 1. Upload image to Firebase Storage
       const imageFile = values.image;
@@ -78,48 +69,52 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       const uploadResult = await uploadBytes(storageRef, imageFile);
       const imageUrl = await getDownloadURL(uploadResult.ref);
 
-      // Add final URL to data
-      productData.imageUrl = imageUrl;
+      // 2. Prepare product data
+      const productData = {
+          name: values.name,
+          slug: slug,
+          description: values.description,
+          price: values.price,
+          stock: values.stock,
+          categoryId: values.categoryId,
+          imageUrl: imageUrl,
+      };
+
+      // 3. Add product to Firestore
+      const productsCollection = collection(firestore, 'products');
+      await addDoc(productsCollection, productData);
+      
+      toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
+      router.push(`/${lang}/admin/products`);
+
     } catch (error: any) {
-        // Log the actual storage error to the console for debugging
-        console.error("Firebase Storage Error:", error);
+        console.error("Error creating product:", error);
+
+        // Determine if it's a storage or firestore error to show a more specific message
+        const isStorageError = error.code?.includes('storage/');
         
-        // Display a user-friendly toast message
-        toast({
-            variant: "destructive",
-            title: dictionary.admin.permissionDenied,
-            description: dictionary.admin.permissionDeniedImage,
-        });
-
-        // Stop the form submission
-        return;
+        if (isStorageError) {
+             toast({
+                variant: "destructive",
+                title: dictionary.admin.permissionDenied,
+                description: dictionary.admin.permissionDeniedImage,
+            });
+        } else {
+            const productsCollection = collection(firestore, 'products');
+            const productData = { name: values.name, slug, description: values.description, price: values.price, stock: values.stock, categoryId: values.categoryId, imageUrl: '' };
+            const permissionError = new FirestorePermissionError({
+                path: productsCollection.path,
+                operation: 'create',
+                requestResourceData: productData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+            toast({
+                variant: "destructive",
+                title: dictionary.admin.permissionDenied,
+                description: dictionary.admin.permissionDeniedProduct,
+            });
+        }
     }
-
-
-    // 2. Add product to Firestore
-    const productsCollection = collection(firestore, 'products');
-    
-    // No await, use promise chaining for error handling
-    addDoc(productsCollection, productData)
-    .then(() => {
-        toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
-        router.push(`/${lang}/admin/products`);
-        router.refresh();
-    })
-    .catch((serverError) => {
-        const permissionError = new FirestorePermissionError({
-            path: productsCollection.path,
-            operation: 'create',
-            requestResourceData: productData,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-        // User facing toast
-        toast({
-            variant: "destructive",
-            title: dictionary.admin.permissionDenied,
-            description: dictionary.admin.permissionDeniedProduct,
-        });
-    });
   }
 
   return (
