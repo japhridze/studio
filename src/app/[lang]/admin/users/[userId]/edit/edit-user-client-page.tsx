@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useFirestore, useDoc } from '@/firebase';
+import { useFirestore, useDoc } from "@/firebase";
 import { doc, updateDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
     return doc(firestore, 'users', userId);
   }, [firestore, userId]);
   
-  const { data: user, loading } = useDoc<User>(userDocRef);
+  const { data: user, isLoading } = useDoc<User>(userDocRef);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,7 +89,7 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
         });
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
         <Card>
             <CardHeader>

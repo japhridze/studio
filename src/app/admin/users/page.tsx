@@ -36,7 +36,7 @@ import type { User } from "@/lib/types";
       if (!firestore) return null;
       return collection(firestore, 'users');
     }, [firestore]);
-    const {data: users, loading} = useCollection<User>(usersQuery);
+    const {data: users, isLoading: loading} = useCollection<User>(usersQuery);
 
     return (
       <Card>

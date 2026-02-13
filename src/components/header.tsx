@@ -31,7 +31,7 @@ import { Badge } from '@/components/ui/badge';
 import Logo from '@/components/logo';
 import { useCart } from '@/context/cart-context';
 import { categories } from '@/lib/data';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth, useUser } from "@/firebase/provider";
 import type { getDictionary } from '@/lib/dictionaries';
 import LanguageSwitcher from './language-switcher';
 import { Skeleton } from './ui/skeleton';

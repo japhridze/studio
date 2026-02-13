@@ -39,7 +39,7 @@ import { useParams } from "next/navigation";
       if (!firestore) return null;
       return collection(firestore, 'users');
     }, [firestore]);
-    const {data: users, loading} = useCollection<User>(usersQuery);
+    const {data: users, isLoading} = useCollection<User>(usersQuery);
 
     return (
       <Card>
@@ -72,8 +72,8 @@ import { useParams } from "next/navigation";
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading && <TableRow><TableCell colSpan={4} className="text-center">Loading...</TableCell></TableRow>}
-              {!loading && users?.length === 0 && <TableRow><TableCell colSpan={4} className="text-center">No users found.</TableCell></TableRow>}
+              {isLoading && <TableRow><TableCell colSpan={4} className="text-center">Loading...</TableCell></TableRow>}
+              {!isLoading && users?.length === 0 && <TableRow><TableCell colSpan={4} className="text-center">No users found.</TableCell></TableRow>}
               {users?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>

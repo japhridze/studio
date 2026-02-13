@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
-import { useFirestore, useCollection } from '@/firebase';
+import { useFirestore, useCollection } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
 import { useParams } from 'next/navigation';
@@ -42,7 +42,7 @@ export default function AdminProductsPage() {
     return collection(firestore, 'products');
   }, [firestore]);
 
-  const { data: products, loading } = useCollection<FirestoreProduct>(productsQuery);
+  const { data: products, isLoading } = useCollection<FirestoreProduct>(productsQuery);
 
   return (
     <Card>
@@ -79,8 +79,8 @@ export default function AdminProductsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading && <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>}
-            {!loading && products?.map((product) => {
+            {isLoading && <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>}
+            {!isLoading && products?.map((product) => {
               return (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">

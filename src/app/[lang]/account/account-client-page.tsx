@@ -28,7 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { getDictionary } from "@/lib/dictionaries";
 
 export default function AccountClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
-    const { user, loading: userLoading } = useUser();
+    const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
 
@@ -37,18 +37,18 @@ export default function AccountClientPage({ lang, dictionary }: { lang: 'en' | '
         return doc(firestore, "users", user.uid);
     }, [user, firestore]);
 
-    const { data: userProfile, loading: profileLoading } = useDoc<UserProfile>(userProfileRef);
+    const { data: userProfile, isLoading: profileLoading } = useDoc<UserProfile>(userProfileRef);
 
     useEffect(() => {
-        if (!user && !userLoading) {
+        if (!user && !isUserLoading) {
             router.push(`/${lang}/login`);
         }
-    }, [user, userLoading, router, lang]);
+    }, [user, isUserLoading, router, lang]);
 
     // Mock filtering, as orders are not in Firestore yet
     const userOrders = user ? orders.filter(o => o.userId === '2') : []; // Replace '2' with user.uid when orders are in firestore
 
-    if (userLoading || profileLoading || !user || !dictionary) {
+    if (isUserLoading || profileLoading || !user || !dictionary) {
         return (
              <div className="flex flex-col min-h-screen">
                 <header className="h-16 border-b"></header>
