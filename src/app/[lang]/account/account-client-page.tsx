@@ -23,7 +23,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { orders } from "@/lib/data";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import type { UserProfile } from "@/lib/types";
+import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { getDictionary } from "@/lib/dictionaries";
 
@@ -37,7 +37,7 @@ export default function AccountClientPage({ lang, dictionary }: { lang: 'en' | '
         return doc(firestore, "users", user.uid);
     }, [user, firestore]);
 
-    const { data: userProfile, isLoading: profileLoading } = useDoc<UserProfile>(userProfileRef);
+    const { data: userProfile, isLoading: profileLoading } = useDoc<User>(userProfileRef);
 
     useEffect(() => {
         if (!user && !isUserLoading) {

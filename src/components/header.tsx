@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, ShoppingCart, User, Menu, LogOut, ChevronDown } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, LogOut, ChevronDown, Wrench } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { doc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,7 +32,8 @@ import { Badge } from '@/components/ui/badge';
 import Logo from '@/components/logo';
 import { useCart } from '@/context/cart-context';
 import { categories } from '@/lib/data';
-import { useAuth, useUser } from "@/firebase/provider";
+import { useAuth, useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import type { User as UserType } from '@/lib/types';
 import type { getDictionary } from '@/lib/dictionaries';
 import LanguageSwitcher from './language-switcher';
 import { Skeleton } from './ui/skeleton';
@@ -45,7 +47,8 @@ const defaultDictionary = {
       logout: "Logout",
       login: "Login",
       shoppingCart: "Shopping Cart",
-      toggleNav: "Toggle navigation menu"
+      toggleNav: "Toggle navigation menu",
+      adminDashboard: "Admin Dashboard"
     },
     categories: {
       "power-tools": "Power Tools",
@@ -76,8 +79,16 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
   const { cartCount } = useCart();
   const { user } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const [hasMounted, setHasMounted] = useState(false);
+
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile } = useDoc<UserType>(userDocRef);
   
   useEffect(() => {
     setHasMounted(true);
@@ -232,6 +243,14 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {userProfile?.role === 'admin' && (
+                    <DropdownMenuItem asChild>
+                        <Link href={`/${lang}/admin`}>
+                            <Wrench className="mr-2 h-4 w-4" />
+                            {dict.header.adminDashboard || "Admin Dashboard"}
+                        </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href={`/${lang}/account`}>{dict.header.myAccount}</Link>
                   </DropdownMenuItem>

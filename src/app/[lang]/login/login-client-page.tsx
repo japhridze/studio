@@ -48,11 +48,23 @@ export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
+      const userDocRef = doc(firestore, "users", user.uid);
 
-      // Ensure super admin role is set
-      if (user.uid === SUPER_ADMIN_UID) {
-        const userDocRef = doc(firestore, "users", user.uid);
-        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+      const userDoc = await getDoc(userDocRef);
+      const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
+      const role = isSuperAdmin ? 'admin' : 'customer';
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+            name: user.displayName || user.email, // Use email as fallback for name
+            email: user.email,
+            role: role,
+        });
+      } else {
+        const userData = userDoc.data();
+        if (isSuperAdmin && userData.role !== 'admin') {
+            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+        }
       }
       
       toast({
