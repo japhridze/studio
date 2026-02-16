@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -6,7 +7,7 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useFirestore, useStorage } from '@/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { categories } from '@/lib/data';
 import type { getDictionary } from '@/lib/dictionaries';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -59,15 +62,16 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     }
 
     const slug = createSlug(values.name);
-    
+    let imageUrl = '';
+
     try {
-      // 1. Upload image
+      // Step 1: Upload image and get URL
       const imageFile = values.image;
       const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
       const uploadResult = await uploadBytes(storageRef, imageFile);
-      const imageUrl = await getDownloadURL(uploadResult.ref);
+      imageUrl = await getDownloadURL(uploadResult.ref);
 
-      // 2. Prepare data
+      // Step 2: Prepare and save product data
       const productData = {
           name: values.name,
           slug: slug,
@@ -76,32 +80,51 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           stock: values.stock,
           categoryId: values.categoryId,
           imageUrl: imageUrl,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
       };
-
-      // 3. Add to Firestore
       const productsCollection = collection(firestore, 'products');
       await addDoc(productsCollection, productData);
       
-      // 4. Success feedback and navigation
+      // Step 3: Success
       toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
       router.push(`/${lang}/admin/products`);
 
     } catch (error: any) {
         console.error("Error creating product:", error);
-        let title = dictionary.admin.permissionDenied;
-        let description = 'An error occurred while creating the product.';
+        
+        if (error.code && error.code.includes('storage')) {
+            // This is a storage permission error
+            toast({
+                variant: "destructive",
+                title: dictionary.admin.permissionDenied,
+                description: dictionary.admin.permissionDeniedImage,
+            });
+        } else {
+            // This is likely a Firestore permission error
+            const productDataForError = {
+                name: values.name,
+                slug: slug,
+                description: values.description,
+                price: values.price,
+                stock: values.stock,
+                categoryId: values.categoryId,
+                imageUrl: imageUrl, // imageUrl will be available if storage succeeded
+            };
+            
+            const permissionError = new FirestorePermissionError({
+                path: 'products',
+                operation: 'create',
+                requestResourceData: productDataForError,
+            });
+            errorEmitter.emit('permission-error', permissionError);
 
-        if (error.code?.includes('storage')) {
-            description = dictionary.admin.permissionDeniedImage;
-        } else if (error.code?.includes('permission-denied')) {
-            description = dictionary.admin.permissionDeniedProduct;
+            toast({
+                variant: "destructive",
+                title: dictionary.admin.permissionDenied,
+                description: dictionary.admin.permissionDeniedProduct,
+            });
         }
-
-        toast({
-            variant: "destructive",
-            title: title,
-            description: description,
-        });
     }
   }
 

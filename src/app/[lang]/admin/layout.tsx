@@ -58,7 +58,7 @@ export default function AdminLayout({
     }
   }, [user, isUserLoading, userProfile, isProfileLoading, router, lang]);
 
-  if (isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin') {
+  if (isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin' || !lang) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
