@@ -72,7 +72,6 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
                 description: dictionary.admin.userUpdatedDescription,
             });
             router.push(`/${lang}/admin/users`);
-            router.refresh();
         })
         .catch((serverError) => {
             const permissionError = new FirestorePermissionError({

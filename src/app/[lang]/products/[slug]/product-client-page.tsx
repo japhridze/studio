@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -22,7 +23,7 @@ export default function ProductClientPage({ lang, dictionary, product }: { lang:
   const { addToCart } = useCart();
   
   const productCategory = categories.find(c => c.id === product.categoryId);
-  const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+  const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
 
   const handleAddToCart = () => {
     const messages = {

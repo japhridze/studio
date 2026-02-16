@@ -29,6 +29,7 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import type { User } from "@/lib/types";
 import { useParams } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
   
   export default function AdminUsersPage() {
     const firestore = useFirestore();
@@ -39,6 +40,39 @@ import { useParams } from "next/navigation";
       return collection(firestore, 'users');
     }, [firestore]);
     const {data: users, isLoading} = useCollection<User>(usersQuery);
+
+    if (!lang) {
+      return (
+          <Card>
+              <CardHeader>
+                  <div className="flex items-center justify-between">
+                      <div>
+                          <Skeleton className="h-7 w-20" />
+                          <Skeleton className="h-4 w-48 mt-2" />
+                      </div>
+                      <Skeleton className="h-9 w-28" />
+                  </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead className="hidden md:table-cell">Role</TableHead>
+                      <TableHead>
+                        <span className="sr-only">Actions</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                      <TableRow><TableCell colSpan={4} className="text-center">Loading...</TableCell></TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+          </Card>
+      )
+    }
 
     return (
       <Card>

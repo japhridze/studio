@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
@@ -26,6 +25,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { useAuth, useFirestore } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -79,6 +79,32 @@ export default function AdminRegisterPage() {
         variant: "destructive",
       });
     }
+  }
+
+    if (!lang) {
+    return (
+        <Card>
+            <CardHeader>
+                <Skeleton className="h-7 w-32" />
+                <Skeleton className="h-4 w-64 mt-2" />
+            </CardHeader>
+            <CardContent>
+                <div className="grid gap-6">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
+                        <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
+                    </div>
+                    <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
+                    <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
+                    <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
+                    <div className="flex items-center gap-4">
+                        <Skeleton className="h-10 w-28" />
+                        <Skeleton className="h-10 w-24" />
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
   }
 
   return (

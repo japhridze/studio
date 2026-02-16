@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
@@ -7,7 +8,7 @@ import { Product } from '@/lib/types';
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantity: number, messages: { title: string; description: string; }) => void;
+  addToCart: (product: Product, quantity: number, messages?: { title: string; description: string; }) => void;
   removeFromCart: (productId: string, messages: { title: string; description: string; }) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -32,7 +33,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: Product, quantity: number, messages: { title: string; description: string; }) => {
+  const addToCart = (product: Product, quantity: number, messages?: { title: string; description: string; }) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       if (existingItem) {
@@ -47,15 +48,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           name: product.name,
           price: product.price,
           quantity,
-          image: product.images[0],
+          image: product.imageUrl,
           slug: product.slug,
       }
       return [...prevItems, newItem];
     });
-    toast({
-        title: messages.title,
-        description: messages.description,
-    })
+    if (messages) {
+      toast({
+          title: messages.title,
+          description: messages.description,
+      })
+    }
   };
 
   const removeFromCart = (productId: string, messages: { title: string; description: string; }) => {

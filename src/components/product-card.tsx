@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -19,7 +20,7 @@ type ProductCardProps = {
 
 export default function ProductCard({ product, dictionary, lang }: ProductCardProps) {
   const { addToCart } = useCart();
-  const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+  const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
 
   const handleAddToCart = () => {
     const messages = {
