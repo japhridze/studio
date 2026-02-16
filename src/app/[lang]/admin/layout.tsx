@@ -47,6 +47,9 @@ export default function AdminLayout({
   const { data: userProfile, isLoading: isProfileLoading } = useDoc<User>(userDocRef);
 
   useEffect(() => {
+    if (!lang) {
+      return;
+    }
     if (!isUserLoading && !user) {
       router.replace(`/${lang}/login`);
     }

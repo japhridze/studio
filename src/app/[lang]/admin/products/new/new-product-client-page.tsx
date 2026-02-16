@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useFirestore, useStorage, addDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useFirestore, useStorage } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -59,43 +59,50 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     }
 
     const slug = createSlug(values.name);
-    let imageUrl = '';
-
+    
     try {
-      // 1. Upload image to Firebase Storage - this part remains blocking as we need the URL
+      // 1. Upload image
       const imageFile = values.image;
       const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
       const uploadResult = await uploadBytes(storageRef, imageFile);
-      imageUrl = await getDownloadURL(uploadResult.ref);
+      const imageUrl = await getDownloadURL(uploadResult.ref);
+
+      // 2. Prepare data
+      const productData = {
+          name: values.name,
+          slug: slug,
+          description: values.description,
+          price: values.price,
+          stock: values.stock,
+          categoryId: values.categoryId,
+          imageUrl: imageUrl,
+      };
+
+      // 3. Add to Firestore
+      const productsCollection = collection(firestore, 'products');
+      await addDoc(productsCollection, productData);
+      
+      // 4. Success feedback and navigation
+      toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
+      router.push(`/${lang}/admin/products`);
+
     } catch (error: any) {
-        console.error("Error uploading image:", error);
+        console.error("Error creating product:", error);
+        let title = dictionary.admin.permissionDenied;
+        let description = 'An error occurred while creating the product.';
+
+        if (error.code?.includes('storage')) {
+            description = dictionary.admin.permissionDeniedImage;
+        } else if (error.code?.includes('permission-denied')) {
+            description = dictionary.admin.permissionDeniedProduct;
+        }
+
         toast({
             variant: "destructive",
-            title: dictionary.admin.permissionDenied,
-            description: dictionary.admin.permissionDeniedImage,
+            title: title,
+            description: description,
         });
-        // Stop execution if image upload fails
-        return;
     }
-
-    // 2. Prepare product data
-    const productData = {
-        name: values.name,
-        slug: slug,
-        description: values.description,
-        price: values.price,
-        stock: values.stock,
-        categoryId: values.categoryId,
-        imageUrl: imageUrl,
-    };
-
-    // 3. Add product to Firestore (non-blocking)
-    const productsCollection = collection(firestore, 'products');
-    addDocumentNonBlocking(productsCollection, productData);
-    
-    // 4. Immediately give feedback and navigate
-    toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
-    router.push(`/${lang}/admin/products`);
   }
 
   return (
