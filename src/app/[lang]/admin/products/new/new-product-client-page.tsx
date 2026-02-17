@@ -68,11 +68,11 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       return;
     }
 
-    let imageUrl = ''; // Default placeholder URL
+    let imageUrl = '';
+    const imageFile = values.image;
 
     try {
-      // Step 1: Upload image if one was provided
-      const imageFile = values.image;
+      // Step 1: Handle Image Upload
       if (imageFile && imageFile.size > 0) {
         try {
           const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
@@ -113,13 +113,16 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
     } catch (error: any) {
         console.error("Error creating product:", error);
-        
-        const permissionError = new FirestorePermissionError({
-            path: 'products',
-            operation: 'create',
-            requestResourceData: { ...values, imageUrl: '', slug: createSlug(values.name) },
-        });
-        errorEmitter.emit('permission-error', permissionError);
+
+        // More specific error for permission denied
+        if (error.code === 'permission-denied') {
+            const permissionError = new FirestorePermissionError({
+                path: 'products',
+                operation: 'create',
+                requestResourceData: { ...values, imageUrl: '', slug: createSlug(values.name) },
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        }
 
         toast({
             variant: "destructive",
