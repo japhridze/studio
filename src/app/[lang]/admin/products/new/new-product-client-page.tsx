@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -44,6 +45,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const firestore = useFirestore();
   const storage = useStorage();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,15 +65,15 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       return;
     }
     
-    const slug = createSlug(values.name);
-    let imageUrl = '';
+    setIsSubmitting(true);
 
     try {
+      const slug = createSlug(values.name);
       // Step 1: Upload image and get URL
       const imageFile = values.image;
       const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
       const uploadResult = await uploadBytes(storageRef, imageFile);
-      imageUrl = await getDownloadURL(uploadResult.ref);
+      const imageUrl = await getDownloadURL(uploadResult.ref);
 
       // Step 2: Prepare and save product data
       const productData = {
@@ -95,27 +97,23 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
     } catch (error: any) {
         console.error("Error creating product:", error);
-        
-        if (error.code && error.code.includes('storage')) {
-            // This is a storage permission error
-            toast({
-                variant: "destructive",
-                title: dictionary.admin.permissionDenied,
-                description: dictionary.admin.permissionDeniedImage,
-            });
-        } else {
-            // This is likely a Firestore permission error
-            const productDataForError = {
+        toast({
+            variant: "destructive",
+            title: "Error Creating Product",
+            description: error.message || "An unexpected error occurred.",
+        });
+
+        if (error.code && !error.code.includes('storage')) {
+             const productDataForError = {
                 name: values.name,
-                slug: slug,
+                slug: createSlug(values.name),
                 sku: values.sku,
                 description: values.description,
                 price: values.price,
                 stock: values.stock,
                 categoryId: values.categoryId,
-                imageUrl: imageUrl, // imageUrl will be available if storage succeeded
+                imageUrl: '',
             };
-            
             const permissionError = new FirestorePermissionError({
                 path: 'products',
                 operation: 'create',
@@ -123,6 +121,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             });
             errorEmitter.emit('permission-error', permissionError);
         }
+    } finally {
+        setIsSubmitting(false);
     }
   }
 
@@ -233,8 +233,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             />
             
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
               </Button>
               <Button variant="outline" asChild>
                   <Link href={`/${lang}/admin/products`}>{dictionary.admin.cancel}</Link>
