@@ -20,6 +20,7 @@ import { categories } from '@/lib/data';
 import type { getDictionary } from '@/lib/dictionaries';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { useState } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -45,6 +46,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const storage = useStorage();
   const { user } = useUser();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,11 +69,13 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       });
       return;
     }
-
-    let imageUrl = '';
-    const imageFile = values.image;
+    
+    setIsLoading(true);
 
     try {
+      let imageUrl = '';
+      const imageFile = values.image;
+
       // Step 1: Handle Image Upload
       if (imageFile && imageFile.size > 0) {
         try {
@@ -85,7 +89,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             title: "Image Upload Failed",
             description: `The product will be saved without an image. Error: ${uploadError.message}`,
           });
-          // imageUrl remains an empty string, allowing the process to continue
+          // Continue with imageUrl as an empty string
         }
       }
 
@@ -99,7 +103,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           price: values.price,
           stock: values.stock,
           categoryId: values.categoryId,
-          imageUrl: imageUrl, // This will be the URL or an empty string
+          imageUrl: imageUrl,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
       };
@@ -114,7 +118,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     } catch (error: any) {
         console.error("Error creating product:", error);
 
-        // More specific error for permission denied
         if (error.code === 'permission-denied') {
             const permissionError = new FirestorePermissionError({
                 path: 'products',
@@ -129,6 +132,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             title: "Error Creating Product",
             description: error.message || "Could not save product to the database. Please check your permissions and try again.",
         });
+    } finally {
+        setIsLoading(false);
     }
   }
 
@@ -239,8 +244,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             />
             
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
               </Button>
               <Button variant="outline" asChild>
                   <Link href={`/${lang}/admin/products`}>{dictionary.admin.cancel}</Link>
