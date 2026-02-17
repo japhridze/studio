@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -22,6 +21,7 @@ import type { getDictionary } from '@/lib/dictionaries';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
+// Schema updated to make image optional.
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
   sku: z.string().min(1, 'SKU is required'),
@@ -29,14 +29,14 @@ const formSchema = z.object({
   price: z.coerce.number().min(0.01, 'Price must be greater than 0'),
   stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
   categoryId: z.string().min(1, 'Category is required'),
-  image: z.instanceof(File).refine(file => file.size > 0, 'Image is required'),
+  image: z.instanceof(File).optional(),
 });
 
 // Helper function to create a slug
 const createSlug = (name: string) => {
   return name
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/[^\\p{L}\\p{N}]+/gu, '-')
     .replace(/(^-|-$)+/g, '');
 };
 
@@ -45,7 +45,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const firestore = useFirestore();
   const storage = useStorage();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,21 +60,34 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore || !storage) {
-      toast({ variant: 'destructive', title: 'Error', description: 'Firebase services not available.' });
+      toast({ variant: 'destructive', title: 'Error', description: 'Firebase services not yet available. Please wait a moment and try again.' });
       return;
     }
-    
-    setIsSubmitting(true);
+
+    let imageUrl = ''; // Default placeholder URL is an empty string
+    const imageFile = values.image;
 
     try {
-      const slug = createSlug(values.name);
-      // Step 1: Upload image and get URL
-      const imageFile = values.image;
-      const storageRef = ref(storage, `products/${slug}-${Date.now()}-${imageFile.name}`);
-      const uploadResult = await uploadBytes(storageRef, imageFile);
-      const imageUrl = await getDownloadURL(uploadResult.ref);
+      // Step 1: Upload image if one was provided
+      if (imageFile && imageFile.size > 0) {
+        try {
+          const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+          const uploadResult = await uploadBytes(storageRef, imageFile);
+          imageUrl = await getDownloadURL(uploadResult.ref);
+        } catch (uploadError) {
+          console.error("Image upload failed:", uploadError);
+          // As per request, warn user but proceed to save the product data
+          toast({
+            variant: "destructive",
+            title: "Image Upload Failed",
+            description: "The product will be saved without an image.",
+          });
+          // imageUrl remains an empty string
+        }
+      }
 
-      // Step 2: Prepare and save product data
+      // Step 2: Prepare and save product data to Firestore
+      const slug = createSlug(values.name);
       const productData = {
           name: values.name,
           slug: slug,
@@ -84,10 +96,11 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           price: values.price,
           stock: values.stock,
           categoryId: values.categoryId,
-          imageUrl: imageUrl,
+          imageUrl: imageUrl, // This will be the URL or an empty string
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
       };
+      
       const productsCollection = collection(firestore, 'products');
       await addDoc(productsCollection, productData);
       
@@ -96,33 +109,21 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       router.push(`/${lang}/admin/products`);
 
     } catch (error: any) {
-        console.error("Error creating product:", error);
+        console.error("Error creating product in Firestore:", error);
+        
+        // This will now primarily catch Firestore-related errors
+        const permissionError = new FirestorePermissionError({
+            path: 'products',
+            operation: 'create',
+            requestResourceData: { ...values, imageUrl, slug: createSlug(values.name) },
+        });
+        errorEmitter.emit('permission-error', permissionError);
+
         toast({
             variant: "destructive",
             title: "Error Creating Product",
-            description: error.message || "An unexpected error occurred.",
+            description: "Could not save product to the database. Please check your permissions and try again.",
         });
-
-        if (error.code && !error.code.includes('storage')) {
-             const productDataForError = {
-                name: values.name,
-                slug: createSlug(values.name),
-                sku: values.sku,
-                description: values.description,
-                price: values.price,
-                stock: values.stock,
-                categoryId: values.categoryId,
-                imageUrl: '',
-            };
-            const permissionError = new FirestorePermissionError({
-                path: 'products',
-                operation: 'create',
-                requestResourceData: productDataForError,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-        }
-    } finally {
-        setIsSubmitting(false);
     }
   }
 
@@ -233,8 +234,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             />
             
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
               </Button>
               <Button variant="outline" asChild>
                   <Link href={`/${lang}/admin/products`}>{dictionary.admin.cancel}</Link>
