@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -107,7 +108,7 @@ export default function AccountClientPage({ lang, dictionary }: { lang: 'en' | '
                         <CardContent className="space-y-2">
                             <p><strong>{dictionary.account.name}:</strong> {userProfile?.name}</p>
                             <p><strong>{dictionary.account.email}:</strong> {userProfile?.email}</p>
-                            <p><strong>{dictionary.account.role}:</strong> <Badge variant={userProfile?.role === 'admin' ? 'destructive' : 'secondary'}>{userProfile?.role}</Badge></p>
+                            <div><strong>{dictionary.account.role}:</strong> <Badge variant={userProfile?.role === 'admin' ? 'destructive' : 'secondary'} className="ml-2">{userProfile?.role}</Badge></div>
                         </CardContent>
                     </Card>
                 </div>
