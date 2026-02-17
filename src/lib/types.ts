@@ -8,10 +8,11 @@ export type Product = {
   imageUrl: string;
   categoryId: string;
   stock: number;
+  sku: string;
 };
 
 export type FirestoreProduct = {
-  id: string;
+  id:string;
   name: string;
   slug: string;
   description: string;
@@ -19,6 +20,7 @@ export type FirestoreProduct = {
   imageUrl: string;
   categoryId: string;
   stock: number;
+  sku: string;
 };
 
 export type SubCategory = {

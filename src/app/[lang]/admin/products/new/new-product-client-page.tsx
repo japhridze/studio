@@ -23,6 +23,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
+  sku: z.string().min(1, 'SKU is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().min(0.01, 'Price must be greater than 0'),
   stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
@@ -48,6 +49,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      sku: '',
       description: '',
       price: 0,
       stock: 0,
@@ -75,6 +77,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       const productData = {
           name: values.name,
           slug: slug,
+          sku: values.sku,
           description: values.description,
           price: values.price,
           stock: values.stock,
@@ -105,6 +108,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             const productDataForError = {
                 name: values.name,
                 slug: slug,
+                sku: values.sku,
                 description: values.description,
                 price: values.price,
                 stock: values.stock,
@@ -137,17 +141,30 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{dictionary.admin.productName}</FormLabel>
-                  <FormControl><Input placeholder={dictionary.admin.productNamePlaceholder} {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.admin.productName}</FormLabel>
+                    <FormControl><Input placeholder={dictionary.admin.productNamePlaceholder} {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="sku"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>SKU</FormLabel>
+                    <FormControl><Input placeholder="CDP-001" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             
             <FormField
               control={form.control}

@@ -62,7 +62,7 @@ export default function AdminProductsPage() {
           </TableHeader>
           <TableBody>
             {products.map((product) => {
-              const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+              const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
               return (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
