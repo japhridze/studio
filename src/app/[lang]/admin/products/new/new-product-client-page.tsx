@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useFirestore, useStorage } from '@/firebase';
+import { useFirestore, useStorage, useUser } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
@@ -21,7 +21,6 @@ import type { getDictionary } from '@/lib/dictionaries';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
-// Schema updated to make image optional.
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
   sku: z.string().min(1, 'SKU is required'),
@@ -44,6 +43,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const router = useRouter();
   const firestore = useFirestore();
   const storage = useStorage();
+  const { user } = useUser();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,30 +59,33 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!firestore || !storage) {
-      toast({ variant: 'destructive', title: 'Error', description: 'Firebase services not yet available. Please wait a moment and try again.' });
+    if (!firestore || !storage || !user) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Error',
+        description: 'You must be logged in to create a product.',
+      });
       return;
     }
 
-    let imageUrl = ''; // Default placeholder URL is an empty string
-    const imageFile = values.image;
+    let imageUrl = ''; // Default placeholder URL
 
     try {
       // Step 1: Upload image if one was provided
+      const imageFile = values.image;
       if (imageFile && imageFile.size > 0) {
         try {
           const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
-          const uploadResult = await uploadBytes(storageRef, imageFile);
-          imageUrl = await getDownloadURL(uploadResult.ref);
-        } catch (uploadError) {
+          await uploadBytes(storageRef, imageFile);
+          imageUrl = await getDownloadURL(storageRef);
+        } catch (uploadError: any) {
           console.error("Image upload failed:", uploadError);
-          // As per request, warn user but proceed to save the product data
           toast({
             variant: "destructive",
             title: "Image Upload Failed",
-            description: "The product will be saved without an image.",
+            description: `The product will be saved without an image. Error: ${uploadError.message}`,
           });
-          // imageUrl remains an empty string
+          // imageUrl remains an empty string, allowing the process to continue
         }
       }
 
@@ -109,20 +112,19 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       router.push(`/${lang}/admin/products`);
 
     } catch (error: any) {
-        console.error("Error creating product in Firestore:", error);
+        console.error("Error creating product:", error);
         
-        // This will now primarily catch Firestore-related errors
         const permissionError = new FirestorePermissionError({
             path: 'products',
             operation: 'create',
-            requestResourceData: { ...values, imageUrl, slug: createSlug(values.name) },
+            requestResourceData: { ...values, imageUrl: '', slug: createSlug(values.name) },
         });
         errorEmitter.emit('permission-error', permissionError);
 
         toast({
             variant: "destructive",
             title: "Error Creating Product",
-            description: "Could not save product to the database. Please check your permissions and try again.",
+            description: error.message || "Could not save product to the database. Please check your permissions and try again.",
         });
     }
   }
