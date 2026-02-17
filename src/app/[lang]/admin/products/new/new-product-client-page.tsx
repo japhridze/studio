@@ -62,7 +62,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       toast({ variant: 'destructive', title: 'Error', description: 'Firebase services not available.' });
       return;
     }
-
+    
     const slug = createSlug(values.name);
     let imageUrl = '';
 
@@ -122,12 +122,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 requestResourceData: productDataForError,
             });
             errorEmitter.emit('permission-error', permissionError);
-
-            toast({
-                variant: "destructive",
-                title: dictionary.admin.permissionDenied,
-                description: dictionary.admin.permissionDeniedProduct,
-            });
         }
     }
   }
