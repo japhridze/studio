@@ -3,18 +3,16 @@ import Link from "next/link";
 import { ArrowRight, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { products } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import ProductCard from "@/components/product-card";
 import { getDictionary } from "@/lib/dictionaries";
 import { categories } from "@/lib/data";
+import FeaturedProducts from "@/components/featured-products";
 
 export default async function Home({ params: { lang } }: { params: { lang: 'en' | 'ka' } }) {
   const dict = await getDictionary(lang);
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
-  const featuredProducts = products.slice(0, 8);
   const saleImage = PlaceHolderImages.find(p => p.id === 'sale-banner');
 
   return (
@@ -83,11 +81,7 @@ export default async function Home({ params: { lang } }: { params: { lang: 'en' 
                 {dict.homepage.featuredProductsSubtitle}
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} dictionary={{...dict.productCard, ...dict.productDetails}} lang={lang} />
-              ))}
-            </div>
+            <FeaturedProducts lang={lang} dictionary={dict} />
           </div>
         </section>
 
@@ -108,7 +102,7 @@ export default async function Home({ params: { lang } }: { params: { lang: 'en' 
                     variant="secondary"
                     className="mt-6 bg-primary-foreground text-primary hover:bg-primary-foreground/90"
                   >
-                    <Link href="#">
+                    <Link href={`/${lang}/products`}>
                       {dict.homepage.shopSaleItems}
                     </Link>
                   </Button>

@@ -2,30 +2,37 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
 import { ShoppingCart, CheckCircle, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { categories } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useCart } from '@/context/cart-context';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import type { getDictionary } from '@/lib/dictionaries';
-import type { Product } from '@/lib/types';
+import type { FirestoreProduct } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, where, limit } from 'firebase/firestore';
 
 
-export default function ProductClientPage({ lang, dictionary, product }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>>, product: Product }) {
+export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>>, slug: string }) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  
-  const productCategory = categories.find(c => c.id === product.categoryId);
-  const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
+  const firestore = useFirestore();
 
+  const productQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return query(collection(firestore, "products"), where("slug", "==", slug), limit(1));
+  }, [firestore, slug]);
+
+  const { data: products, isLoading } = useCollection<FirestoreProduct>(productQuery);
+  const product = products?.[0];
+  
   const handleAddToCart = () => {
+    if (!product) return;
     const messages = {
       title: dictionary.productDetails.addedToCartTitle,
       description: dictionary.productDetails.addedToCartDescription.replace('{quantity}', String(quantity)).replace('{productName}', product.name)
@@ -33,10 +40,10 @@ export default function ProductClientPage({ lang, dictionary, product }: { lang:
     addToCart(product, quantity, messages);
   };
   
-  if (!dictionary) {
+  if (isLoading || !dictionary) {
     return (
       <div className="flex flex-col min-h-screen">
-        <header className="h-16 border-b"></header>
+        <Header lang={lang} dictionary={dictionary} />
         <main className="flex-1 py-12 md:py-20">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -54,10 +61,30 @@ export default function ProductClientPage({ lang, dictionary, product }: { lang:
             </div>
           </div>
         </main>
-        <footer className="h-16 border-t"></footer>
+        <Footer lang={lang} dictionary={dictionary.footer} />
       </div>
     )
   }
+
+  if (!product) {
+     return (
+         <div className="flex flex-col min-h-screen">
+            <Header lang={lang} dictionary={dictionary} />
+            <main className="flex-1 py-12 md:py-20">
+                <div className="container mx-auto px-4 text-center">
+                    <h1 className="text-4xl font-bold">404 - Product Not Found</h1>
+                    <p className="text-muted-foreground mt-4">The product you are looking for does not exist.</p>
+                    <Button asChild className="mt-8">
+                        <Link href={`/${lang}`}>Go to Homepage</Link>
+                    </Button>
+                </div>
+            </main>
+            <Footer lang={lang} dictionary={dictionary.footer} />
+        </div>
+     )
+  }
+  
+  const productCategory = categories.find(c => c.id === product.categoryId);
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -66,13 +93,12 @@ export default function ProductClientPage({ lang, dictionary, product }: { lang:
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
             <div className="aspect-square relative w-full overflow-hidden rounded-lg shadow-lg">
-                {productImage ? (
+                {product.imageUrl ? (
                 <Image
-                    src={productImage.imageUrl}
+                    src={product.imageUrl}
                     alt={product.name}
                     fill
                     className="object-cover"
-                    data-ai-hint={productImage.imageHint}
                 />
                 ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">

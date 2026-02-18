@@ -8,19 +8,32 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import type { Product } from '@/lib/types';
+import type { Product, FirestoreProduct } from '@/lib/types';
 import { useCart } from '@/context/cart-context';
 import type { getDictionary } from '@/lib/dictionaries';
 
 type ProductCardProps = {
-  product: Product;
+  product: Product | FirestoreProduct;
   dictionary: Awaited<ReturnType<typeof getDictionary>>['productCard'] & Awaited<ReturnType<typeof getDictionary>>['productDetails'];
   lang: 'en' | 'ka';
 };
 
 export default function ProductCard({ product, dictionary, lang }: ProductCardProps) {
   const { addToCart } = useCart();
-  const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
+  
+  let imageUrl: string | undefined;
+  let imageHint: string | undefined;
+
+  if (product.imageUrl && product.imageUrl.startsWith('https://')) {
+    imageUrl = product.imageUrl;
+  } else {
+    const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
+    if (productImage) {
+        imageUrl = productImage.imageUrl;
+        imageHint = productImage.imageHint;
+    }
+  }
+
 
   const handleAddToCart = () => {
     const messages = {
@@ -35,13 +48,13 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
       <CardHeader className="p-0">
         <Link href={`/${lang}/products/${product.slug}`} className="block">
           <div className="aspect-square relative overflow-hidden">
-            {productImage ? (
+            {imageUrl ? (
               <Image
-                src={productImage.imageUrl}
+                src={imageUrl}
                 alt={product.name}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
-                data-ai-hint={productImage.imageHint}
+                data-ai-hint={imageHint}
               />
             ) : (
                 <div className="w-full h-full bg-muted flex items-center justify-center">
