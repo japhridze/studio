@@ -93,7 +93,7 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
             <div className="aspect-square relative w-full overflow-hidden rounded-lg shadow-lg">
-                {product.imageUrl ? (
+                {product.imageUrl && product.imageUrl.trim() ? (
                 <Image
                     src={product.imageUrl}
                     alt={product.name}

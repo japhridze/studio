@@ -1,4 +1,3 @@
-
 'use client';
 import Link from 'next/link';
 import {
@@ -136,7 +135,7 @@ export default function AdminProductsPage({ params }: { params: Promise<{ lang: 
               return (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
-                  {product.imageUrl && 
+                  {product.imageUrl && product.imageUrl.trim() &&
                     <Image
                       alt={product.name}
                       className="aspect-square rounded-md object-cover"

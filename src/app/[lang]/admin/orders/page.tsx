@@ -28,8 +28,8 @@ import {
   import { orders } from "@/lib/data";
   import { Badge } from "@/components/ui/badge";
   
-  export default function AdminOrdersPage({ params }: { params: Promise<{ lang: string }> }) {
-    use(params);
+  export default function AdminOrdersPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
+    const { lang } = use(params);
     return (
       <Card>
         <CardHeader>
