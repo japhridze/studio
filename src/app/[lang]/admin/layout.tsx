@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import AdminHeader from "@/components/admin-header";
 import Logo from "@/components/logo";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
@@ -33,9 +33,9 @@ export default function AdminLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { lang: 'en' | 'ka' };
+  params: Promise<{ lang: 'en' | 'ka' }>;
 }) {
-  const { lang } = params;
+  const { lang } = use(params);
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
