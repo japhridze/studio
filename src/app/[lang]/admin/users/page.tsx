@@ -28,27 +28,25 @@ import { Badge } from "@/components/ui/badge";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import type { User } from "@/lib/types";
-import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
   
-  export default function AdminUsersPage() {
+  export default function AdminUsersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
     const firestore = useFirestore();
-    const params = useParams();
-    const lang = params.lang as 'en' | 'ka';
+    const { lang } = params;
     const usersQuery = useMemoFirebase(() => {
       if (!firestore) return null;
       return collection(firestore, 'users');
     }, [firestore]);
     const {data: users, isLoading} = useCollection<User>(usersQuery);
 
-    if (!lang) {
+    if (isLoading) {
       return (
           <Card>
               <CardHeader>
                   <div className="flex items-center justify-between">
                       <div>
-                          <Skeleton className="h-7 w-20" />
-                          <Skeleton className="h-4 w-48 mt-2" />
+                          <CardTitle>Users</CardTitle>
+                          <CardDescription>Manage all user accounts.</CardDescription>
                       </div>
                       <Skeleton className="h-9 w-28" />
                   </div>
@@ -66,7 +64,14 @@ import { Skeleton } from "@/components/ui/skeleton";
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                      <TableRow><TableCell colSpan={4} className="text-center">Loading...</TableCell></TableRow>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <TableRow key={index}>
+                        <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                        <TableCell className="hidden md:table-cell"><Skeleton className="h-6 w-20" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </CardContent>

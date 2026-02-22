@@ -29,12 +29,10 @@ import { MoreHorizontal, PlusCircle } from "lucide-react";
 import { useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
-import { useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function AdminProductsPage() {
-  const params = useParams();
-  const lang = params.lang as 'en' | 'ka';
+export default function AdminProductsPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+  const { lang } = params;
   const firestore = useFirestore();
 
   const productsQuery = useMemoFirebase(() => {
@@ -44,9 +42,7 @@ export default function AdminProductsPage() {
 
   const { data: products, isLoading } = useCollection<FirestoreProduct>(productsQuery);
 
-  // The useParams() hook can return an empty object on the initial render.
-  // This check prevents constructing an invalid Link href like "/undefined/admin/..."
-  if (!lang) {
+  if (isLoading) {
       return (
           <Card>
               <CardHeader>
@@ -75,7 +71,18 @@ export default function AdminProductsPage() {
                           </TableRow>
                       </TableHeader>
                       <TableBody>
-                          <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>
+                          {Array.from({ length: 5 }).map((_, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md w-16 h-16" />
+                                </TableCell>
+                                <TableCell><Skeleton className="h-4 w-3/4" /></TableCell>
+                                <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                                <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-12" /></TableCell>
+                                <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-8" /></TableCell>
+                                <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
+                            </TableRow>
+                          ))}
                       </TableBody>
                   </Table>
               </CardContent>
@@ -118,8 +125,12 @@ export default function AdminProductsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading && <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>}
-            {!isLoading && products?.map((product) => {
+            {!isLoading && products?.length === 0 && (
+                <TableRow>
+                    <TableCell colSpan={6} className="text-center">No products found.</TableCell>
+                </TableRow>
+            )}
+            {products?.map((product) => {
               return (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">

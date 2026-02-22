@@ -46,7 +46,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const storage = useStorage();
   const { user } = useUser();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,27 +70,17 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       return;
     }
     
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
       let imageUrl = '';
       const imageFile = values.image;
 
-      // Step 1: Handle Image Upload
+      // Step 1: Handle Image Upload if a file is present
       if (imageFile && imageFile.size > 0) {
-        try {
-          const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
-          await uploadBytes(storageRef, imageFile);
-          imageUrl = await getDownloadURL(storageRef);
-        } catch (uploadError: any) {
-          console.error("Image upload failed:", uploadError);
-          toast({
-            variant: "destructive",
-            title: "Image Upload Failed",
-            description: `The product will be saved without an image. Error: ${uploadError.message}`,
-          });
-          // Continue with imageUrl as an empty string
-        }
+        const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+        await uploadBytes(storageRef, imageFile);
+        imageUrl = await getDownloadURL(storageRef);
       }
 
       // Step 2: Prepare and save product data to Firestore
@@ -103,7 +93,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           price: values.price,
           stock: values.stock,
           categoryId: values.categoryId,
-          imageUrl: imageUrl,
+          imageUrl: imageUrl, // Will be the download URL or empty string
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
       };
@@ -117,23 +107,33 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
     } catch (error: any) {
         console.error("Error creating product:", error);
+        
+        let title = "Error Creating Product";
+        let description = error.message || "An unexpected error occurred. Please try again.";
 
-        if (error.code === 'permission-denied') {
+        if (error.code) {
+          if (error.code.includes('storage')) {
+            title = "Image Upload Failed";
+            description = `Could not upload image: ${error.code}. Please check storage permissions and CORS rules in your Firebase project.`;
+          } else if (error.code.includes('permission-denied')) {
+            title = "Permission Denied";
+            description = "You do not have permission to save the product. Check Firestore rules.";
             const permissionError = new FirestorePermissionError({
                 path: 'products',
                 operation: 'create',
-                requestResourceData: { ...values, imageUrl: '', slug: createSlug(values.name) },
+                requestResourceData: values,
             });
             errorEmitter.emit('permission-error', permissionError);
+          }
         }
 
         toast({
             variant: "destructive",
-            title: "Error Creating Product",
-            description: error.message || "Could not save product to the database. Please check your permissions and try again.",
+            title: title,
+            description: description,
         });
     } finally {
-        setIsLoading(false);
+        setIsSubmitting(false);
     }
   }
 
@@ -244,8 +244,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             />
             
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? dictionary.admin.addingProduct : dictionary.admin.addProduct}
               </Button>
               <Button variant="outline" asChild>
                   <Link href={`/${lang}/admin/products`}>{dictionary.admin.cancel}</Link>

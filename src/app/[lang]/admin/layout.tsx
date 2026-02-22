@@ -24,17 +24,18 @@ import AdminHeader from "@/components/admin-header";
 import Logo from "@/components/logo";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
 
 export default function AdminLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { lang: 'en' | 'ka' };
 }) {
-  const params = useParams();
-  const lang = params.lang as 'en' | 'ka';
+  const { lang } = params;
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -47,9 +48,6 @@ export default function AdminLayout({
   const { data: userProfile, isLoading: isProfileLoading } = useDoc<User>(userDocRef);
 
   useEffect(() => {
-    if (!lang) {
-      return;
-    }
     if (!isUserLoading && !user) {
       router.replace(`/${lang}/login`);
     }
@@ -58,7 +56,7 @@ export default function AdminLayout({
     }
   }, [user, isUserLoading, userProfile, isProfileLoading, router, lang]);
 
-  if (isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin' || !lang) {
+  if (isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin') {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">

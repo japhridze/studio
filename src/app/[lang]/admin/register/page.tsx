@@ -24,8 +24,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuth, useFirestore } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter, useParams } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -35,13 +34,12 @@ const formSchema = z.object({
   role: z.enum(["admin", "customer"]),
 });
 
-export default function AdminRegisterPage() {
+export default function AdminRegisterPage({ params }: { params: { lang: 'en' | 'ka' } }) {
   const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
-  const params = useParams();
-  const lang = params.lang as 'en' | 'ka';
+  const { lang } = params;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,32 +77,6 @@ export default function AdminRegisterPage() {
         variant: "destructive",
       });
     }
-  }
-
-    if (!lang) {
-    return (
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-7 w-32" />
-                <Skeleton className="h-4 w-64 mt-2" />
-            </CardHeader>
-            <CardContent>
-                <div className="grid gap-6">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
-                        <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
-                    </div>
-                    <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
-                    <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
-                    <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-10 w-full" /></div>
-                    <div className="flex items-center gap-4">
-                        <Skeleton className="h-10 w-28" />
-                        <Skeleton className="h-10 w-24" />
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    );
   }
 
   return (
