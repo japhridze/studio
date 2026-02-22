@@ -71,20 +71,36 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     }
     
     setIsSubmitting(true);
+    let imageUrl = '';
 
     try {
-      let imageUrl = '';
       const imageFile = values.image;
 
       // Step 1: Handle Image Upload if a file is present
       if (imageFile && imageFile.size > 0) {
-        const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
-        await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(storageRef);
+        try {
+          const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+          const uploadTask = await uploadBytes(storageRef, imageFile);
+          imageUrl = await getDownloadURL(uploadTask.ref);
+        } catch (uploadError: any) {
+           console.error("Image upload failed:", uploadError);
+           toast({
+               variant: "destructive",
+               title: "Image Upload Failed",
+               description: `Could not upload image: ${uploadError.code || uploadError.message}. Please check storage permissions and CORS rules.`,
+           });
+           // Stop the submission if upload fails
+           setIsSubmitting(false);
+           return;
+        }
       }
 
       // Step 2: Prepare and save product data to Firestore
-      const slug = createSlug(values.name);
+      let slug = createSlug(values.name);
+      if (!slug) {
+        // Fallback for empty slugs, e.g., if name is only symbols
+        slug = 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+      }
       const productData = {
           name: values.name,
           slug: slug,
@@ -108,29 +124,18 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     } catch (error: any) {
         console.error("Error creating product:", error);
         
-        let title = "Error Creating Product";
-        let description = error.message || "An unexpected error occurred. Please try again.";
-
-        if (error.code) {
-          if (error.code.includes('storage')) {
-            title = "Image Upload Failed";
-            description = `Could not upload image: ${error.code}. Please check storage permissions and CORS rules in your Firebase project.`;
-          } else if (error.code.includes('permission-denied')) {
-            title = "Permission Denied";
-            description = "You do not have permission to save the product. Check Firestore rules.";
-            const permissionError = new FirestorePermissionError({
-                path: 'products',
-                operation: 'create',
-                requestResourceData: values,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-          }
-        }
+        // This will now primarily catch Firestore errors
+        const permissionError = new FirestorePermissionError({
+            path: 'products',
+            operation: 'create',
+            requestResourceData: values,
+        });
+        errorEmitter.emit('permission-error', permissionError);
 
         toast({
             variant: "destructive",
-            title: title,
-            description: description,
+            title: "Permission Denied",
+            description: "You do not have permission to save the product. Check Firestore rules.",
         });
     } finally {
         setIsSubmitting(false);

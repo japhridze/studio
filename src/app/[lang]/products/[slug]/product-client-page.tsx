@@ -112,7 +112,7 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
                 <Link href={`/${lang}/products`} className="text-sm text-primary font-medium hover:underline">{(dictionary.categories as any)[productCategory.slug] || productCategory.name}</Link>
               )}
               <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground mt-2">{product.name}</h1>
-              <p className="text-3xl font-bold text-primary mt-4">${product.price.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-primary mt-4">${(product.price || 0).toFixed(2)}</p>
               
               <Card className="mt-6 bg-card">
                 <CardContent className="p-6">

@@ -79,7 +79,7 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
         <p className="text-muted-foreground text-sm line-clamp-2">{product.description}</p>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center">
-        <p className="text-xl font-bold text-foreground">${product.price.toFixed(2)}</p>
+        <p className="text-xl font-bold text-foreground">${(product.price || 0).toFixed(2)}</p>
         <Button 
             size="sm" 
             variant="outline" 

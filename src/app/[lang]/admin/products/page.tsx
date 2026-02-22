@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import {
@@ -150,7 +151,7 @@ export default function AdminProductsPage({ params }: { params: { lang: 'en' | '
                     {product.stock > 0 ? "In Stock" : "Out of Stock"}
                   </Badge>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
+                <TableCell className="hidden md:table-cell">${(product.price || 0).toFixed(2)}</TableCell>
                 <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
                 <TableCell>
                   <DropdownMenu>
