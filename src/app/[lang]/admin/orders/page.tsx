@@ -1,3 +1,6 @@
+
+'use client';
+import { use } from 'react';
 import {
     Card,
     CardContent,
@@ -25,7 +28,8 @@ import {
   import { orders } from "@/lib/data";
   import { Badge } from "@/components/ui/badge";
   
-  export default function AdminOrdersPage({ params: { lang } }: { params: { lang: string } }) {
+  export default function AdminOrdersPage({ params }: { params: Promise<{ lang: string }> }) {
+    use(params);
     return (
       <Card>
         <CardHeader>

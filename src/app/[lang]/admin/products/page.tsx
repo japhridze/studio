@@ -31,9 +31,10 @@ import { useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { use } from 'react';
 
-export default function AdminProductsPage({ params }: { params: { lang: 'en' | 'ka' } }) {
-  const { lang } = params;
+export default function AdminProductsPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
+  const { lang } = use(params);
   const firestore = useFirestore();
 
   const productsQuery = useMemoFirebase(() => {
