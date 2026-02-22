@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,10 +32,16 @@ const formSchema = z.object({
 
 // Helper function to create a slug
 const createSlug = (name: string) => {
-  return name
+  if (!name) return '';
+  const slug = name
     .toLowerCase()
     .replace(/[^\\p{L}\\p{N}]+/gu, '-')
     .replace(/(^-|-$)+/g, '');
+  
+  if (!slug) {
+      return 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+  }
+  return slug;
 };
 
 export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
@@ -43,6 +50,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const storage = useStorage();
   const { user } = useUser();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,34 +65,33 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+
     if (!firestore || !storage || !user) {
       toast({
         variant: 'destructive',
         title: 'Authentication Error',
         description: 'You must be logged in to create a product.',
       });
+      setIsSubmitting(false);
       return;
     }
     
-    let imageUrl = '';
-
     try {
+      let imageUrl = '';
       const imageFile = values.image;
 
       if (imageFile && imageFile.size > 0) {
+        console.log('Starting image upload...');
         const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
-        const uploadTask = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(uploadTask.ref);
-      }
-
-      let slug = createSlug(values.name);
-      if (!slug) {
-        slug = 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+        const uploadResult = await uploadBytes(storageRef, imageFile);
+        imageUrl = await getDownloadURL(uploadResult.ref);
+        console.log('Image uploaded successfully. URL:', imageUrl);
       }
       
       const productData = {
           name: values.name,
-          slug: slug,
+          slug: createSlug(values.name),
           sku: values.sku,
           description: values.description,
           price: values.price,
@@ -95,6 +102,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           updatedAt: serverTimestamp(),
       };
       
+      console.log('Saving product to Firestore...');
       const productsCollection = collection(firestore, 'products');
       await addDoc(productsCollection, productData);
       
@@ -108,10 +116,10 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             title: "Failed to create product",
             description: error.message || "An unknown error occurred. Please check the console and Firebase permissions.",
         });
+    } finally {
+        setIsSubmitting(false);
     }
   }
-
-  const { isSubmitting } = form.formState;
 
   return (
     <Card>
