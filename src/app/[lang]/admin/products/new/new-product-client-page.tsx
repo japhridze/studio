@@ -18,9 +18,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { categories } from '@/lib/data';
 import type { getDictionary } from '@/lib/dictionaries';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
-import { useState } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -46,7 +43,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   const storage = useStorage();
   const { user } = useUser();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,37 +66,22 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       return;
     }
     
-    setIsSubmitting(true);
     let imageUrl = '';
 
     try {
       const imageFile = values.image;
 
-      // Step 1: Handle Image Upload if a file is present
       if (imageFile && imageFile.size > 0) {
-        try {
-          const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
-          const uploadTask = await uploadBytes(storageRef, imageFile);
-          imageUrl = await getDownloadURL(uploadTask.ref);
-        } catch (uploadError: any) {
-           console.error("Image upload failed:", uploadError);
-           toast({
-               variant: "destructive",
-               title: "Image Upload Failed",
-               description: `Could not upload image: ${uploadError.code || uploadError.message}. Please check storage permissions and CORS rules.`,
-           });
-           // Stop the submission if upload fails
-           setIsSubmitting(false);
-           return;
-        }
+        const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+        const uploadTask = await uploadBytes(storageRef, imageFile);
+        imageUrl = await getDownloadURL(uploadTask.ref);
       }
 
-      // Step 2: Prepare and save product data to Firestore
       let slug = createSlug(values.name);
       if (!slug) {
-        // Fallback for empty slugs, e.g., if name is only symbols
         slug = 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
       }
+      
       const productData = {
           name: values.name,
           slug: slug,
@@ -109,7 +90,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           price: values.price,
           stock: values.stock,
           categoryId: values.categoryId,
-          imageUrl: imageUrl, // Will be the download URL or empty string
+          imageUrl: imageUrl,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
       };
@@ -117,30 +98,20 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       const productsCollection = collection(firestore, 'products');
       await addDoc(productsCollection, productData);
       
-      // Step 3: Success
       toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
       router.push(`/${lang}/admin/products`);
 
     } catch (error: any) {
-        console.error("Error creating product:", error);
-        
-        // This will now primarily catch Firestore errors
-        const permissionError = new FirestorePermissionError({
-            path: 'products',
-            operation: 'create',
-            requestResourceData: values,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-
+        console.error("Failed to create product:", error);
         toast({
             variant: "destructive",
-            title: "Permission Denied",
-            description: "You do not have permission to save the product. Check Firestore rules.",
+            title: "Failed to create product",
+            description: error.message || "An unknown error occurred. Please check the console and Firebase permissions.",
         });
-    } finally {
-        setIsSubmitting(false);
     }
   }
+
+  const { isSubmitting } = form.formState;
 
   return (
     <Card>
