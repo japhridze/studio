@@ -1,4 +1,3 @@
-
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -95,7 +94,7 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
             <div className="aspect-square relative w-full overflow-hidden rounded-lg shadow-lg">
                 {product.imageUrl && product.imageUrl.trim() ? (
                 <Image
-                    src={product.imageUrl}
+                    src={product.imageUrl.trim()}
                     alt={product.name}
                     fill
                     className="object-cover"

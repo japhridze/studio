@@ -140,7 +140,7 @@ export default function AdminProductsPage({ params }: { params: Promise<{ lang: 
                       alt={product.name}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={product.imageUrl}
+                      src={product.imageUrl.trim()}
                       width="64"
                     />
                   }

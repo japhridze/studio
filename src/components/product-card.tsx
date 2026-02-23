@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -24,8 +23,10 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
   let imageUrl: string | undefined;
   let imageHint: string | undefined;
 
-  if (product.imageUrl && product.imageUrl.startsWith('https://')) {
-    imageUrl = product.imageUrl;
+  const trimmedUrl = product.imageUrl ? product.imageUrl.trim() : undefined;
+
+  if (trimmedUrl && trimmedUrl.startsWith('https://')) {
+    imageUrl = trimmedUrl;
   } else {
     const productImage = PlaceHolderImages.find(p => p.id === product.imageUrl);
     if (productImage) {
