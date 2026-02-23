@@ -47,7 +47,9 @@ service cloud.firestore {
     }
 
     function getUserRole(userId) {
-      return get(/databases/$(database)/documents/users/$(userId)).data.role;
+      // Safely check for document existence before accessing data.
+      return exists(/databases/$(database)/documents/users/$(userId)) &&
+             get(/databases/$(database)/documents/users/$(userId)).data.role;
     }
 
     function isAdmin() {

@@ -2,20 +2,11 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-
-    function getUserRole(userId) {
-      return get(/databases/(default)/documents/users/$(userId)).data.role;
-    }
-
-    function isAdmin() {
-      // The user with this UID is always an admin.
-      // Other users can be made admins by setting their role to 'admin' in their user document.
-      return (request.auth != null && getUserRole(request.auth.uid) == 'admin') || request.auth.uid == 'RUl2KGivfaQpj7Fx6dQfQIZeOg12';
-    }
-
     match /products/{allPaths=**} {
+      // Anyone can read product images.
       allow read: if true;
-      allow write: if isAdmin();
+      // Only authenticated users can upload product images.
+      allow write: if request.auth != null;
     }
   }
 }
