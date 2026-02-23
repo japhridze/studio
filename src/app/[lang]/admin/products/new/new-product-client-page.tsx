@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useFirestore, useStorage, useUser } from '@/firebase';
+import { useFirestore, useStorage, useUser, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
@@ -86,46 +86,61 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       setIsSubmitting(false);
       return;
     }
-    
-    try {
-      let imageUrl = '';
-      const imageFile = values.image;
 
+    let imageUrl = '';
+    try {
+      const imageFile = values.image;
       if (imageFile && imageFile.size > 0) {
-        const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+        const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
         const uploadResult = await uploadBytes(storageRef, imageFile);
         imageUrl = await getDownloadURL(uploadResult.ref);
       }
-      
-      const productData = {
-          name: values.name,
-          slug: createSlug(values.name),
-          sku: values.sku,
-          description: values.description,
-          price: values.price,
-          stock: values.stock,
-          categoryId: values.categoryId,
-          imageUrl: imageUrl,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-      };
-      
-      const productsCollection = collection(firestore, 'products');
-      await addDoc(productsCollection, productData);
-      
-      toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
-      router.push(`/${lang}/admin/products`);
-
     } catch (error: any) {
-        console.error("Failed to create product:", error);
-        toast({
-            variant: "destructive",
-            title: "Failed to create product",
-            description: error.message || "An unknown error occurred. Please check the console and Firebase permissions.",
-        });
-    } finally {
-        setIsSubmitting(false);
+      let title = "Image Upload Failed";
+      let description = "An unknown error occurred while uploading the image. Please check Firebase permissions.";
+      if (error.code === 'storage/unauthorized') {
+        title = dictionary.admin.permissionDeniedImage || "Image Upload Failed";
+        description = "You do not have permission to upload files. Check Firebase Storage rules.";
+      }
+      toast({ variant: "destructive", title, description });
+      setIsSubmitting(false);
+      return;
     }
+
+    const productData = {
+      name: values.name,
+      slug: createSlug(values.name),
+      sku: values.sku,
+      description: values.description,
+      price: values.price,
+      stock: values.stock,
+      categoryId: values.categoryId,
+      imageUrl: imageUrl,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    
+    const productsCollection = collection(firestore, 'products');
+    
+    addDoc(productsCollection, productData)
+      .then(() => {
+        toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
+        router.push(`/${lang}/admin/products`);
+      })
+      .catch(async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+          path: productsCollection.path,
+          operation: 'create',
+          requestResourceData: productData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        toast({
+          variant: "destructive",
+          title: dictionary.admin.permissionDeniedProduct || "Failed to Save Product",
+          description: "You do not have permission to create this product. Check Firestore rules.",
+        });
+        setIsSubmitting(false);
+      });
   }
 
   return (
