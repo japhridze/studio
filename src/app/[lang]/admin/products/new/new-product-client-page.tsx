@@ -30,19 +30,29 @@ const formSchema = z.object({
   image: z.instanceof(File).optional(),
 });
 
-// Helper function to create a slug
+// Helper function to create a URL-friendly slug from a string.
 const createSlug = (name: string) => {
   if (!name) return '';
+  
+  // The \p{L} and \p{N} are Unicode property escapes.
+  // \p{L} matches any kind of letter from any language.
+  // \p{N} matches any kind of numeric character in any script.
+  // The 'u' flag is essential for Unicode regex.
   const slug = name
     .toLowerCase()
-    .replace(/[^\\p{L}\\p{N}]+/gu, '-')
-    .replace(/(^-|-$)+/g, '');
-  
+    .replace(/[^\p{L}\p{N}]+/gu, '-') // Replace non-letters/numbers with a hyphen
+    .replace(/--+/g, '-')             // Replace multiple hyphens with a single one
+    .replace(/(^-|-$)/g, '');         // Remove leading/trailing hyphens
+
+  // If the name consists only of characters that are replaced,
+  // the slug might be empty. Provide a fallback.
   if (!slug) {
-      return 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+    return 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
+
   return slug;
 };
+
 
 export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
   const router = useRouter();
@@ -82,11 +92,9 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       const imageFile = values.image;
 
       if (imageFile && imageFile.size > 0) {
-        console.log('Starting image upload...');
         const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
         const uploadResult = await uploadBytes(storageRef, imageFile);
         imageUrl = await getDownloadURL(uploadResult.ref);
-        console.log('Image uploaded successfully. URL:', imageUrl);
       }
       
       const productData = {
@@ -102,7 +110,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
           updatedAt: serverTimestamp(),
       };
       
-      console.log('Saving product to Firestore...');
       const productsCollection = collection(firestore, 'products');
       await addDoc(productsCollection, productData);
       
