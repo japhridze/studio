@@ -215,7 +215,11 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
         </nav>
 
         <div className="flex items-center gap-4 ml-auto">
-          <LanguageSwitcher locale={lang} dictionary={dict.languageSwitcher}/>
+          {hasMounted ? (
+            <LanguageSwitcher locale={lang} dictionary={dict.languageSwitcher}/>
+          ) : (
+            <Skeleton className="h-10 w-[120px]" />
+          )}
           <div className="relative hidden md:block">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
