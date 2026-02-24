@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -14,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { User } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -26,10 +27,12 @@ const formSchema = z.object({
   role: z.enum(['admin', 'customer']),
 });
 
-export default function EditUserClientPage({ lang, userId, dictionary }: { lang: 'en' | 'ka', userId: string, dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
+export default function EditUserClientPage({ dictionary, lang, userId }: { dictionary: Awaited<ReturnType<typeof getDictionary>>, lang: 'en' | 'ka', userId: string }) {
   const router = useRouter();
+  
   const firestore = useFirestore();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const userDocRef = useMemoFirebase(() => {
     if (!firestore || !userId) return null;
@@ -59,6 +62,7 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!userDocRef) return;
+    setIsSubmitting(true);
     
     const updatedData = {
         role: values.role,
@@ -74,6 +78,7 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
             router.push(`/${lang}/admin/users`);
         })
         .catch((serverError) => {
+            console.error("Firestore permission error on update:", serverError);
             const permissionError = new FirestorePermissionError({
                 path: userDocRef.path,
                 operation: 'update',
@@ -85,6 +90,9 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
                 title: 'Permission Denied',
                 description: 'You do not have permission to update this user.',
             });
+        })
+        .finally(() => {
+            setIsSubmitting(false);
         });
   }
 
@@ -165,8 +173,8 @@ export default function EditUserClientPage({ lang, userId, dictionary }: { lang:
               )}
             />
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? dictionary.admin.updatingUser : dictionary.admin.updateUser}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? dictionary.admin.updatingUser : dictionary.admin.updateUser}
               </Button>
               <Button variant="outline" asChild>
                   <Link href={`/${lang}/admin/users`}>Cancel</Link>

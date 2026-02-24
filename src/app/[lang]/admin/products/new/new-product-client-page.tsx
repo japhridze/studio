@@ -76,23 +76,21 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    let imageUrl = '';
-    const imageFile = values.image;
-
+    
     try {
-      // Step 1: Ensure user is authenticated
       if (!user || !storage || !firestore) {
         throw new Error('Authentication or Firebase services are not available. Please log in.');
       }
+      
+      let imageUrl = '';
+      const imageFile = values.image;
 
-      // Step 2: Handle Image Upload
       if (imageFile && imageFile.size > 0) {
         const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
         const uploadResult = await uploadBytes(storageRef, imageFile);
         imageUrl = await getDownloadURL(uploadResult.ref);
       }
 
-      // Step 3: Prepare Product Data
       const productData = {
         name: values.name,
         slug: createSlug(values.name),
@@ -105,12 +103,10 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-
-      // Step 4: Save Product Data to Firestore
+      
       const productsCollection = collection(firestore, 'products');
       await addDoc(productsCollection, productData);
-
-      // Step 5: Success
+      
       toast({
         title: dictionary.admin.productCreatedSuccess,
         description: dictionary.admin.productCreatedSuccessDescription,
@@ -118,7 +114,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       router.push(`/${lang}/admin/products`);
 
     } catch (error: any) {
-      // Step 6: Handle ANY error from the try block
       console.error("Failed to add product:", error);
       let title = "Failed to add product";
       let description = "An unexpected error occurred.";
@@ -153,7 +148,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
         description: description,
       });
     } finally {
-      // Step 7: ALWAYS reset the submitting state
       setIsSubmitting(false);
     }
   }

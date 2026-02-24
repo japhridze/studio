@@ -28,7 +28,6 @@ import {
   import { Badge } from "@/components/ui/badge";
   
   export default function AdminOrdersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
-    const { lang } = params;
     return (
       <Card>
         <CardHeader>

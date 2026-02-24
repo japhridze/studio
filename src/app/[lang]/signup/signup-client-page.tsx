@@ -54,20 +54,12 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
       return;
     }
 
-    if (userProfile && userProfile.role === 'admin') {
-      toast({
-        title: "Already logged in as Admin",
-        description: "Redirecting to the admin dashboard.",
-      });
+    if (userProfile?.role === 'admin') {
       router.replace(`/${lang}/admin`);
     } else if (user) {
-      toast({
-        title: "Already logged in",
-        description: "Redirecting to your account page.",
-      });
       router.replace(`/${lang}/account`);
     }
-  }, [user, userProfile, isUserLoading, isProfileLoading, router, lang, toast]);
+  }, [user, userProfile, isUserLoading, isProfileLoading, router, lang]);
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,6 +72,44 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
     },
   });
 
+  const handleSuccessfulSignup = async (user: any, name?: string) => {
+    const userDocRef = doc(firestore, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
+    let role = 'customer';
+
+    if (userDoc.exists()) {
+        role = userDoc.data().role || 'customer';
+    }
+    
+    if (isSuperAdmin) {
+      role = 'admin';
+    }
+
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        name: name || user.displayName || user.email,
+        email: user.email,
+        role: role,
+      });
+    } else if (isSuperAdmin && userDoc.data().role !== 'admin') {
+      await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+    }
+
+    toast({
+      title: dictionary.signup.accountCreatedTitle,
+      description: dictionary.signup.accountCreatedDescription,
+    });
+    
+    if (role === 'admin') {
+      router.push(`/${lang}/admin`);
+    } else {
+      router.push(`/${lang}/account`);
+    }
+  }
+
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!auth || !firestore) {
         toast({ title: dictionary.signup.errorTitle, description: dictionary.signup.firebaseNotInitialized, variant: "destructive" });
@@ -87,25 +117,7 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-
-      const role = user.uid === SUPER_ADMIN_UID ? 'admin' : 'customer';
-      await setDoc(doc(firestore, "users", user.uid), {
-        name: `${values.firstName} ${values.lastName}`,
-        email: values.email,
-        role: role,
-      });
-
-      toast({
-        title: dictionary.signup.accountCreatedTitle,
-        description: dictionary.signup.accountCreatedDescription,
-      });
-      
-      if (role === 'admin') {
-        router.push(`/${lang}/admin`);
-      } else {
-        router.push(`/${lang}/account`);
-      }
+      await handleSuccessfulSignup(userCredential.user, `${values.firstName} ${values.lastName}`);
     } catch (error: any) {
       console.error(error);
       toast({
@@ -124,38 +136,7 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      const userDocRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
-      let role = (userDoc.exists() && userDoc.data().role) || 'customer';
-
-      if (isSuperAdmin) {
-        role = 'admin';
-      }
-
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-            name: user.displayName,
-            email: user.email,
-            role: role,
-        });
-      } else if (isSuperAdmin && userDoc.data().role !== 'admin') {
-        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-      }
-
-      toast({
-        title: dictionary.login.googleSignInTitle,
-        description: dictionary.login.googleSignInDescription.replace('{name}', user.displayName || 'user'),
-      });
-      
-      if (role === 'admin') {
-        router.push(`/${lang}/admin`);
-      } else {
-        router.push(`/${lang}/account`);
-      }
+      await handleSuccessfulSignup(result.user);
     } catch (error: any) {
       console.error(error);
       toast({

@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
 import AdminLoginButton from "@/components/admin-login-button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminLayout({
   children,
@@ -54,20 +55,31 @@ export default function AdminLayout({
   }, []);
 
   useEffect(() => {
-    if (!hasMounted) return; // Don't run auth checks until client has mounted
+    if (!hasMounted || isUserLoading) return; 
 
-    if (!isUserLoading && !user) {
-      // Only redirect if the user is not logged in at all.
-      router.replace(`/${lang}/login`);
+    if (!user) {
+      router.push(`/${lang}/login`);
     }
-  }, [user, isUserLoading, router, lang, hasMounted]);
+  }, [user, isUserLoading, hasMounted, router, lang]);
 
-  if (!hasMounted || isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin') {
+  if (!hasMounted || isUserLoading || isProfileLoading) {
     return (
+        <div className="flex h-screen w-full items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+                <Skeleton className="h-8 w-32" />
+                <Skeleton className="h-4 w-64" />
+                <Skeleton className="h-10 w-32" />
+            </div>
+        </div>
+    );
+  }
+
+  if (userProfile?.role !== 'admin') {
+     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
             <p className="font-semibold text-lg">Access Denied</p>
-            <p className="text-muted-foreground max-w-sm">You do not have permission to view this page, or your admin status is still loading.</p>
+            <p className="text-muted-foreground max-w-sm">You do not have permission to view this page. Please log in as an administrator.</p>
             <AdminLoginButton />
         </div>
       </div>

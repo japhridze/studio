@@ -34,6 +34,7 @@ import { Skeleton } from "@/components/ui/skeleton";
   export default function AdminUsersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
     const firestore = useFirestore();
     const { lang } = params;
+
     const usersQuery = useMemoFirebase(() => {
       if (!firestore) return null;
       return collection(firestore, 'users');
