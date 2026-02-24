@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useFirestore, useStorage, useUser, errorEmitter, FirestorePermissionError } from '@/firebase';
+import { useFirestore, useStorage, useUser } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
@@ -76,21 +76,22 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    
     try {
-      if (!user || !storage || !firestore) {
-        throw new Error('Authentication or Firebase services are not available. Please log in.');
+      if (!user || !firestore || !storage) {
+        throw new Error("User is not authenticated or Firebase services are not available.");
       }
-      
-      let imageUrl = '';
+
+      let imageUrl = "";
       const imageFile = values.image;
 
+      // Step 1: Upload image if it exists
       if (imageFile && imageFile.size > 0) {
         const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(uploadResult.ref);
+        const uploadTask = await uploadBytes(storageRef, imageFile);
+        imageUrl = await getDownloadURL(uploadTask.ref);
       }
 
+      // Step 2: Prepare product data
       const productData = {
         name: values.name,
         slug: createSlug(values.name),
@@ -103,10 +104,12 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-      
-      const productsCollection = collection(firestore, 'products');
+
+      // Step 3: Add document to Firestore
+      const productsCollection = collection(firestore, "products");
       await addDoc(productsCollection, productData);
-      
+
+      // Step 4: Success feedback and navigation
       toast({
         title: dictionary.admin.productCreatedSuccess,
         description: dictionary.admin.productCreatedSuccessDescription,
@@ -115,39 +118,28 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
     } catch (error: any) {
       console.error("Failed to add product:", error);
-      let title = "Failed to add product";
-      let description = "An unexpected error occurred.";
-
-      if (error.code) {
-        switch (error.code) {
-          case 'storage/unauthorized':
-            title = dictionary.admin.permissionDenied || "Permission Denied";
-            description = dictionary.admin.permissionDeniedImage || "You do not have permission to upload an image. Check Storage Rules.";
-            break;
-          case 'permission-denied': // Firestore permission error
-             title = dictionary.admin.permissionDenied || "Permission Denied";
-             description = dictionary.admin.permissionDeniedProduct || "You do not have permission to create this product. Check Firestore Rules.";
-             // Also emit the detailed error for the dev overlay
-             const permissionError = new FirestorePermissionError({
-                path: 'products',
-                operation: 'create',
-                requestResourceData: values,
-             });
-             errorEmitter.emit('permission-error', permissionError);
-            break;
-          default:
-            description = error.message;
-        }
-      } else {
-        description = error.message;
-      }
       
+      let errorMessage = "An unexpected error occurred.";
+      if (error.code) {
+         if (error.code === 'storage/unauthorized' || error.code === 'storage/object-not-found') {
+            errorMessage = dictionary.admin.permissionDeniedImage || "Image upload failed. Check permissions and network.";
+         } else if (error.code === 'permission-denied') {
+            errorMessage = dictionary.admin.permissionDeniedProduct || "Database write failed. Check Firestore Rules.";
+         } else {
+            errorMessage = error.message;
+         }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       toast({
         variant: "destructive",
-        title: title,
-        description: description,
+        title: "Failed to Add Product",
+        description: errorMessage,
       });
+
     } finally {
+      // Step 5: ALWAYS reset the submitting state
       setIsSubmitting(false);
     }
   }

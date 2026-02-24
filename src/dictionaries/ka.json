@@ -168,7 +168,7 @@
         "productCreatedSuccess": "წარმატება!",
         "productCreatedSuccessDescription": "პროდუქტი შეიქმნა.",
         "permissionDenied": "წვდომა აკრძალულია",
-        "permissionDeniedImage": "თქვენ არ გაქვთ სურათის ატვირთვის უფლება.",
-        "permissionDeniedProduct": "თქვენ არ გაქვთ პროდუქტის შექმნის უფლება."
+        "permissionDeniedImage": "სურათის ატვირთვა ვერ მოხერხდა. შეამოწმეთ წვდომის უფლებები და ინტერნეტ კავშირი.",
+        "permissionDeniedProduct": "მონაცემთა ბაზაში ჩაწერა ვერ მოხერხდა. შეამოწმეთ Firestore-ის წესები."
     }
 }

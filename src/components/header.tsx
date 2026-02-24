@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -76,13 +77,12 @@ const defaultDictionary = {
 
 export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka', dictionary?: Awaited<ReturnType<typeof getDictionary>> }) {
   const dict = dictionary || defaultDictionary;
-  const { cartCount } = useCart();
+  const { cartCount, hasMounted } = useCart();
   const { user } = useUser();
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
-  const [hasMounted, setHasMounted] = useState(false);
-
+  
   const userDocRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
     return doc(firestore, 'users', user.uid);
@@ -90,10 +90,6 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
 
   const { data: userProfile } = useDoc<UserType>(userDocRef);
   
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
   const handleLogout = async () => {
     if (auth) {
       await auth.signOut();
@@ -282,7 +278,7 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
             <Link href={`/${lang}/cart`}>
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">{dict.header.shoppingCart}</span>
-              {cartCount > 0 && (
+              {hasMounted && cartCount > 0 && (
                 <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{cartCount}</Badge>
               )}
             </Link>

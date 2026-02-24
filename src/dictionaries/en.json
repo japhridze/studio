@@ -168,7 +168,7 @@
         "productCreatedSuccess": "Success!",
         "productCreatedSuccessDescription": "Product has been created.",
         "permissionDenied": "Permission Denied",
-        "permissionDeniedImage": "You do not have permission to upload an image.",
-        "permissionDeniedProduct": "You do not have permission to create a product."
+        "permissionDeniedImage": "Image upload failed. Check permissions and network.",
+        "permissionDeniedProduct": "Database write failed. Check Firestore Rules."
     }
 }

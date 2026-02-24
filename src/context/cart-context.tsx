@@ -14,24 +14,37 @@ interface CartContextType {
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
+  hasMounted: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [hasMounted, setHasMounted] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
+    setHasMounted(true);
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
+      try {
+        const parsedCart = JSON.parse(storedCart);
+        if (Array.isArray(parsedCart)) {
+          setCartItems(parsedCart);
+        }
+      } catch (error) {
+        console.error("Failed to parse cart from localStorage", error);
+        localStorage.removeItem('cart');
+      }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (hasMounted) {
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+    }
+  }, [cartItems, hasMounted]);
 
   const addToCart = (product: Product | FirestoreProduct, quantity: number, messages?: { title: string; description: string; }) => {
     setCartItems(prevItems => {
@@ -91,7 +104,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, cartCount, cartTotal }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, cartCount, cartTotal, hasMounted }}>
       {children}
     </CartContext.Provider>
   );
