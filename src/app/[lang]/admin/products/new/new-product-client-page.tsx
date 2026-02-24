@@ -121,23 +121,31 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
         router.push(`/${lang}/admin/products`);
         
     } catch (error: any) {
-        // Step 5: Centralized Error Handling
+        // Step 5: Centralized and specific error handling
+        console.error("Failed to create product:", error);
+
         if (error.code && error.code.startsWith('storage/')) {
-            // Handle Storage Errors
-            const title = dictionary.admin.permissionDeniedImage || "Image Upload Failed";
-            const description = "You do not have permission to upload files. Check Firebase Storage rules.";
-            toast({ variant: "destructive", title, description });
-        } else {
-            // Handle Firestore Errors (or other errors)
-            const permissionError = new FirestorePermissionError({
-              path: 'products',
-              operation: 'create',
-            });
-            errorEmitter.emit('permission-error', permissionError);
             toast({
               variant: "destructive",
-              title: dictionary.admin.permissionDeniedProduct || "Failed to Save Product",
-              description: "You do not have permission to create this product. Check Firestore rules.",
+              title: dictionary.admin.permissionDeniedImage || "Image Upload Failed",
+              description: "You do not have permission to upload this image. Check your Storage Rules.",
+            });
+        } else if (error.code === 'permission-denied') {
+             const permissionError = new FirestorePermissionError({
+                path: 'products',
+                operation: 'create',
+              });
+              errorEmitter.emit('permission-error', permissionError);
+              toast({
+                variant: "destructive",
+                title: dictionary.admin.permissionDeniedProduct || "Failed to Save Product",
+                description: "You do not have permission to create this product. Check your Firestore Rules.",
+              });
+        } else {
+            toast({
+                variant: 'destructive',
+                title: 'An Unexpected Error Occurred',
+                description: error.message || 'Please try again later.',
             });
         }
     } finally {

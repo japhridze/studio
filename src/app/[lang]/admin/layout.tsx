@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import AdminHeader from "@/components/admin-header";
 import Logo from "@/components/logo";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import { useEffect, use } from "react";
+import { useEffect, use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
@@ -39,6 +39,7 @@ export default function AdminLayout({
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
+  const [hasMounted, setHasMounted] = useState(false);
 
   const userDocRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -48,15 +49,21 @@ export default function AdminLayout({
   const { data: userProfile, isLoading: isProfileLoading } = useDoc<User>(userDocRef);
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasMounted) return; // Don't run auth checks until client has mounted
+
     if (!isUserLoading && !user) {
       router.replace(`/${lang}/login`);
     }
     if (!isProfileLoading && userProfile && userProfile.role !== 'admin') {
       router.replace(`/${lang}`);
     }
-  }, [user, isUserLoading, userProfile, isProfileLoading, router, lang]);
+  }, [user, isUserLoading, userProfile, isProfileLoading, router, lang, hasMounted]);
 
-  if (isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin') {
+  if (!hasMounted || isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin') {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
