@@ -26,7 +26,7 @@ import {
   import { MoreHorizontal, PlusCircle } from "lucide-react";
   import { categories, products } from "@/lib/data";
   
-  export default function AdminCategoriesPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+  export default function AdminCategoriesPage() {
     return (
       <Card>
         <CardHeader>

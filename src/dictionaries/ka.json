@@ -169,6 +169,10 @@
         "productCreatedSuccessDescription": "პროდუქტი შეიქმნა.",
         "permissionDenied": "წვდომა აკრძალულია",
         "permissionDeniedImage": "სურათის ატვირთვა ვერ მოხერხდა. შეამოწმეთ წვდომის უფლებები და ინტერნეტ კავშირი.",
-        "permissionDeniedProduct": "მონაცემთა ბაზაში ჩაწერა ვერ მოხერხდა. შეამოწმეთ Firestore-ის წესები."
+        "permissionDeniedProduct": "მონაცემთა ბაზაში ჩაწერა ვერ მოხერხდა. შეამოწმეთ Firestore-ის წესები.",
+        "productAddedWarningTitle": "პროდუქტი დაემატა, მაგრამ ფოტო ვერ აიტვირთა",
+        "productAddedWarningDescription": "პროდუქტი დაემატა, მაგრამ ფოტოს ატვირთვა ვერ მოხერხდა. შეგიძლიათ მოგვიანებით დაარედაქტიროთ.",
+        "dbWriteFailedTitle": "მონაცემთა ბაზის შეცდომა",
+        "dbWriteFailedDescription": "პროდუქტის მონაცემთა ბაზაში შენახვა ვერ მოხერხდა."
     }
 }

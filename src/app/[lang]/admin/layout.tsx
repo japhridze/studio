@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from "next/link";
@@ -24,7 +25,7 @@ import AdminHeader from "@/components/admin-header";
 import Logo from "@/components/logo";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
 import AdminLoginButton from "@/components/admin-login-button";
@@ -32,12 +33,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: { lang: 'en' | 'ka' };
 }) {
-  const { lang } = params;
+  const params = useParams();
+  const lang = params.lang as 'en' | 'ka';
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();

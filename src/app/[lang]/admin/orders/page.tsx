@@ -27,7 +27,7 @@ import {
   import { orders } from "@/lib/data";
   import { Badge } from "@/components/ui/badge";
   
-  export default function AdminOrdersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+  export default function AdminOrdersPage() {
     return (
       <Card>
         <CardHeader>

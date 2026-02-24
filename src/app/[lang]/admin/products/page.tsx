@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import {
@@ -30,9 +31,11 @@ import { useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useParams } from 'next/navigation';
 
-export default function AdminProductsPage({ params }: { params: { lang: 'en' | 'ka' } }) {
-  const { lang } = params;
+export default function AdminProductsPage() {
+  const params = useParams();
+  const lang = params.lang as 'en' | 'ka';
   const firestore = useFirestore();
 
   const productsQuery = useMemoFirebase(() => {

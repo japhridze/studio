@@ -30,10 +30,12 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useParams } from "next/navigation";
   
-  export default function AdminUsersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+  export default function AdminUsersPage() {
     const firestore = useFirestore();
-    const { lang } = params;
+    const params = useParams();
+    const lang = params.lang as 'en' | 'ka';
 
     const usersQuery = useMemoFirebase(() => {
       if (!firestore) return null;

@@ -169,6 +169,10 @@
         "productCreatedSuccessDescription": "Product has been created.",
         "permissionDenied": "Permission Denied",
         "permissionDeniedImage": "Image upload failed. Check permissions and network.",
-        "permissionDeniedProduct": "Database write failed. Check Firestore Rules."
+        "permissionDeniedProduct": "Database write failed. Check Firestore Rules.",
+        "productAddedWarningTitle": "Product Added, But Image Failed",
+        "productAddedWarningDescription": "The product was added, but the image upload failed. You can edit it later.",
+        "dbWriteFailedTitle": "Database Error",
+        "dbWriteFailedDescription": "Could not save the product to the database."
     }
 }

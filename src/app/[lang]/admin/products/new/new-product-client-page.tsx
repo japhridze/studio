@@ -76,28 +76,26 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    let imageUrl = "";
+    let imageUploadFailed = false;
 
     try {
-        if (!user || !firestore) {
-            throw new Error("User is not authenticated or Firestore is not available.");
+        if (!user || !firestore || !storage) {
+            throw new Error("User is not authenticated or Firebase is not available.");
         }
 
-        let imageUrl = "";
         const imageFile = values.image;
 
         // Step 1: Attempt to upload image if it exists
-        if (imageFile && imageFile.size > 0 && storage) {
+        if (imageFile && imageFile.size > 0) {
             try {
                 const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
                 const uploadTask = await uploadBytes(storageRef, imageFile);
                 imageUrl = await getDownloadURL(uploadTask.ref);
             } catch (imageError: any) {
-                console.error("Image upload failed, proceeding without image:", imageError);
-                toast({
-                    variant: "destructive",
-                    title: "Image Upload Failed",
-                    description: "The product will be created without an image. " + (imageError.message || "Please check storage rules and network."),
-                });
+                console.error("Image upload failed:", imageError);
+                imageUploadFailed = true;
+                // The specific toast for image failure will be shown after attempting to save the product data.
             }
         }
 
@@ -110,7 +108,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             price: values.price,
             stock: values.stock,
             categoryId: values.categoryId,
-            imageUrl: imageUrl, // Will be empty if upload failed or no image was provided
+            imageUrl: imageUrl, // Will be empty if upload failed
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         };
@@ -119,22 +117,32 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
         const productsCollection = collection(firestore, "products");
         await addDoc(productsCollection, productData);
 
-        // Step 4: Success feedback and navigation
-        toast({
-            title: dictionary.admin.productCreatedSuccess,
-            description: imageUrl ? dictionary.admin.productCreatedSuccessDescription : "Product created without an image.",
-        });
+        // Step 4: Success/Warning feedback and navigation
+        if (imageUploadFailed) {
+            toast({
+                variant: "destructive",
+                title: dictionary.admin.productAddedWarningTitle || "Product Added, But Image Failed",
+                description: dictionary.admin.productAddedWarningDescription || "The product was added, but the image upload failed.",
+            });
+        } else {
+            toast({
+                title: dictionary.admin.productCreatedSuccess,
+                description: dictionary.admin.productCreatedSuccessDescription,
+            });
+        }
+
         router.push(`/${lang}/admin/products`);
 
     } catch (dbError: any) {
-        console.error("Failed to add product to Firestore:", dbError);
+        // This catch block will now primarily handle errors from addDoc
+        console.error("Failed to save product to Firestore:", dbError);
         toast({
             variant: "destructive",
-            title: "Failed to Add Product",
-            description: dbError.message || "Could not save product data to the database.",
+            title: dictionary.admin.dbWriteFailedTitle || "Database Error",
+            description: (dictionary.admin.dbWriteFailedDescription || "Could not save the product to the database.") + ` (${dbError.message})`,
         });
     } finally {
-        // Step 5: ALWAYS reset the submitting state
+        // This will always execute, ensuring the button is re-enabled.
         setIsSubmitting(false);
     }
   }

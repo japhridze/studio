@@ -25,7 +25,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuth, useFirestore } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -35,12 +35,13 @@ const formSchema = z.object({
   role: z.enum(["admin", "customer"]),
 });
 
-export default function AdminRegisterPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+export default function AdminRegisterPage() {
   const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
-  const { lang } = params;
+  const params = useParams();
+  const lang = params.lang as 'en' | 'ka';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
