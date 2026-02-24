@@ -1,3 +1,4 @@
+
 'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -49,29 +50,35 @@ export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
       const userDocRef = doc(firestore, "users", user.uid);
-
       const userDoc = await getDoc(userDocRef);
+
       const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
-      const role = isSuperAdmin ? 'admin' : 'customer';
+      let role = (userDoc.exists() && userDoc.data().role) || 'customer';
+      
+      if (isSuperAdmin) {
+        role = 'admin';
+      }
 
       if (!userDoc.exists()) {
         await setDoc(userDocRef, {
-            name: user.displayName || user.email, // Use email as fallback for name
+            name: user.displayName || user.email,
             email: user.email,
             role: role,
         });
-      } else {
-        const userData = userDoc.data();
-        if (isSuperAdmin && userData.role !== 'admin') {
-            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-        }
+      } else if (isSuperAdmin && userDoc.data().role !== 'admin') {
+        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
       
       toast({
         title: dictionary.login.loggedInTitle,
         description: dictionary.login.loggedInDescription,
       });
-      router.push(`/${lang}/account`);
+
+      if (role === 'admin') {
+        router.push(`/${lang}/admin`);
+      } else {
+        router.push(`/${lang}/account`);
+      }
     } catch (error: any) {
       console.error(error);
       toast({
@@ -93,7 +100,11 @@ export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka
       const userDoc = await getDoc(userDocRef);
 
       const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
-      const role = isSuperAdmin ? 'admin' : 'customer';
+      let role = (userDoc.exists() && userDoc.data().role) || 'customer';
+
+      if (isSuperAdmin) {
+        role = 'admin';
+      }
 
       if (!userDoc.exists()) {
         await setDoc(userDocRef, {
@@ -101,18 +112,20 @@ export default function LoginClientPage({ lang, dictionary }: { lang: 'en' | 'ka
             email: user.email,
             role: role,
         });
-      } else {
-        const userData = userDoc.data();
-        if (isSuperAdmin && userData.role !== 'admin') {
-            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-        }
+      } else if (isSuperAdmin && userDoc.data().role !== 'admin') {
+        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
 
       toast({
         title: dictionary.login.googleSignInTitle,
         description: dictionary.login.googleSignInDescription.replace('{name}', user.displayName || 'user'),
       });
-      router.push(`/${lang}/account`);
+
+      if (role === 'admin') {
+        router.push(`/${lang}/admin`);
+      } else {
+        router.push(`/${lang}/account`);
+      }
     } catch (error: any) {
       console.error(error);
       toast({

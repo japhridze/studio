@@ -1,3 +1,4 @@
+
 'use client';
 import Link from "next/link";
 import { useEffect } from "react";
@@ -99,7 +100,12 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
         title: dictionary.signup.accountCreatedTitle,
         description: dictionary.signup.accountCreatedDescription,
       });
-      router.push(`/${lang}/account`);
+      
+      if (role === 'admin') {
+        router.push(`/${lang}/admin`);
+      } else {
+        router.push(`/${lang}/account`);
+      }
     } catch (error: any) {
       console.error(error);
       toast({
@@ -124,7 +130,11 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
       const userDoc = await getDoc(userDocRef);
 
       const isSuperAdmin = user.uid === SUPER_ADMIN_UID;
-      const role = isSuperAdmin ? 'admin' : 'customer';
+      let role = (userDoc.exists() && userDoc.data().role) || 'customer';
+
+      if (isSuperAdmin) {
+        role = 'admin';
+      }
 
       if (!userDoc.exists()) {
         await setDoc(userDocRef, {
@@ -132,18 +142,20 @@ export default function SignupClientPage({ lang, dictionary }: { lang: 'en' | 'k
             email: user.email,
             role: role,
         });
-      } else {
-        const userData = userDoc.data();
-        if (isSuperAdmin && userData.role !== 'admin') {
-            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-        }
+      } else if (isSuperAdmin && userDoc.data().role !== 'admin') {
+        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
 
       toast({
         title: dictionary.login.googleSignInTitle,
         description: dictionary.login.googleSignInDescription.replace('{name}', user.displayName || 'user'),
       });
-      router.push(`/${lang}/account`);
+      
+      if (role === 'admin') {
+        router.push(`/${lang}/admin`);
+      } else {
+        router.push(`/${lang}/account`);
+      }
     } catch (error: any) {
       console.error(error);
       toast({
