@@ -76,81 +76,78 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    let productData; // Define here to be available in catch block
 
-    if (!firestore || !storage || !user) {
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Error',
-        description: 'You must be logged in to create a product.',
-      });
-      setIsSubmitting(false);
-      return;
-    }
-    
     try {
-        let imageUrl = '';
-        const imageFile = values.image;
+      if (!firestore || !storage || !user) {
+        throw new Error('You must be logged in to create a product.');
+      }
 
-        // Step 1: Upload Image if present
-        if (imageFile && imageFile.size > 0) {
-            const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
-            const uploadResult = await uploadBytes(storageRef, imageFile);
-            imageUrl = await getDownloadURL(uploadResult.ref);
-        }
+      let imageUrl = '';
+      const imageFile = values.image;
 
-        // Step 2: Prepare Product Data
-        const productData = {
-          name: values.name,
-          slug: createSlug(values.name),
-          sku: values.sku,
-          description: values.description,
-          price: values.price,
-          stock: values.stock,
-          categoryId: values.categoryId,
-          imageUrl: imageUrl,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        };
+      // Step 1: Upload Image if present
+      if (imageFile && imageFile.size > 0) {
+        const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
+        const uploadResult = await uploadBytes(storageRef, imageFile);
+        imageUrl = await getDownloadURL(uploadResult.ref);
+      }
 
-        // Step 3: Add to Firestore
-        const productsCollection = collection(firestore, 'products');
-        await addDoc(productsCollection, productData);
-        
-        // Step 4: Success feedback and navigation
-        toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
-        router.push(`/${lang}/admin/products`);
-        
+      // Step 2: Prepare Product Data
+      productData = {
+        name: values.name,
+        slug: createSlug(values.name),
+        sku: values.sku,
+        description: values.description,
+        price: values.price,
+        stock: values.stock,
+        categoryId: values.categoryId,
+        imageUrl: imageUrl,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+
+      // Step 3: Add to Firestore
+      const productsCollection = collection(firestore, 'products');
+      await addDoc(productsCollection, productData);
+
+      // Step 4: Success feedback and navigation
+      toast({ title: dictionary.admin.productCreatedSuccess, description: dictionary.admin.productCreatedSuccessDescription });
+      router.push(`/${lang}/admin/products`);
+
     } catch (error: any) {
-        // Step 5: Centralized and specific error handling
-        console.error("Failed to create product:", error);
+      console.error("Failed to create product:", error);
 
-        if (error.code && error.code.startsWith('storage/')) {
-            toast({
-              variant: "destructive",
-              title: dictionary.admin.permissionDeniedImage || "Image Upload Failed",
-              description: "You do not have permission to upload this image. Check your Storage Rules.",
-            });
-        } else if (error.code === 'permission-denied') {
-             const permissionError = new FirestorePermissionError({
-                path: 'products',
-                operation: 'create',
-              });
-              errorEmitter.emit('permission-error', permissionError);
-              toast({
-                variant: "destructive",
-                title: dictionary.admin.permissionDeniedProduct || "Failed to Save Product",
-                description: "You do not have permission to create this product. Check your Firestore Rules.",
-              });
-        } else {
-            toast({
-                variant: 'destructive',
-                title: 'An Unexpected Error Occurred',
-                description: error.message || 'Please try again later.',
-            });
-        }
+      if (error.code?.startsWith('storage/')) {
+        toast({
+          variant: "destructive",
+          title: dictionary.admin.permissionDeniedImage || "Image Upload Failed",
+          description: "You do not have permission to upload this image. Check your Storage Rules.",
+        });
+      } else if (error.code === 'permission-denied') {
+        // This error is from Firestore
+        const permissionError = new FirestorePermissionError({
+          path: 'products', // The collection path
+          operation: 'create',
+          requestResourceData: productData, // Now safely available
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        toast({
+          variant: "destructive",
+          title: dictionary.admin.permissionDeniedProduct || "Failed to Save Product",
+          description: "You do not have permission to create this product. Check your Firestore Rules.",
+        });
+      } else {
+        // Handle other errors, like the auth check at the top
+        toast({
+          variant: 'destructive',
+          title: 'An Unexpected Error Occurred',
+          description: error.message || 'Please try again later.',
+        });
+      }
     } finally {
-        // Step 6: Always reset submitting state
-        setIsSubmitting(false);
+      // Step 5: Always reset submitting state
+      setIsSubmitting(false);
     }
   }
 

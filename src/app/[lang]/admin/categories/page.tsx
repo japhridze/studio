@@ -1,6 +1,4 @@
-
 'use client';
-import { use } from 'react';
 import {
     Card,
     CardContent,
@@ -27,8 +25,8 @@ import {
   import { MoreHorizontal, PlusCircle } from "lucide-react";
   import { categories, products } from "@/lib/data";
   
-  export default function AdminCategoriesPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
-    const { lang } = use(params);
+  export default function AdminCategoriesPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+    const { lang } = params;
     return (
       <Card>
         <CardHeader>
@@ -86,4 +84,3 @@ import {
       </Card>
     );
   }
-  

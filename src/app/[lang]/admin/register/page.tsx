@@ -1,4 +1,3 @@
-
 'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,6 @@ import { doc, setDoc } from "firebase/firestore";
 import { useAuth, useFirestore } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { use } from "react";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -36,12 +34,12 @@ const formSchema = z.object({
   role: z.enum(["admin", "customer"]),
 });
 
-export default function AdminRegisterPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
+export default function AdminRegisterPage({ params }: { params: { lang: 'en' | 'ka' } }) {
   const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
-  const { lang } = use(params);
+  const { lang } = params;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

@@ -1,6 +1,4 @@
-
 'use client';
-import { use } from 'react';
 import {
     Card,
     CardContent,
@@ -28,8 +26,8 @@ import {
   import { orders } from "@/lib/data";
   import { Badge } from "@/components/ui/badge";
   
-  export default function AdminOrdersPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
-    const { lang } = use(params);
+  export default function AdminOrdersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+    const { lang } = params;
     return (
       <Card>
         <CardHeader>
@@ -87,4 +85,3 @@ import {
       </Card>
     );
   }
-  

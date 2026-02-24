@@ -30,10 +30,9 @@ import { useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from 'firebase/firestore';
 import type { FirestoreProduct } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { use } from 'react';
 
-export default function AdminProductsPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
-  const { lang } = use(params);
+export default function AdminProductsPage({ params }: { params: { lang: 'en' | 'ka' } }) {
+  const { lang } = params;
   const firestore = useFirestore();
 
   const productsQuery = useMemoFirebase(() => {
@@ -132,15 +131,16 @@ export default function AdminProductsPage({ params }: { params: Promise<{ lang: 
                 </TableRow>
             )}
             {products?.map((product) => {
+              const trimmedUrl = product.imageUrl ? product.imageUrl.trim() : null;
               return (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
-                  {product.imageUrl && product.imageUrl.trim() &&
+                  {trimmedUrl &&
                     <Image
                       alt={product.name}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={product.imageUrl.trim()}
+                      src={trimmedUrl}
                       width="64"
                     />
                   }

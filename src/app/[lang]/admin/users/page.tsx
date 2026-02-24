@@ -1,4 +1,3 @@
-
 'use client';
 import Link from "next/link";
 import {
@@ -30,11 +29,10 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { use } from "react";
   
-  export default function AdminUsersPage({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
+  export default function AdminUsersPage({ params }: { params: { lang: 'en' | 'ka' } }) {
     const firestore = useFirestore();
-    const { lang } = use(params);
+    const { lang } = params;
     const usersQuery = useMemoFirebase(() => {
       if (!firestore) return null;
       return collection(firestore, 'users');
