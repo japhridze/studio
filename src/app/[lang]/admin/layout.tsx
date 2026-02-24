@@ -23,19 +23,20 @@ import { Button } from "@/components/ui/button";
 import AdminHeader from "@/components/admin-header";
 import Logo from "@/components/logo";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import { useEffect, use, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { doc } from "firebase/firestore";
 import type { User } from "@/lib/types";
+import AdminLoginButton from "@/components/admin-login-button";
 
 export default function AdminLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: 'en' | 'ka' }>;
+  params: { lang: 'en' | 'ka' };
 }) {
-  const { lang } = use(params);
+  const { lang } = params;
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -56,18 +57,18 @@ export default function AdminLayout({
     if (!hasMounted) return; // Don't run auth checks until client has mounted
 
     if (!isUserLoading && !user) {
+      // Only redirect if the user is not logged in at all.
       router.replace(`/${lang}/login`);
     }
-    if (!isProfileLoading && userProfile && userProfile.role !== 'admin') {
-      router.replace(`/${lang}`);
-    }
-  }, [user, isUserLoading, userProfile, isProfileLoading, router, lang, hasMounted]);
+  }, [user, isUserLoading, router, lang, hasMounted]);
 
   if (!hasMounted || isUserLoading || isProfileLoading || !userProfile || userProfile.role !== 'admin') {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-            <p className="text-muted-foreground">Verifying admin access...</p>
+        <div className="flex flex-col items-center gap-4 text-center">
+            <p className="font-semibold text-lg">Access Denied</p>
+            <p className="text-muted-foreground max-w-sm">You do not have permission to view this page, or your admin status is still loading.</p>
+            <AdminLoginButton />
         </div>
       </div>
     );
