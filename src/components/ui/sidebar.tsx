@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -175,7 +176,25 @@ const Sidebar = React.forwardRef<
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { isMobile, state, open, openMobile, setOpenMobile } = useSidebar()
+    const [hasMounted, setHasMounted] = React.useState(false)
+
+    React.useEffect(() => {
+      setHasMounted(true)
+    }, [])
+
+    if (!hasMounted) {
+      return (
+        <div className="group peer hidden md:block text-sidebar-foreground">
+          <div
+            className={cn(
+              "duration-200 relative h-svh bg-transparent transition-[width] ease-linear",
+              open ? "w-[--sidebar-width]" : "w-[--sidebar-width-icon]"
+            )}
+          />
+        </div>
+      )
+    }
 
     if (collapsible === "none") {
       return (
@@ -761,3 +780,5 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+    

@@ -76,71 +76,66 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+
     try {
-      if (!user || !firestore || !storage) {
-        throw new Error("User is not authenticated or Firebase services are not available.");
-      }
+        if (!user || !firestore) {
+            throw new Error("User is not authenticated or Firestore is not available.");
+        }
 
-      let imageUrl = "";
-      const imageFile = values.image;
+        let imageUrl = "";
+        const imageFile = values.image;
 
-      // Step 1: Upload image if it exists
-      if (imageFile && imageFile.size > 0) {
-        const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
-        const uploadTask = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(uploadTask.ref);
-      }
+        // Step 1: Attempt to upload image if it exists
+        if (imageFile && imageFile.size > 0 && storage) {
+            try {
+                const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
+                const uploadTask = await uploadBytes(storageRef, imageFile);
+                imageUrl = await getDownloadURL(uploadTask.ref);
+            } catch (imageError: any) {
+                console.error("Image upload failed, proceeding without image:", imageError);
+                toast({
+                    variant: "destructive",
+                    title: "Image Upload Failed",
+                    description: "The product will be created without an image. " + (imageError.message || "Please check storage rules and network."),
+                });
+            }
+        }
 
-      // Step 2: Prepare product data
-      const productData = {
-        name: values.name,
-        slug: createSlug(values.name),
-        sku: values.sku,
-        description: values.description,
-        price: values.price,
-        stock: values.stock,
-        categoryId: values.categoryId,
-        imageUrl: imageUrl,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      };
+        // Step 2: Prepare product data
+        const productData = {
+            name: values.name,
+            slug: createSlug(values.name),
+            sku: values.sku,
+            description: values.description,
+            price: values.price,
+            stock: values.stock,
+            categoryId: values.categoryId,
+            imageUrl: imageUrl, // Will be empty if upload failed or no image was provided
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+        };
 
-      // Step 3: Add document to Firestore
-      const productsCollection = collection(firestore, "products");
-      await addDoc(productsCollection, productData);
+        // Step 3: Add document to Firestore
+        const productsCollection = collection(firestore, "products");
+        await addDoc(productsCollection, productData);
 
-      // Step 4: Success feedback and navigation
-      toast({
-        title: dictionary.admin.productCreatedSuccess,
-        description: dictionary.admin.productCreatedSuccessDescription,
-      });
-      router.push(`/${lang}/admin/products`);
+        // Step 4: Success feedback and navigation
+        toast({
+            title: dictionary.admin.productCreatedSuccess,
+            description: imageUrl ? dictionary.admin.productCreatedSuccessDescription : "Product created without an image.",
+        });
+        router.push(`/${lang}/admin/products`);
 
-    } catch (error: any) {
-      console.error("Failed to add product:", error);
-      
-      let errorMessage = "An unexpected error occurred.";
-      if (error.code) {
-         if (error.code === 'storage/unauthorized' || error.code === 'storage/object-not-found') {
-            errorMessage = dictionary.admin.permissionDeniedImage || "Image upload failed. Check permissions and network.";
-         } else if (error.code === 'permission-denied') {
-            errorMessage = dictionary.admin.permissionDeniedProduct || "Database write failed. Check Firestore Rules.";
-         } else {
-            errorMessage = error.message;
-         }
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      toast({
-        variant: "destructive",
-        title: "Failed to Add Product",
-        description: errorMessage,
-      });
-
+    } catch (dbError: any) {
+        console.error("Failed to add product to Firestore:", dbError);
+        toast({
+            variant: "destructive",
+            title: "Failed to Add Product",
+            description: dbError.message || "Could not save product data to the database.",
+        });
     } finally {
-      // Step 5: ALWAYS reset the submitting state
-      setIsSubmitting(false);
+        // Step 5: ALWAYS reset the submitting state
+        setIsSubmitting(false);
     }
   }
 
