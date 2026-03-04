@@ -1,5 +1,7 @@
+
 import { redirect } from 'next/navigation'
 
-export default function AdminPage({ params: { lang } }: { params: { lang: string } }) {
+export default async function AdminPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
   redirect(`/${lang}/admin/products`)
 }

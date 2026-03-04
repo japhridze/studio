@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, LayoutGrid } from "lucide-react";
@@ -10,7 +11,8 @@ import { getDictionary } from "@/lib/dictionaries";
 import { categories } from "@/lib/data";
 import FeaturedProducts from "@/components/featured-products";
 
-export default async function Home({ params: { lang } }: { params: { lang: 'en' | 'ka' } }) {
+export default async function Home({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
+  const { lang } = await params;
   const dict = await getDictionary(lang);
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
   const saleImage = PlaceHolderImages.find(p => p.id === 'sale-banner');
