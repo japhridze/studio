@@ -3,13 +3,16 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from "@/context/cart-context";
 import "../globals.css";
-import { FirebaseClientProvider } from "@/firebase";
+import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export const metadata: Metadata = {
   title: "Comfort House",
   description: "Your one-stop shop for home and hardware.",
 };
 
+/**
+ * Ensures that the dynamic [lang] segment is pre-generated for performance.
+ */
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'ka' }]
 }
@@ -21,7 +24,9 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ lang: "en" | "ka" }>;
 }>) {
-  const { lang } = await params;
+  // In Next.js 15, we MUST await params in Server Components
+  const resolvedParams = await params;
+  const lang = resolvedParams?.lang || 'en';
   
   return (
     <html lang={lang} suppressHydrationWarning>

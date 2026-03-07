@@ -15,13 +15,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { categories } from '@/lib/data';
 import type { getDictionary } from '@/lib/dictionaries';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
+  slug: z.string().optional(),
   sku: z.string().min(1, 'SKU is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().min(0.01, 'Price must be greater than 0'),
@@ -30,29 +31,41 @@ const formSchema = z.object({
   image: z.instanceof(File).optional(),
 });
 
-// Helper function to create a URL-friendly slug from a string.
-const createSlug = (name: string) => {
+/**
+ * Transliterates Georgian characters to Latin equivalents.
+ */
+const transliterateGeorgian = (text: string) => {
+  const map: Record<string, string> = {
+    'ა': 'a', 'ბ': 'b', 'გ': 'g', 'დ': 'd', 'ე': 'e', 'ვ': 'v', 'ზ': 'z', 'თ': 't', 'ი': 'i',
+    'კ': 'k', 'ლ': 'l', 'მ': 'm', 'ნ': 'n', 'ო': 'o', 'პ': 'p', 'ჟ': 'zh', 'რ': 'r', 'ს': 's',
+    'ტ': 't', 'უ': 'u', 'ფ': 'p', 'ქ': 'k', 'ღ': 'gh', 'ყ': 'q', 'შ': 'sh', 'ჩ': 'ch',
+    'ც': 'ts', 'ძ': 'dz', 'წ': 'ts', 'ჭ': 'ch', 'ხ': 'kh', 'ჯ': 'j', 'ჰ': 'h'
+  };
+  return text.split('').map(char => map[char] || char).join('');
+};
+
+/**
+ * Helper function to create a URL-friendly slug from a string, 
+ * ensuring only Latin characters are used.
+ */
+const createLatinSlug = (name: string) => {
   if (!name) return '';
   
-  // The \p{L} and \p{N} are Unicode property escapes.
-  // \p{L} matches any kind of letter from any language.
-  // \p{N} matches any kind of numeric character in any script.
-  // The 'u' flag is essential for Unicode regex.
-  const slug = name
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, '-') // Replace non-letters/numbers with a hyphen
+  // Transliterate Georgian letters to Latin first
+  let slug = transliterateGeorgian(name.toLowerCase());
+
+  // Replace everything that's not a-z or 0-9 with a hyphen
+  slug = slug
+    .replace(/[^a-z0-9]+/g, '-')
     .replace(/--+/g, '-')             // Replace multiple hyphens with a single one
     .replace(/(^-|-$)/g, '');         // Remove leading/trailing hyphens
 
-  // If the name consists only of characters that are replaced,
-  // the slug might be empty. Provide a fallback.
   if (!slug) {
-    return 'product-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+    return 'product-' + Date.now().toString(36);
   }
 
   return slug;
 };
-
 
 export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
   const router = useRouter();
@@ -66,6 +79,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      slug: '',
       sku: '',
       description: '',
       price: 0,
@@ -95,20 +109,23 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             } catch (imageError: any) {
                 console.error("Image upload failed:", imageError);
                 imageUploadFailed = true;
-                // The specific toast for image failure will be shown after attempting to save the product data.
             }
         }
 
         // Step 2: Prepare product data
+        const finalSlug = values.slug && values.slug.trim() 
+            ? createLatinSlug(values.slug) 
+            : createLatinSlug(values.name);
+
         const productData = {
             name: values.name,
-            slug: createSlug(values.name),
+            slug: finalSlug,
             sku: values.sku,
             description: values.description,
             price: values.price,
             stock: values.stock,
             categoryId: values.categoryId,
-            imageUrl: imageUrl, // Will be empty if upload failed
+            imageUrl: imageUrl, 
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         };
@@ -134,7 +151,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
         router.push(`/${lang}/admin/products`);
 
     } catch (dbError: any) {
-        // This catch block will now primarily handle errors from addDoc
         console.error("Failed to save product to Firestore:", dbError);
         toast({
             variant: "destructive",
@@ -142,7 +158,6 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             description: (dictionary.admin.dbWriteFailedDescription || "Could not save the product to the database.") + ` (${dbError.message})`,
         });
     } finally {
-        // This will always execute, ensuring the button is re-enabled.
         setIsSubmitting(false);
     }
   }
@@ -157,7 +172,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -181,6 +196,19 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL Slug (Latin only)</FormLabel>
+                  <FormControl><Input placeholder="e.g. cordless-drill-pro" {...field} /></FormControl>
+                  <FormDescription>Leave empty to auto-generate from name. Only Latin letters and numbers are allowed.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             
             <FormField
               control={form.control}

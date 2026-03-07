@@ -37,7 +37,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const params = useParams();
-  const lang = params.lang as 'en' | 'ka';
+  const lang = (params?.lang as 'en' | 'ka') || 'en';
+  
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
@@ -64,11 +65,11 @@ export default function AdminLayout({
 
   if (!hasMounted || isUserLoading || isProfileLoading) {
     return (
-        <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex h-screen w-full items-center justify-center bg-background">
             <div className="flex flex-col items-center gap-4">
                 <Skeleton className="h-8 w-32" />
                 <Skeleton className="h-4 w-64" />
-                <Skeleton className="h-10 w-32" />
+                <Skeleton className="h-10 w-32 mt-4" />
             </div>
         </div>
     );
@@ -76,11 +77,19 @@ export default function AdminLayout({
 
   if (userProfile?.role !== 'admin') {
      return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-center">
-            <p className="font-semibold text-lg">Access Denied</p>
-            <p className="text-muted-foreground max-w-sm">You do not have permission to view this page. Please log in as an administrator.</p>
-            <AdminLoginButton />
+      <div className="flex h-screen w-full items-center justify-center bg-background p-4">
+        <div className="flex flex-col items-center gap-4 text-center max-w-sm">
+            <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center mb-2">
+              <LayoutGrid className="h-6 w-6 text-destructive" />
+            </div>
+            <p className="font-bold text-2xl tracking-tight">Access Denied</p>
+            <p className="text-muted-foreground">You do not have permission to view this page. Please log in as an administrator to access the dashboard.</p>
+            <div className="pt-4 w-full">
+              <AdminLoginButton />
+            </div>
+            <Button asChild variant="ghost" className="mt-2">
+              <Link href={`/${lang}`}>Return to Store</Link>
+            </Button>
         </div>
       </div>
     );
@@ -95,27 +104,35 @@ export default function AdminLayout({
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href={`/${lang}/admin/products`} tooltip="Products">
-                <Package />
-                Products
+              <SidebarMenuButton asChild tooltip="Products">
+                <Link href={`/${lang}/admin/products`}>
+                  <Package />
+                  <span>Products</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href={`/${lang}/admin/categories`} tooltip="Categories">
-                <LayoutGrid />
-                Categories
+              <SidebarMenuButton asChild tooltip="Categories">
+                <Link href={`/${lang}/admin/categories`}>
+                  <LayoutGrid />
+                  <span>Categories</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href={`/${lang}/admin/orders`} tooltip="Orders">
-                <ShoppingCart />
-                Orders
+              <SidebarMenuButton asChild tooltip="Orders">
+                <Link href={`/${lang}/admin/orders`}>
+                  <ShoppingCart />
+                  <span>Orders</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href={`/${lang}/admin/users`} tooltip="Users">
-                <Users />
-                Users
+              <SidebarMenuButton asChild tooltip="Users">
+                <Link href={`/${lang}/admin/users`}>
+                  <Users />
+                  <span>Users</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -123,15 +140,15 @@ export default function AdminLayout({
         <SidebarFooter>
           <Button asChild variant="ghost" className="w-full justify-start gap-2">
             <Link href={`/${lang}`}>
-              <Home />
-              Back to Store
+              <Home className="h-4 w-4" />
+              <span>Back to Store</span>
             </Link>
           </Button>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <AdminHeader lang={lang} />
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

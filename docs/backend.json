@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -103,6 +104,10 @@
           "type": "string",
           "description": "The name of the product."
         },
+        "slug": {
+          "type": "string",
+          "description": "URL-friendly version of the product name, using Latin characters only."
+        },
         "description": {
           "type": "string",
           "description": "A detailed description of the product."
@@ -152,6 +157,7 @@
       "required": [
         "id",
         "name",
+        "slug",
         "description",
         "price",
         "stockQuantity",
@@ -341,156 +347,41 @@
   "auth": {
     "providers": [
       "password",
-      "anonymous"
+      "google.com"
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/users/{userId}",
-        "definition": {
-          "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Stores individual user profile information. Access is restricted to the owner (matching `request.auth.uid`) or administrators.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user, matching `request.auth.uid`."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/admin_roles/{uid}",
-        "definition": {
-          "entityName": "adminRole",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Grants administrative privileges. The existence of a document for a specific `uid` in this collection indicates an administrator role, used for Database Access Control (DBAC). This collection stores no specific User data, only serves as a flag for admin UIDs.",
-          "params": [
-            {
-              "name": "uid",
-              "description": "The unique user ID of an administrator, matching `request.auth.uid`."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/categories/{categoryId}",
-        "definition": {
-          "entityName": "Category",
-          "schema": {
-            "$ref": "#/backend/entities/Category"
-          },
-          "description": "Stores product category information. Publicly readable for catalog browsing. Administrators have full read/write access.",
-          "params": [
-            {
-              "name": "categoryId",
-              "description": "The unique identifier for the category."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/products/{productId}",
-        "definition": {
-          "entityName": "Product",
-          "schema": {
-            "$ref": "#/backend/entities/Product"
-          },
-          "description": "Stores product details for the catalog. Publicly readable. Administrators have full read/write access.",
-          "params": [
-            {
-              "name": "productId",
-              "description": "The unique identifier for the product."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/carts/{cartId}",
-        "definition": {
-          "entityName": "Cart",
-          "schema": {
-            "$ref": "#/backend/entities/Cart"
-          },
-          "description": "Stores a user's shopping cart. The `userId` in the path (and in the document) must match `request.auth.uid` for authorization. For anonymous users, `userId` would be a temporary client-generated ID that is later updated on login.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user (or temporary session ID) who owns the cart."
-            },
-            {
-              "name": "cartId",
-              "description": "The unique identifier for the shopping cart."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/carts/{cartId}/items/{cartItemId}",
-        "definition": {
-          "entityName": "CartItem",
-          "schema": {
-            "$ref": "#/backend/entities/CartItem"
-          },
-          "description": "Stores individual items within a user's shopping cart. Includes denormalized `userId` and `cartId` for authorization independence, ensuring `request.auth.uid` matches the `userId` in the document.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user (or temporary session ID) who owns the cart, inherited from the parent path."
-            },
-            {
-              "name": "cartId",
-              "description": "The unique identifier for the shopping cart, inherited from the parent path."
-            },
-            {
-              "name": "cartItemId",
-              "description": "The unique identifier for the cart item."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/orders/{orderId}",
-        "definition": {
-          "entityName": "Order",
-          "schema": {
-            "$ref": "#/backend/entities/Order"
-          },
-          "description": "Stores customer orders. The `userId` field within the document is used for ownership-based authorization, allowing users to query their own orders. Administrators have full read/write access to all orders.",
-          "params": [
-            {
-              "name": "orderId",
-              "description": "The unique identifier for the order."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/orders/{orderId}/items/{orderItemId}",
-        "definition": {
-          "entityName": "OrderItem",
-          "schema": {
-            "$ref": "#/backend/entities/OrderItem"
-          },
-          "description": "Stores individual items within a specific order. Includes denormalized `userId` (from the parent order) and `orderId` for authorization independence, allowing rules to verify access without fetching the parent `Order` document.",
-          "params": [
-            {
-              "name": "orderId",
-              "description": "The unique identifier for the order, inherited from the parent path."
-            },
-            {
-              "name": "orderItemId",
-              "description": "The unique identifier for the order item."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "The Firestore data structure is designed to support a robust e-commerce platform with distinct user roles (customers and administrators) and public catalog browsing, while prioritizing security, scalability, and debuggability of security rules. \n\n**Authorization Independence (CRITICAL):**\nTo achieve Authorization Independence, crucial authorization context fields are denormalized into subcollection documents. For instance, `CartItem` documents (in `/users/{userId}/carts/{cartId}/items/{cartItemId}`) will include both `userId` and `cartId` fields. Similarly, `OrderItem` documents (in `/orders/{orderId}/items/{orderItemId}`) will contain `userId` (inherited from the parent order) and `orderId`. This ensures that security rules evaluating access to these subcollection documents do not need to perform expensive and non-atomic `get()` operations on their parent documents, thereby simplifying rule logic and improving performance.\n\n**QAPs (Rules are not Filters):**\nSecure `list` operations (QAPs) are enabled through structural segregation and indexed fields:\n1.  **Public Catalog:** `categories` and `products` are top-level collections, allowing for public, unauthenticated `list` and `get` operations. This inherently satisfies QAP for public data.\n2.  **User-Owned Data:** `users/{userId}/carts` allows users to `list` only their own carts, as `request.auth.uid` must match `{userId}` in the path. Similarly for `cartItems` under their respective carts.\n3.  **Orders:** `orders` is a top-level collection. Users can query their own orders using `db.collection('orders').where('userId', '==', request.auth.uid)`. This `where` clause acts as a server-side filter on an indexed field, making `list` operations QAP-compliant for individual users. Administrators, identified by a document in `admin_roles/{uid}`, will have permission to `list` all documents in the `orders` collection directly, as this is an explicit administrative capability.\n\n**DBAC and Structural Segregation:**\n-   `admin_roles/{uid}` collection is used for Database Access Control (DBAC). The mere existence of a document at this path for a given `uid` grants administrative privileges, making role checks explicit and efficient in security rules (e.g., `exists(/databases/$(database)/documents/admin_roles/$(request.auth.uid))`).\n-   User-specific data like `User` profiles and `Cart` data are stored in `/users/{userId}` paths, providing strong, path-based ownership.\n-   Public catalog data (`Category`, `Product`) is segregated into top-level collections for easy public access and efficient admin management without user-specific path constraints.\n-   `Order` data is stored in a top-level `/orders/{orderId}` collection, with `userId` as an explicit field for ownership. This design choice enables both efficient user-specific filtering and global admin listing, fulfilling QAPs for different access patterns without requiring complex rule logic or mixing different security postures within the same *document* set."
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user profiles."
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Product categories."
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Product catalog."
+    },
+    "/users/{userId}/carts/{cartId}": {
+      "schema": "Cart",
+      "description": "User shopping carts."
+    },
+    "/users/{userId}/carts/{cartId}/items/{itemId}": {
+      "schema": "CartItem",
+      "description": "Items in a user's cart."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders."
+    },
+    "/orders/{orderId}/items/{itemId}": {
+      "schema": "OrderItem",
+      "description": "Items in a customer's order."
+    },
+    "admin_roles/{uid}": {
+      "schema": "User",
+      "description": "Admin users list."
+    }
   }
 }

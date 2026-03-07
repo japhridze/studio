@@ -26,7 +26,9 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
 
   const productQuery = useMemoFirebase(() => {
       if (!firestore) return null;
-      return query(collection(firestore, "products"), where("slug", "==", slug), limit(1));
+      // Use decodeURIComponent to correctly handle any encoded characters in the URL
+      const decodedSlug = decodeURIComponent(slug);
+      return query(collection(firestore, "products"), where("slug", "==", decodedSlug), limit(1));
   }, [firestore, slug]);
 
   const { data: products, isLoading } = useCollection<FirestoreProduct>(productQuery);

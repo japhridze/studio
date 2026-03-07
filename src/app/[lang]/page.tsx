@@ -12,14 +12,16 @@ import { categories } from "@/lib/data";
 import FeaturedProducts from "@/components/featured-products";
 
 export default async function Home({ params }: { params: Promise<{ lang: 'en' | 'ka' }> }) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const resolvedParams = await params;
+  const lang = resolvedParams?.lang || 'en';
+  const dict = await getDictionary(lang as 'en' | 'ka');
+  
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
   const saleImage = PlaceHolderImages.find(p => p.id === 'sale-banner');
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header lang={lang} dictionary={dict} />
+      <Header lang={lang as 'en' | 'ka'} dictionary={dict} />
       <main className="flex-1">
         <section className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center text-center text-white">
           {heroImage && (
@@ -83,7 +85,7 @@ export default async function Home({ params }: { params: Promise<{ lang: 'en' | 
                 {dict.homepage.featuredProductsSubtitle}
               </p>
             </div>
-            <FeaturedProducts lang={lang} dictionary={dict} />
+            <FeaturedProducts lang={lang as 'en' | 'ka'} dictionary={dict} />
           </div>
         </section>
 
@@ -123,7 +125,7 @@ export default async function Home({ params }: { params: Promise<{ lang: 'en' | 
           </section>
         )}
       </main>
-      <Footer lang={lang} dictionary={dict.footer} />
+      <Footer lang={lang as 'en' | 'ka'} dictionary={dict.footer} />
     </div>
   );
 }
