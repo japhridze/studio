@@ -33,13 +33,17 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
   const { data: products, isLoading } = useCollection<FirestoreProduct>(productQuery);
   const product = products?.[0];
   
+  const discount = product?.discountPercentage || 0;
+  const sellingPrice = (product && discount > 0) ? (product.price * (1 - discount / 100)) : (product?.price || 0);
+
   const handleAddToCart = () => {
     if (!product) return;
     const messages = {
       title: dictionary.productDetails.addedToCartTitle,
       description: dictionary.productDetails.addedToCartDescription.replace('{quantity}', String(quantity)).replace('{productName}', product.name)
     };
-    addToCart(product, quantity, messages);
+    // Pass calculated selling price to the cart
+    addToCart({ ...product, price: sellingPrice }, quantity, messages);
   };
   
   if (isLoading || !dictionary) {
@@ -87,8 +91,6 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
   }
   
   const productCategory = categories.find(c => c.id === product.categoryId);
-  const discount = product.discountPercentage || 0;
-  const originalPrice = discount > 0 ? (product.price / (1 - discount / 100)) : product.price;
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
@@ -156,11 +158,11 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
 
               <div className="space-y-6">
                 <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-bold text-primary">₾{(product.price || 0).toFixed(2)}</span>
+                  <span className="text-4xl font-bold text-primary">₾{sellingPrice.toFixed(2)}</span>
                   {discount > 0 && (
                     <>
                         <span className="text-xl text-slate-400 line-through decoration-slate-300">
-                            ₾{originalPrice.toFixed(2)}
+                            ₾{(product.price || 0).toFixed(2)}
                         </span>
                         <Badge className="bg-rose-500 text-white border-none font-bold">-{discount}%</Badge>
                     </>

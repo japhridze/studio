@@ -107,7 +107,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             slug: finalSlug,
             sku: values.sku,
             description: values.description,
-            price: values.price,
+            price: values.price, // Stored as Original Price
             discountPercentage: values.discountPercentage,
             stock: values.stock,
             categoryId: values.categoryId,
@@ -203,7 +203,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                     <FormItem>
                     <FormLabel>{dictionary.admin.price} (₾)</FormLabel>
                     <FormControl><Input type="number" step="0.01" placeholder={dictionary.admin.pricePlaceholder} {...field} /></FormControl>
-                    <FormDescription>The current selling price.</FormDescription>
+                    <FormDescription>Enter the base price (original price).</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
@@ -214,8 +214,8 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>{dictionary.admin.discountPercentage} (%)</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g. 20" {...field} /></FormControl>
-                    <FormDescription>Set to 0 if no discount.</FormDescription>
+                    <FormControl><Input type="number" placeholder="e.g. 10" {...field} /></FormControl>
+                    <FormDescription>Percentage to subtract from price.</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}

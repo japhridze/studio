@@ -37,6 +37,10 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
     }
   }
 
+  const discount = product.discountPercentage || 0;
+  // Current logic: price is the ORIGINAL price, calculate SELLING price
+  const sellingPrice = discount > 0 ? (product.price * (1 - discount / 100)) : product.price;
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -44,12 +48,9 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
       title: dictionary.addedToCartTitle,
       description: dictionary.addedToCartDescription.replace('{quantity}', '1').replace('{productName}', product.name)
     };
-    addToCart(product, 1, messages);
+    // We pass the calculated selling price to the cart
+    addToCart({ ...product, price: sellingPrice }, 1, messages);
   }
-
-  const discount = product.discountPercentage || 0;
-  // Calculate original price based on current price and discount percentage
-  const originalPrice = discount > 0 ? (product.price / (1 - discount / 100)) : product.price;
 
   return (
     <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 border-none shadow-sm hover:shadow-md bg-white rounded-xl">
@@ -114,11 +115,11 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
             <div className="flex flex-col mt-2">
                 {discount > 0 && (
                     <span className="text-xs text-slate-400 line-through decoration-slate-300">
-                        ₾{originalPrice.toFixed(2)}
+                        ₾{(product.price || 0).toFixed(2)}
                     </span>
                 )}
                 <span className="text-xl font-bold text-slate-900 leading-none">
-                    ₾{(product.price || 0).toFixed(2)}
+                    ₾{sellingPrice.toFixed(2)}
                 </span>
             </div>
         </div>

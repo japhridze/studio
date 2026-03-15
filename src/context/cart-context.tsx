@@ -47,6 +47,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems, hasMounted]);
 
   const addToCart = (product: Product | FirestoreProduct, quantity: number, messages?: { title: string; description: string; }) => {
+    // In this updated version, product.price should already be the final selling price
+    // provided by the calling component (ProductCard or ProductClientPage).
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       if (existingItem) {
@@ -59,7 +61,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const newItem: CartItem = {
           id: product.id,
           name: product.name,
-          price: product.price,
+          price: product.price, // Selling price
           quantity,
           image: product.imageUrl,
           slug: product.slug,
@@ -85,7 +87,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const updateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      // Silently remove, or pass messages to updateQuantity as well
       setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
       return;
     }
