@@ -5,6 +5,7 @@ export type Product = {
   slug: string;
   description: string;
   price: number;
+  discountPercentage?: number;
   imageUrl: string;
   categoryId: string;
   stock: number;
@@ -17,6 +18,7 @@ export type FirestoreProduct = {
   slug: string;
   description: string;
   price: number;
+  discountPercentage?: number;
   imageUrl: string;
   categoryId: string;
   stock: number;

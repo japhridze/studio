@@ -26,7 +26,6 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
 
   const productQuery = useMemoFirebase(() => {
       if (!firestore) return null;
-      // Use decodeURIComponent to correctly handle any encoded characters in the URL
       const decodedSlug = decodeURIComponent(slug);
       return query(collection(firestore, "products"), where("slug", "==", decodedSlug), limit(1));
   }, [firestore, slug]);
@@ -88,14 +87,15 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
   }
   
   const productCategory = categories.find(c => c.id === product.categoryId);
-  
+  const discount = product.discountPercentage || 0;
+  const originalPrice = discount > 0 ? (product.price / (1 - discount / 100)) : product.price;
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       <Header lang={lang} dictionary={dictionary} />
       
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4">
-          {/* Breadcrumbs */}
           <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8 overflow-x-auto whitespace-nowrap pb-2">
             <Link href={`/${lang}`} className="hover:text-primary flex items-center gap-1">
               <Home className="h-3.5 w-3.5" />
@@ -118,7 +118,6 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
           </nav>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
-            {/* Left: Product Image */}
             <div className="space-y-4">
                 <Card className="overflow-hidden bg-white border-none shadow-sm rounded-xl">
                     <div className="aspect-square relative w-full flex items-center justify-center p-4">
@@ -138,7 +137,6 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
                 </Card>
             </div>
             
-            {/* Right: Product Info */}
             <div className="flex flex-col">
               <div className="mb-4">
                 {productCategory && (
@@ -157,8 +155,16 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
               <Separator className="my-6" />
 
               <div className="space-y-6">
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-3">
                   <span className="text-4xl font-bold text-primary">${(product.price || 0).toFixed(2)}</span>
+                  {discount > 0 && (
+                    <>
+                        <span className="text-xl text-slate-400 line-through decoration-slate-300">
+                            ${originalPrice.toFixed(2)}
+                        </span>
+                        <Badge className="bg-rose-500 text-white border-none font-bold">-{discount}%</Badge>
+                    </>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 text-sm font-medium">
@@ -221,7 +227,6 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
                 </div>
               </div>
 
-              {/* Badges / Extras */}
               <div className="grid grid-cols-2 gap-4 mt-12">
                 <div className="flex flex-col items-center p-4 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
                    <Package className="w-8 h-8 text-primary mb-2" />

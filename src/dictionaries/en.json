@@ -157,6 +157,8 @@
         "descriptionPlaceholder": "Describe the product...",
         "price": "Price",
         "pricePlaceholder": "99.99",
+        "discountPercentage": "Discount Percentage",
+        "discountPercentagePlaceholder": "e.g., 15",
         "stock": "Stock",
         "stockPlaceholder": "100",
         "category": "Category",

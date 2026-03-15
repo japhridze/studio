@@ -26,6 +26,7 @@ const formSchema = z.object({
   sku: z.string().min(1, 'SKU is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().min(0.01, 'Price must be greater than 0'),
+  discountPercentage: z.coerce.number().min(0).max(100).default(0),
   stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
   categoryId: z.string().min(1, 'Category is required'),
   image: z.instanceof(File).optional(),
@@ -83,6 +84,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       sku: '',
       description: '',
       price: 0,
+      discountPercentage: 0,
       stock: 0,
       categoryId: '',
     },
@@ -123,6 +125,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             sku: values.sku,
             description: values.description,
             price: values.price,
+            discountPercentage: values.discountPercentage,
             stock: values.stock,
             categoryId: values.categoryId,
             imageUrl: imageUrl, 
@@ -222,7 +225,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                 control={form.control}
                 name="price"
@@ -230,6 +233,17 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                     <FormItem>
                     <FormLabel>{dictionary.admin.price}</FormLabel>
                     <FormControl><Input type="number" step="0.01" placeholder={dictionary.admin.pricePlaceholder} {...field} /></FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="discountPercentage"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>{dictionary.admin.discountPercentage}</FormLabel>
+                    <FormControl><Input type="number" placeholder={dictionary.admin.discountPercentagePlaceholder} {...field} /></FormControl>
                     <FormMessage />
                     </FormItem>
                 )}

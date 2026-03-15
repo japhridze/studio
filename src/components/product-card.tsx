@@ -48,6 +48,9 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
     addToCart(product, 1, messages);
   }
 
+  const discount = product.discountPercentage || 0;
+  const originalPrice = discount > 0 ? (product.price / (1 - discount / 100)) : product.price;
+
   return (
     <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 border-none shadow-sm hover:shadow-md bg-white rounded-xl">
       <CardHeader className="p-0 relative">
@@ -67,10 +70,11 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
                 </div>
             )}
             
-            {/* Discount Badge Mockup */}
-            <Badge className="absolute top-3 left-3 bg-rose-500 hover:bg-rose-600 text-white border-none font-bold text-xs py-1">
-              -15%
-            </Badge>
+            {discount > 0 && (
+                <Badge className="absolute top-3 left-3 bg-rose-500 hover:bg-rose-600 text-white border-none font-bold text-xs py-1">
+                    -{discount}%
+                </Badge>
+            )}
 
             {/* Quick Actions overlay */}
             <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-2 group-hover:translate-x-0">
@@ -109,9 +113,11 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
             )}
             
             <div className="flex flex-col mt-2">
-                <span className="text-xs text-slate-400 line-through decoration-slate-300">
-                    ${((product.price || 0) * 1.15).toFixed(2)}
-                </span>
+                {discount > 0 && (
+                    <span className="text-xs text-slate-400 line-through decoration-slate-300">
+                        ${originalPrice.toFixed(2)}
+                    </span>
+                )}
                 <span className="text-xl font-bold text-slate-900 leading-none">
                     ${(product.price || 0).toFixed(2)}
                 </span>

@@ -157,6 +157,8 @@
         "descriptionPlaceholder": "აღწერეთ პროდუქტი...",
         "price": "ფასი",
         "pricePlaceholder": "99.99",
+        "discountPercentage": "ფასდაკლების პროცენტი",
+        "discountPercentagePlaceholder": "მაგ., 15",
         "stock": "მარაგი",
         "stockPlaceholder": "100",
         "category": "კატეგორია",

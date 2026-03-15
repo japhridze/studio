@@ -116,6 +116,10 @@
           "type": "number",
           "description": "The current selling price of the product."
         },
+        "discountPercentage": {
+          "type": "number",
+          "description": "The discount percentage applied to the product (0-100)."
+        },
         "stockQuantity": {
           "type": "number",
           "description": "The number of units of this product currently in stock."
