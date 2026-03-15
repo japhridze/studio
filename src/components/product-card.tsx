@@ -11,7 +11,6 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { Product, FirestoreProduct } from '@/lib/types';
 import { useCart } from '@/context/cart-context';
 import type { getDictionary } from '@/lib/dictionaries';
-import { cn } from '@/lib/utils';
 
 type ProductCardProps = {
   product: Product | FirestoreProduct;
@@ -49,6 +48,7 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
   }
 
   const discount = product.discountPercentage || 0;
+  // Calculate original price based on current price and discount percentage
   const originalPrice = discount > 0 ? (product.price / (1 - discount / 100)) : product.price;
 
   return (
@@ -76,7 +76,6 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
                 </Badge>
             )}
 
-            {/* Quick Actions overlay */}
             <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-2 group-hover:translate-x-0">
                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm">
                  <Eye className="h-4 w-4" />
@@ -91,7 +90,7 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
 
       <CardContent className="p-4 pt-0 flex-grow flex flex-col">
         <div className="mb-2">
-            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Brand Name</span>
+            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Comfort House</span>
             <Link href={`/${lang}/products/${product.slug}`} className="block">
                 <CardTitle className="text-sm md:text-base font-medium leading-snug mb-1 text-slate-800 hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
                 {product.name}
@@ -115,11 +114,11 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
             <div className="flex flex-col mt-2">
                 {discount > 0 && (
                     <span className="text-xs text-slate-400 line-through decoration-slate-300">
-                        ${originalPrice.toFixed(2)}
+                        ₾{originalPrice.toFixed(2)}
                     </span>
                 )}
                 <span className="text-xl font-bold text-slate-900 leading-none">
-                    ${(product.price || 0).toFixed(2)}
+                    ₾{(product.price || 0).toFixed(2)}
                 </span>
             </div>
         </div>

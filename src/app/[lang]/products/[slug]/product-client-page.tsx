@@ -156,11 +156,11 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
 
               <div className="space-y-6">
                 <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-bold text-primary">${(product.price || 0).toFixed(2)}</span>
+                  <span className="text-4xl font-bold text-primary">₾{(product.price || 0).toFixed(2)}</span>
                   {discount > 0 && (
                     <>
                         <span className="text-xl text-slate-400 line-through decoration-slate-300">
-                            ${originalPrice.toFixed(2)}
+                            ₾{originalPrice.toFixed(2)}
                         </span>
                         <Badge className="bg-rose-500 text-white border-none font-bold">-{discount}%</Badge>
                     </>
@@ -183,7 +183,7 @@ export default function ProductClientPage({ lang, dictionary, slug }: { lang: 'e
 
                 <Card className="bg-white border-none shadow-sm rounded-xl">
                   <CardContent className="p-6 space-y-4">
-                    <h3 className="font-semibold text-slate-900">{dictionary.admin.description || 'Description'}</h3>
+                    <h3 className="font-semibold text-slate-900">{dictionary.admin.description}</h3>
                     <p className="text-slate-600 leading-relaxed text-sm md:text-base">
                       {product.description}
                     </p>

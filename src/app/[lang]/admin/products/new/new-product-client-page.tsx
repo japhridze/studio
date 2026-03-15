@@ -45,26 +45,14 @@ const transliterateGeorgian = (text: string) => {
   return text.split('').map(char => map[char] || char).join('');
 };
 
-/**
- * Helper function to create a URL-friendly slug from a string, 
- * ensuring only Latin characters are used.
- */
 const createLatinSlug = (name: string) => {
   if (!name) return '';
-  
-  // Transliterate Georgian letters to Latin first
   let slug = transliterateGeorgian(name.toLowerCase());
-
-  // Replace everything that's not a-z or 0-9 with a hyphen
   slug = slug
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/--+/g, '-')             // Replace multiple hyphens with a single one
-    .replace(/(^-|-$)/g, '');         // Remove leading/trailing hyphens
-
-  if (!slug) {
-    return 'product-' + Date.now().toString(36);
-  }
-
+    .replace(/--+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  if (!slug) return 'product-' + Date.now().toString(36);
   return slug;
 };
 
@@ -93,28 +81,23 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     let imageUrl = "";
-    let imageUploadFailed = false;
 
     try {
         if (!user || !firestore || !storage) {
-            throw new Error("User is not authenticated or Firebase is not available.");
+            throw new Error("Firebase services not initialized");
         }
 
         const imageFile = values.image;
-
-        // Step 1: Attempt to upload image if it exists
         if (imageFile && imageFile.size > 0) {
             try {
                 const storageRef = ref(storage, `products/${user.uid}/${Date.now()}-${imageFile.name}`);
                 const uploadTask = await uploadBytes(storageRef, imageFile);
                 imageUrl = await getDownloadURL(uploadTask.ref);
-            } catch (imageError: any) {
-                console.error("Image upload failed:", imageError);
-                imageUploadFailed = true;
+            } catch (err) {
+                console.error("Image upload failed, continuing without image", err);
             }
         }
 
-        // Step 2: Prepare product data
         const finalSlug = values.slug && values.slug.trim() 
             ? createLatinSlug(values.slug) 
             : createLatinSlug(values.name);
@@ -133,38 +116,25 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             updatedAt: serverTimestamp(),
         };
 
-        // Step 3: Add document to Firestore
-        const productsCollection = collection(firestore, "products");
-        await addDoc(productsCollection, productData);
+        await addDoc(collection(firestore, "products"), productData);
 
-        // Step 4: Success/Warning feedback and navigation
-        if (imageUploadFailed) {
-            toast({
-                variant: "destructive",
-                title: dictionary.admin.productAddedWarningTitle || "Product Added, But Image Failed",
-                description: dictionary.admin.productAddedWarningDescription || "The product was added, but the image upload failed.",
-            });
-        } else {
-            toast({
-                title: dictionary.admin.productCreatedSuccess,
-                description: dictionary.admin.productCreatedSuccessDescription,
-            });
-        }
+        toast({
+            title: dictionary.admin.productCreatedSuccess,
+            description: dictionary.admin.productCreatedSuccessDescription,
+        });
 
         router.push(`/${lang}/admin/products`);
 
     } catch (dbError: any) {
-        console.error("Failed to save product to Firestore:", dbError);
         toast({
             variant: "destructive",
-            title: dictionary.admin.dbWriteFailedTitle || "Database Error",
-            description: (dictionary.admin.dbWriteFailedDescription || "Could not save the product to the database.") + ` (${dbError.message})`,
+            title: dictionary.admin.dbWriteFailedTitle,
+            description: dbError.message,
         });
     } finally {
         setIsSubmitting(false);
     }
   }
-
 
   return (
     <Card>
@@ -207,7 +177,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 <FormItem>
                   <FormLabel>URL Slug (Latin only)</FormLabel>
                   <FormControl><Input placeholder="e.g. cordless-drill-pro" {...field} /></FormControl>
-                  <FormDescription>Leave empty to auto-generate from name. Only Latin letters and numbers are allowed.</FormDescription>
+                  <FormDescription>Leave empty to auto-generate from name.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -231,8 +201,9 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 name="price"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>{dictionary.admin.price}</FormLabel>
+                    <FormLabel>{dictionary.admin.price} (₾)</FormLabel>
                     <FormControl><Input type="number" step="0.01" placeholder={dictionary.admin.pricePlaceholder} {...field} /></FormControl>
+                    <FormDescription>The current selling price.</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
@@ -242,8 +213,9 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 name="discountPercentage"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>{dictionary.admin.discountPercentage}</FormLabel>
-                    <FormControl><Input type="number" placeholder={dictionary.admin.discountPercentagePlaceholder} {...field} /></FormControl>
+                    <FormLabel>{dictionary.admin.discountPercentage} (%)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g. 20" {...field} /></FormControl>
+                    <FormDescription>Set to 0 if no discount.</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
