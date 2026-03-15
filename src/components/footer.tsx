@@ -1,10 +1,12 @@
+
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram } from 'lucide-react';
+import { Facebook, Twitter, Instagram, MapPin } from 'lucide-react';
 import Logo from './logo';
 import type { getDictionary } from '@/lib/dictionaries';
 
 const defaultDictionary = {
   slogan: "Your one-stop shop for home and hardware.",
+  address: "JJJM+25R, Sulkhan-Saba Orbeliani St, Batumi",
   shop: "Shop",
   support: "Support",
   company: "Company",
@@ -21,7 +23,7 @@ const defaultDictionary = {
 
 export default function Footer({ lang = 'en', dictionary }: { lang?: 'en' | 'ka', dictionary?: Awaited<ReturnType<typeof getDictionary>>['footer'] }) {
   const currentYear = new Date().getFullYear();
-  const dict = dictionary || defaultDictionary;
+  const dict = dictionary || (defaultDictionary as any);
 
   return (
     <footer className="bg-card border-t">
@@ -30,6 +32,12 @@ export default function Footer({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
           <div className="space-y-4">
             <Logo lang={lang} />
             <p className="text-muted-foreground text-sm">{dict.slogan}</p>
+            {dict.address && (
+              <p className="text-muted-foreground text-xs flex items-center gap-2">
+                <MapPin size={14} className="text-primary shrink-0" />
+                <span>{dict.address}</span>
+              </p>
+            )}
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook size={20} /></Link>
               <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter size={20} /></Link>
