@@ -25,6 +25,9 @@ export default function Footer({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
   const currentYear = new Date().getFullYear();
   const dict = dictionary || (defaultDictionary as any);
 
+  // Google Maps search URL based on the address
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dict.address || defaultDictionary.address)}`;
+
   return (
     <footer className="bg-card border-t">
       <div className="container mx-auto px-4 py-8">
@@ -33,42 +36,47 @@ export default function Footer({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
             <Logo lang={lang} />
             <p className="text-muted-foreground text-sm">{dict.slogan}</p>
             {dict.address && (
-              <p className="text-muted-foreground text-xs flex items-center gap-2">
+              <a 
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground text-xs flex items-center gap-2 hover:text-primary transition-colors w-fit"
+              >
                 <MapPin size={14} className="text-primary shrink-0" />
                 <span>{dict.address}</span>
-              </p>
+              </a>
             )}
-            <div className="flex space-x-4">
-              <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook size={20} /></Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter size={20} /></Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary"><Instagram size={20} /></Link>
+            <div className="flex space-x-4 pt-2">
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Facebook size={20} /></Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Twitter size={20} /></Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram size={20} /></Link>
             </div>
           </div>
           <div>
             <h3 className="font-semibold text-foreground mb-4">{dict.shop}</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">Power Tools</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">Hand Tools</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">Painting</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">Building Materials</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">Power Tools</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">Hand Tools</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">Painting</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">Building Materials</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold text-foreground mb-4">{dict.support}</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.contactUs}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.faq}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.shippingReturns}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.trackOrder}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.contactUs}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.faq}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.shippingReturns}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.trackOrder}</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold text-foreground mb-4">{dict.company}</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.aboutUs}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.careers}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.privacyPolicy}</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm">{dict.termsOfService}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.aboutUs}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.careers}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.privacyPolicy}</Link></li>
+              <li><Link href="#" className="text-muted-foreground hover:text-primary text-sm transition-colors">{dict.termsOfService}</Link></li>
             </ul>
           </div>
         </div>
