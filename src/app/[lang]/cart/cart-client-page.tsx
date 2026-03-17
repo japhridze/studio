@@ -1,3 +1,4 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Trash2, ShoppingCart } from 'lucide-react';
+import { Trash2, ShoppingCart, Package } from 'lucide-react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -81,12 +82,37 @@ export default function CartClientPage({ lang, dictionary }: { lang: 'en' | 'ka'
                       </TableHeader>
                       <TableBody>
                         {cartItems.map(item => {
-                          const itemImage = PlaceHolderImages.find(p => p.id === item.image);
+                          let displayImageUrl = '';
+                          let displayImageHint = '';
+                          const trimmedUrl = (item.image || '').trim();
+
+                          if (trimmedUrl.startsWith('https://')) {
+                            displayImageUrl = trimmedUrl;
+                          } else {
+                            const placeholder = PlaceHolderImages.find(p => p.id === trimmedUrl);
+                            if (placeholder) {
+                              displayImageUrl = placeholder.imageUrl;
+                              displayImageHint = placeholder.imageHint;
+                            }
+                          }
+
                           return (
                           <TableRow key={item.id}>
                             <TableCell>
-                              <div className="aspect-square relative w-20 h-20 overflow-hidden rounded-md">
-                                {itemImage && <Image src={itemImage.imageUrl} alt={item.name} fill className="object-cover" data-ai-hint={itemImage.imageHint} />}
+                              <div className="aspect-square relative w-20 h-20 overflow-hidden rounded-md border border-slate-100 flex items-center justify-center">
+                                {displayImageUrl ? (
+                                  <Image 
+                                    src={displayImageUrl} 
+                                    alt={item.name} 
+                                    fill 
+                                    className="object-contain p-1" 
+                                    data-ai-hint={displayImageHint} 
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center bg-slate-50">
+                                     <Package className="h-8 w-8 text-slate-200" />
+                                  </div>
+                                )}
                               </div>
                             </TableCell>
                             <TableCell className="font-medium">
@@ -98,12 +124,12 @@ export default function CartClientPage({ lang, dictionary }: { lang: 'en' | 'ka'
                                     type="number"
                                     min="1"
                                     value={item.quantity}
-                                    onChange={e => updateQuantity(item.id, parseInt(e.target.value))}
+                                    onChange={e => updateQuantity(item.id, parseInt(e.target.value) || 1)}
                                     className="w-16 h-9 text-center"
                                 />
                               </div>
                             </TableCell>
-                            <TableCell className="text-right">${(item.price * item.quantity).toFixed(2)}</TableCell>
+                            <TableCell className="text-right">₾{(item.price * item.quantity).toFixed(2)}</TableCell>
                             <TableCell>
                               <Button variant="ghost" size="icon" onClick={() => handleRemoveFromCart(item.id)}>
                                 <Trash2 className="h-4 w-4" />
@@ -128,7 +154,7 @@ export default function CartClientPage({ lang, dictionary }: { lang: 'en' | 'ka'
                   <CardContent className="space-y-4">
                     <div className="flex justify-between">
                       <span>{dictionary.cart.subtotal}</span>
-                      <span>${cartTotal.toFixed(2)}</span>
+                      <span>₾{cartTotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>{dictionary.cart.shipping}</span>
@@ -136,7 +162,7 @@ export default function CartClientPage({ lang, dictionary }: { lang: 'en' | 'ka'
                     </div>
                     <div className="flex justify-between font-bold text-lg">
                       <span>{dictionary.cart.total}</span>
-                      <span>${cartTotal.toFixed(2)}</span>
+                      <span>₾{cartTotal.toFixed(2)}</span>
                     </div>
                   </CardContent>
                   <CardFooter>
