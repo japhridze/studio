@@ -166,7 +166,9 @@ export default function CartClientPage({ lang, dictionary }: { lang: 'en' | 'ka'
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button size="lg" className="w-full bg-accent hover:bg-accent/90">{dictionary.cart.checkout}</Button>
+                    <Button asChild size="lg" className="w-full bg-accent hover:bg-accent/90">
+                        <Link href={`/${lang}/checkout`}>{dictionary.cart.checkout}</Link>
+                    </Button>
                   </CardFooter>
                 </Card>
               </div>
