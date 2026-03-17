@@ -6,24 +6,26 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { collection, addDoc, serverTimestamp, doc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-import { useUser, useFirestore, useMemoFirebase } from "@/firebase";
+import { useUser, useFirestore } from "@/firebase";
 import { useCart } from "@/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
 import type { getDictionary } from "@/lib/dictionaries";
+import { createBankOrder } from "./actions";
 
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CreditCard, CheckCircle2 } from "lucide-react";
+import { CreditCard, CheckCircle2, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -75,7 +77,7 @@ export default function CheckoutClientPage({ lang, dictionary }: { lang: 'en' | 
     
     setIsSubmitting(true);
     try {
-        // 1. Create Order in Firestore
+        // 1. Create Order in Firestore (Pending status)
         const orderData = {
             userId: user.uid,
             userName: `${values.firstName} ${values.lastName}`,
@@ -85,7 +87,7 @@ export default function CheckoutClientPage({ lang, dictionary }: { lang: 'en' | 
             shippingAddress: `${values.address}, ${values.city}`,
             billingAddress: `${values.address}, ${values.city}`,
             shippingMethod: "Standard",
-            paymentMethod: values.paymentMethod === 'bog' ? "Bank of Georgia" : "Other",
+            paymentMethod: "Bank of Georgia",
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         };
@@ -105,14 +107,21 @@ export default function CheckoutClientPage({ lang, dictionary }: { lang: 'en' | 
 
         await Promise.all(itemsPromises);
         
-        // Success
-        setOrderId(orderRef.id);
-        clearCart();
+        // 3. Initiate Bank Payment Redirect
+        const paymentResult = await createBankOrder(cartTotal, orderRef.id, lang);
         
-        toast({
-            title: dictionary.checkout.successTitle,
-            description: dictionary.checkout.successDescription.replace("{id}", orderRef.id),
-        });
+        if (paymentResult.success && paymentResult.redirectUrl) {
+            // In a real scenario, we redirect to the bank here
+            window.location.href = paymentResult.redirectUrl;
+        } else {
+            // Fallback if payment initiation fails but order was created
+            setOrderId(orderRef.id);
+            clearCart();
+            toast({
+                title: dictionary.checkout.successTitle,
+                description: dictionary.checkout.successDescription.replace("{id}", orderRef.id),
+            });
+        }
 
     } catch (error: any) {
         console.error("Checkout failed:", error);
@@ -260,7 +269,14 @@ export default function CheckoutClientPage({ lang, dictionary }: { lang: 'en' | 
                       </div>
 
                       <Button type="submit" size="lg" className="w-full h-14 bg-accent hover:bg-accent/90 text-white font-bold text-lg" disabled={isSubmitting || cartItems.length === 0}>
-                        {isSubmitting ? dictionary.checkout.processing : dictionary.checkout.placeOrder}
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                {dictionary.checkout.processing}
+                            </>
+                        ) : (
+                            dictionary.checkout.placeOrder
+                        )}
                       </Button>
                     </form>
                   </Form>
