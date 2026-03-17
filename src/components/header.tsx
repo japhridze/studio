@@ -101,10 +101,10 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
     { name: dict.header.home, href: `/${lang}` },
     ...categories.slice(0, 4).map(c => ({ 
         name: (dict.categories as any)[c.slug] || c.name, 
-        href: `/${lang}/products`,
+        href: `/${lang}/products?category=${c.id}`,
         subcategories: c.subcategories?.map(sc => ({
             name: (dict.subcategories as any)[sc.slug] || sc.name,
-            href: `/${lang}/products` // for now, point to the same page
+            href: `/${lang}/products?category=${c.id}` 
         }))
     })),
     { name: dict.header.contact, href: '#' }
