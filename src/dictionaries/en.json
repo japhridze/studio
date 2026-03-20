@@ -8,7 +8,8 @@
       "login": "Login",
       "shoppingCart": "Shopping Cart",
       "toggleNav": "Toggle navigation menu",
-      "adminDashboard": "Admin Dashboard"
+      "adminDashboard": "Admin Dashboard",
+      "catalog": "Catalog"
     },
     "footer": {
       "slogan": "Your one-stop shop for home and hardware.",
@@ -50,12 +51,18 @@
     },
     "companyName": "Comfort House",
     "categories": {
+      "discounts": "Discounts",
       "construction": "Construction",
       "renovation": "Renovation",
+      "furniture": "Furniture",
+      "appliances": "Appliances",
       "plumbing": "Plumbing",
       "climate-control": "Climate Control",
       "tools": "Tools",
-      "lighting": "Lighting"
+      "ikea": "IKEA Products",
+      "garden": "Garden",
+      "lighting": "Lighting",
+      "household": "Household"
     },
     "productDetails": {
       "inStock": "{count} in stock",

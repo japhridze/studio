@@ -8,7 +8,8 @@
       "login": "შესვლა",
       "shoppingCart": "საყიდლების კალათა",
       "toggleNav": "ნავიგაციის მენიუს გადართვა",
-      "adminDashboard": "ადმინის პანელი"
+      "adminDashboard": "ადმინის პანელი",
+      "catalog": "კატალოგი"
     },
     "footer": {
       "slogan": "ყველაფერი თქვენი სახლისთვის და ტექნიკისთვის ერთ ადგილას.",
@@ -50,12 +51,18 @@
     },
     "companyName": "კომფორტის სახლი",
     "categories": {
+      "discounts": "ფასდაკლებები",
       "construction": "მშენებლობა",
       "renovation": "რემონტი",
+      "furniture": "ავეჯი",
+      "appliances": "ტექნიკა",
       "plumbing": "სანტექნიკა",
-      "climate-control": "კლიმატური კონტროლი",
+      "climate-control": "კლიმატური ტექნიკა",
       "tools": "ხელსაწყოები",
-      "lighting": "განათება"
+      "ikea": "IKEA-ს პროდუქცია",
+      "garden": "ბაღი",
+      "lighting": "განათება",
+      "household": "საყოფაცხოვრებო"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",

@@ -1,12 +1,18 @@
 import type { Category, Order, Product, User } from './types';
 
 export const categories: Category[] = [
+  { id: 'cat-discounts', name: 'Discounts', slug: 'discounts' },
   { id: 'cat-1', name: 'Construction', slug: 'construction' },
   { id: 'cat-2', name: 'Renovation', slug: 'renovation' },
+  { id: 'cat-furniture', name: 'Furniture', slug: 'furniture' },
+  { id: 'cat-appliances', name: 'Appliances', slug: 'appliances' },
   { id: 'cat-3', name: 'Plumbing', slug: 'plumbing' },
   { id: 'cat-4', name: 'Climate Control', slug: 'climate-control' },
   { id: 'cat-5', name: 'Tools', slug: 'tools' },
+  { id: 'cat-ikea', name: 'IKEA Products', slug: 'ikea' },
+  { id: 'cat-garden', name: 'Garden', slug: 'garden' },
   { id: 'cat-6', name: 'Lighting', slug: 'lighting' },
+  { id: 'cat-household', name: 'Household', slug: 'household' },
 ];
 
 export const products: Product[] = [
