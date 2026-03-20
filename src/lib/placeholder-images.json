@@ -63,80 +63,80 @@
     {
       "id": "sub-paints",
       "description": "Varnishes and Paints",
-      "imageUrl": "https://picsum.photos/seed/paints/150/150",
-      "imageHint": "paints varnishes"
+      "imageUrl": "https://picsum.photos/seed/paints1/150/150",
+      "imageHint": "painting wall"
     },
     {
       "id": "sub-insulation",
       "description": "Insulation Materials",
-      "imageUrl": "https://picsum.photos/seed/insulation/150/150",
-      "imageHint": "insulation materials"
+      "imageUrl": "https://picsum.photos/seed/insulation2/150/150",
+      "imageHint": "thermal insulation"
     },
     {
       "id": "sub-roofing",
       "description": "Roofing and Facade Systems",
-      "imageUrl": "https://picsum.photos/seed/roofing/150/150",
-      "imageHint": "roofing facade"
+      "imageUrl": "https://picsum.photos/seed/roofing3/150/150",
+      "imageHint": "roofing sheets"
     },
     {
       "id": "sub-wood",
       "description": "Wood Systems",
-      "imageUrl": "https://picsum.photos/seed/wood/150/150",
-      "imageHint": "wood systems"
+      "imageUrl": "https://picsum.photos/seed/wood4/150/150",
+      "imageHint": "wood planks"
     },
     {
       "id": "sub-powders",
       "description": "Construction Powders",
-      "imageUrl": "https://picsum.photos/seed/powders/150/150",
-      "imageHint": "construction powders"
+      "imageUrl": "https://picsum.photos/seed/powders5/150/150",
+      "imageHint": "cement concrete"
     },
     {
       "id": "sub-boards",
       "description": "Construction Boards",
-      "imageUrl": "https://picsum.photos/seed/boards/150/150",
-      "imageHint": "gypsum boards"
+      "imageUrl": "https://picsum.photos/seed/boards6/150/150",
+      "imageHint": "gypsum drywall"
     },
     {
       "id": "sub-bricks",
       "description": "Bricks and Blocks",
-      "imageUrl": "https://picsum.photos/seed/bricks/150/150",
-      "imageHint": "bricks blocks"
+      "imageUrl": "https://picsum.photos/seed/bricks7/150/150",
+      "imageHint": "brick wall"
     },
     {
       "id": "sub-consumables",
       "description": "Consumables",
-      "imageUrl": "https://picsum.photos/seed/consumables/150/150",
-      "imageHint": "consumables"
+      "imageUrl": "https://picsum.photos/seed/consumables8/150/150",
+      "imageHint": "nails screws"
     },
     {
       "id": "sub-adhesives",
       "description": "Adhesives and Sealants",
-      "imageUrl": "https://picsum.photos/seed/adhesives/150/150",
-      "imageHint": "adhesives sealants"
+      "imageUrl": "https://picsum.photos/seed/adhesives9/150/150",
+      "imageHint": "glue adhesive"
     },
     {
       "id": "sub-profiles",
       "description": "Construction Profiles",
-      "imageUrl": "https://picsum.photos/seed/profiles/150/150",
-      "imageHint": "profiles accessories"
+      "imageUrl": "https://picsum.photos/seed/profiles10/150/150",
+      "imageHint": "metal profile"
     },
     {
       "id": "sub-liquids",
       "description": "Construction Liquids",
-      "imageUrl": "https://picsum.photos/seed/liquids/150/150",
-      "imageHint": "construction liquids"
+      "imageUrl": "https://picsum.photos/seed/liquids11/150/150",
+      "imageHint": "pouring liquid"
     },
     {
       "id": "sub-warehouse",
       "description": "Warehouse Products",
-      "imageUrl": "https://picsum.photos/seed/warehouse/150/150",
-      "imageHint": "warehouse equipment"
+      "imageUrl": "https://picsum.photos/seed/warehouse12/150/150",
+      "imageHint": "warehouse storage"
     },
     {
       "id": "sub-stairs",
       "description": "Stair Treads and Railings",
-      "imageUrl": "https://picsum.photos/seed/stairs/150/150",
-      "imageHint": "stairs railings"
+      "imageUrl": "https://picsum.photos/seed/stairs13/150/150",
+      "imageHint": "wooden stairs"
     }
   ]
 }
