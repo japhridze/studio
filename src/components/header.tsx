@@ -167,7 +167,21 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
                             </h3>
                             <div className="grid grid-cols-4 gap-6">
                                 {hoveredCategory.subcategories.map((sub) => {
-                                    const subImg = PlaceHolderImages.find(p => p.id === sub.imageUrl);
+                                    // Resolve Subcategory Image (ID or Direct URL)
+                                    let displayImageUrl = "";
+                                    let displayImageHint = "";
+                                    const trimmedUrl = (sub.imageUrl || "").trim();
+
+                                    if (trimmedUrl.startsWith("http")) {
+                                        displayImageUrl = trimmedUrl;
+                                    } else {
+                                        const placeholder = PlaceHolderImages.find(p => p.id === trimmedUrl);
+                                        if (placeholder) {
+                                            displayImageUrl = placeholder.imageUrl;
+                                            displayImageHint = placeholder.imageHint;
+                                        }
+                                    }
+
                                     return (
                                         <Link 
                                             key={sub.id} 
@@ -175,13 +189,13 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
                                             className="group flex flex-col items-center text-center gap-3"
                                         >
                                             <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center transition-all group-hover:shadow-md group-hover:border-[#0091d5]/30">
-                                                {subImg ? (
+                                                {displayImageUrl ? (
                                                     <Image 
-                                                        src={subImg.imageUrl} 
+                                                        src={displayImageUrl} 
                                                         alt={sub.name} 
                                                         fill 
                                                         className="object-cover p-2"
-                                                        data-ai-hint={subImg.imageHint}
+                                                        data-ai-hint={displayImageHint}
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full bg-slate-100 flex items-center justify-center">

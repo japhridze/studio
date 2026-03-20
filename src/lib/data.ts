@@ -7,7 +7,7 @@ export const categories: Category[] = [
     name: 'Construction', 
     slug: 'construction',
     subcategories: [
-      { id: 'sub-1', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'sub-paints' },
+      { id: 'sub-1', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://aid.ge/wp-content/uploads/2015/10/sagebavebis-tipebi-5.jpg' },
       { id: 'sub-2', name: 'Insulation Materials', slug: 'insulation-materials', imageUrl: 'sub-insulation' },
       { id: 'sub-3', name: 'Roofing & Facade Systems', slug: 'roofing-facade', imageUrl: 'sub-roofing' },
       { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-systems', imageUrl: 'sub-wood' },
