@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from "react";
@@ -12,11 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { categories } from "@/lib/data";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, List, Filter } from "lucide-react";
+import { LayoutGrid, List, Filter, ChevronRight, Package } from "lucide-react";
 
 export default function ProductsClientPage({ lang, dictionary }: { lang: 'en' | 'ka', dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
     const firestore = useFirestore();
@@ -37,13 +34,12 @@ export default function ProductsClientPage({ lang, dictionary }: { lang: 'en' | 
         setSelectedCategoryId(searchParams.get('category'));
     }, [searchParams]);
 
-    const handleCategoryChange = (categoryId: string) => {
-        const newCategoryId = selectedCategoryId === categoryId ? null : categoryId;
-        setSelectedCategoryId(newCategoryId);
+    const handleCategoryChange = (categoryId: string | null) => {
+        setSelectedCategoryId(categoryId);
         
         const params = new URLSearchParams(searchParams.toString());
-        if (newCategoryId) {
-            params.set('category', newCategoryId);
+        if (categoryId) {
+            params.set('category', categoryId);
         } else {
             params.delete('category');
         }
@@ -61,82 +57,70 @@ export default function ProductsClientPage({ lang, dictionary }: { lang: 'en' | 
             <main className="flex-1 py-8 md:py-12">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row gap-8">
-                        {/* Sidebar Filters */}
-                        <aside className="w-full md:w-72 space-y-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit sticky top-24">
-                            <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-xl flex items-center gap-2">
+                        {/* Vertical Sidebar */}
+                        <aside className="w-full md:w-80 space-y-6 bg-slate-50/50 p-6 rounded-2xl border border-slate-200 h-fit sticky top-24">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
                                     <Filter className="h-5 w-5 text-primary" />
                                     {dictionary.homepage.shopByCategory}
                                 </h3>
                             </div>
                             
-                            <div className="space-y-4">
-                                <div 
-                                    className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${!selectedCategoryId ? 'bg-primary/5 text-primary border border-primary/20' : 'hover:bg-slate-50'}`}
-                                    onClick={() => {
-                                        setSelectedCategoryId(null);
-                                        router.push(`/${lang}/products`, { scroll: false });
-                                    }}
+                            <nav className="space-y-1">
+                                <button 
+                                    onClick={() => handleCategoryChange(null)}
+                                    className={`w-full flex items-center justify-between p-3.5 rounded-xl transition-all group ${!selectedCategoryId ? 'bg-white shadow-sm border border-slate-200 text-primary' : 'hover:bg-slate-200/50 text-slate-600'}`}
                                 >
-                                    <span className="text-sm font-semibold">{lang === 'ka' ? 'ყველა პროდუქტი' : 'All Products'}</span>
-                                    <div className={`h-2 w-2 rounded-full ${!selectedCategoryId ? 'bg-primary' : 'bg-transparent'}`} />
-                                </div>
+                                    <span className="text-sm font-bold tracking-tight">{lang === 'ka' ? 'ყველა პროდუქტი' : 'All Products'}</span>
+                                    <ChevronRight className={`h-4 w-4 transition-transform ${!selectedCategoryId ? 'text-primary' : 'text-slate-300 group-hover:translate-x-1'}`} />
+                                </button>
                                 
                                 {categories.map((cat) => (
-                                    <div 
+                                    <button 
                                         key={cat.id} 
-                                        className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${selectedCategoryId === cat.id ? 'bg-primary/5 text-primary border border-primary/20' : 'hover:bg-slate-50'}`}
                                         onClick={() => handleCategoryChange(cat.id)}
+                                        className={`w-full flex items-center justify-between p-3.5 rounded-xl transition-all group ${selectedCategoryId === cat.id ? 'bg-white shadow-sm border border-slate-200 text-primary' : 'hover:bg-slate-200/50 text-slate-600'}`}
                                     >
-                                        <span className="text-sm font-semibold">{(dictionary.categories as any)[cat.slug] || cat.name}</span>
-                                        <div className={`h-2 w-2 rounded-full ${selectedCategoryId === cat.id ? 'bg-primary' : 'bg-transparent'}`} />
-                                    </div>
+                                        <span className="text-sm font-bold tracking-tight">{(dictionary.categories as any)[cat.slug] || cat.name}</span>
+                                        <ChevronRight className={`h-4 w-4 transition-transform ${selectedCategoryId === cat.id ? 'text-primary' : 'text-slate-300 group-hover:translate-x-1'}`} />
+                                    </button>
                                 ))}
-                            </div>
+                            </nav>
 
-                            <Separator />
-
-                            <div className="space-y-4">
-                                <h3 className="font-bold text-lg">{dictionary.cart.price || 'Price'}</h3>
-                                <div className="space-y-3">
-                                    {[
-                                        { id: 'p1', label: '0 - 100 ₾' },
-                                        { id: 'p2', label: '100 - 500 ₾' },
-                                        { id: 'p3', label: '500+ ₾' }
-                                    ].map(range => (
-                                        <div key={range.id} className="flex items-center space-x-3 group opacity-50 cursor-not-allowed">
-                                            <Checkbox id={range.id} disabled className="rounded-full h-5 w-5" />
-                                            <Label htmlFor={range.id} className="text-sm font-medium">{range.label}</Label>
-                                        </div>
-                                    ))}
-                                </div>
+                            <Separator className="bg-slate-200" />
+                            
+                            <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
+                                <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Comfort House</p>
+                                <p className="text-[10px] text-slate-500 font-medium">{dictionary.footer.slogan}</p>
                             </div>
                         </aside>
 
                         {/* Product Grid */}
                         <div className="flex-1">
-                            <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div>
-                                    <h1 className="text-2xl font-bold text-slate-900">
+                                    <h1 className="text-2xl font-bold text-slate-900 leading-tight">
                                         {selectedCategoryId 
                                             ? ((dictionary.categories as any)[categories.find(c => c.id === selectedCategoryId)?.slug || ''] || categories.find(c => c.id === selectedCategoryId)?.name)
-                                            : dictionary.footer.shop
+                                            : (lang === 'ka' ? 'ყველა პროდუქტი' : 'All Products')
                                         }
                                     </h1>
-                                    <p className="text-sm text-slate-500 font-medium">
+                                    <p className="text-xs text-slate-500 font-bold mt-1">
                                         {filteredProducts.length} {dictionary.footer.shop.toLowerCase()}
                                     </p>
                                 </div>
-                                <div className="flex items-center bg-slate-100 p-1 rounded-lg">
-                                    <Button variant="ghost" size="icon" className="bg-white shadow-sm h-8 w-8"><LayoutGrid className="h-4 w-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8"><List className="h-4 w-4" /></Button>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center bg-slate-100 p-1 rounded-xl">
+                                        <Button variant="ghost" size="icon" className="bg-white shadow-sm h-9 w-9 rounded-lg"><LayoutGrid className="h-4 w-4" /></Button>
+                                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg opacity-40"><List className="h-4 w-4" /></Button>
+                                    </div>
                                 </div>
                             </div>
 
                             {isLoading ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {Array.from({ length: 6 }).map((_, i) => (
-                                        <div key={i} className="flex flex-col space-y-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                        <div key={i} className="flex flex-col space-y-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
                                             <Skeleton className="h-64 w-full rounded-xl" />
                                             <div className="space-y-3">
                                                 <Skeleton className="h-4 w-1/3" />
@@ -160,10 +144,11 @@ export default function ProductsClientPage({ lang, dictionary }: { lang: 'en' | 
                             )}
 
                             {!isLoading && filteredProducts.length === 0 && (
-                                <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-slate-200">
                                     <Package className="h-16 w-16 text-slate-200 mx-auto mb-4" />
-                                    <p className="text-slate-500 font-semibold">{dictionary.cart.emptyTitle || 'No products found.'}</p>
-                                    <Button variant="link" onClick={() => setSelectedCategoryId(null)} className="text-primary">
+                                    <p className="text-slate-500 font-bold text-lg">{dictionary.cart.emptyTitle || 'No products found.'}</p>
+                                    <p className="text-slate-400 text-sm mb-6">სცადეთ სხვა კატეგორია</p>
+                                    <Button onClick={() => handleCategoryChange(null)} className="rounded-xl px-8">
                                         {lang === 'ka' ? 'ყველა პროდუქტის ნახვა' : 'View all products'}
                                     </Button>
                                 </div>

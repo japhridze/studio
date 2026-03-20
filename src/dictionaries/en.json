@@ -1,4 +1,3 @@
-
 {
     "header": {
       "home": "Home",
@@ -51,20 +50,12 @@
     },
     "companyName": "Comfort House",
     "categories": {
-      "power-tools": "Power Tools",
-      "hand-tools": "Hand Tools",
-      "painting": "Painting",
-      "building-materials": "Building Materials",
-      "lighting": "Lighting",
-      "safety-equipment": "Safety Equipment"
-    },
-    "subcategories": {
-        "drills": "Drills",
-        "saws": "Saws",
-        "sanders": "Sanders",
-        "hammers": "Hammers",
-        "wrenches": "Wrenches",
-        "screwdrivers": "Screwdrivers"
+      "construction": "Construction",
+      "renovation": "Renovation",
+      "plumbing": "Plumbing",
+      "climate-control": "Climate Control",
+      "tools": "Tools",
+      "lighting": "Lighting"
     },
     "productDetails": {
       "inStock": "{count} in stock",
