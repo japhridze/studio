@@ -1,6 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, ShoppingCart, User, Menu, LogOut, ChevronDown, Wrench, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -30,11 +32,12 @@ import Logo from '@/components/logo';
 import { useCart } from '@/context/cart-context';
 import { categories } from '@/lib/data';
 import { useAuth, useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import type { User as UserType } from '@/lib/types';
+import type { User as UserType, Category } from '@/lib/types';
 import type { getDictionary } from '@/lib/dictionaries';
 import LanguageSwitcher from './language-switcher';
 import { Skeleton } from './ui/skeleton';
 import { cn } from '@/lib/utils';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka', dictionary?: Awaited<ReturnType<typeof getDictionary>> }) {
   const dict = dictionary || ({} as any);
@@ -45,6 +48,7 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
   const router = useRouter();
   
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
 
   const userDocRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -111,11 +115,14 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
             <Logo lang={lang} dictionary={dict} className="text-2xl mr-2" />
         </div>
 
-        {/* Catalog Dropdown - Gorgia Style */}
+        {/* Catalog Dropdown - Gorgia Style with Mega Menu */}
         <div 
             className="hidden lg:block relative"
             onMouseEnter={() => setIsCatalogOpen(true)}
-            onMouseLeave={() => setIsCatalogOpen(false)}
+            onMouseLeave={() => {
+                setIsCatalogOpen(false);
+                setHoveredCategory(null);
+            }}
         >
             <Button 
                 className={cn(
@@ -129,25 +136,68 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
             </Button>
 
             {isCatalogOpen && (
-                <div className="absolute top-11 left-0 w-64 bg-white shadow-2xl border border-slate-100 z-[100] rounded-b-xl overflow-hidden py-0">
-                    <div className="flex flex-col">
+                <div className="absolute top-11 left-0 flex bg-white shadow-2xl border border-slate-100 z-[100] rounded-b-xl overflow-hidden min-w-[256px]">
+                    {/* Sidebar */}
+                    <div className="w-64 flex flex-col border-r border-slate-100 shrink-0">
                         {categories.map((cat) => (
                             <Link 
                                 key={cat.id}
                                 href={`/${lang}/products?category=${cat.id}`}
+                                onMouseEnter={() => setHoveredCategory(cat)}
                                 className={cn(
                                     "flex items-center justify-between p-3.5 text-[13px] font-bold border-b border-slate-50 transition-all group",
-                                    "text-slate-700 hover:bg-slate-50 hover:text-[#0091d5]"
+                                    "text-slate-700 hover:bg-slate-50",
+                                    hoveredCategory?.id === cat.id ? "bg-slate-50 text-[#0091d5]" : ""
                                 )}
                             >
                                 <span>{(dict.categories as any)[cat.slug] || cat.name}</span>
                                 <ChevronRight className={cn(
                                     "h-4 w-4 transition-transform group-hover:translate-x-1",
-                                    "text-slate-300"
+                                    hoveredCategory?.id === cat.id ? "text-[#0091d5] translate-x-1" : "text-slate-300"
                                 )} />
                             </Link>
                         ))}
                     </div>
+
+                    {/* Mega Menu Panel */}
+                    {hoveredCategory && hoveredCategory.subcategories && (
+                        <div className="bg-white p-6 w-[800px] max-h-[600px] overflow-y-auto">
+                            <h3 className="text-lg font-bold text-slate-900 mb-6 border-b pb-2">
+                                {(dict.categories as any)[hoveredCategory.slug] || hoveredCategory.name}
+                            </h3>
+                            <div className="grid grid-cols-4 gap-6">
+                                {hoveredCategory.subcategories.map((sub) => {
+                                    const subImg = PlaceHolderImages.find(p => p.id === sub.imageUrl);
+                                    return (
+                                        <Link 
+                                            key={sub.id} 
+                                            href={`/${lang}/products?category=${hoveredCategory.id}&sub=${sub.id}`}
+                                            className="group flex flex-col items-center text-center gap-3"
+                                        >
+                                            <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center transition-all group-hover:shadow-md group-hover:border-[#0091d5]/30">
+                                                {subImg ? (
+                                                    <Image 
+                                                        src={subImg.imageUrl} 
+                                                        alt={sub.name} 
+                                                        fill 
+                                                        className="object-cover p-2"
+                                                        data-ai-hint={subImg.imageHint}
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                                                        <span className="text-xs text-slate-300">No Image</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <span className="text-[12px] font-bold text-slate-700 group-hover:text-[#0091d5] transition-colors leading-tight">
+                                                {(dict.categories as any)[sub.slug] || sub.name}
+                                            </span>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

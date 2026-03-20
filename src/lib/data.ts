@@ -1,7 +1,27 @@
+
 import type { Category, Order, Product, User } from './types';
 
 export const categories: Category[] = [
-  { id: 'cat-1', name: 'Construction', slug: 'construction' },
+  { 
+    id: 'cat-1', 
+    name: 'Construction', 
+    slug: 'construction',
+    subcategories: [
+      { id: 'sub-1', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'sub-paints' },
+      { id: 'sub-2', name: 'Insulation Materials', slug: 'insulation-materials', imageUrl: 'sub-insulation' },
+      { id: 'sub-3', name: 'Roofing & Facade Systems', slug: 'roofing-facade', imageUrl: 'sub-roofing' },
+      { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-systems', imageUrl: 'sub-wood' },
+      { id: 'sub-5', name: 'Construction Powders', slug: 'construction-powders', imageUrl: 'sub-powders' },
+      { id: 'sub-6', name: 'Construction & Gypsum Boards', slug: 'construction-boards', imageUrl: 'sub-boards' },
+      { id: 'sub-7', name: 'Bricks & Blocks', slug: 'bricks-blocks', imageUrl: 'sub-bricks' },
+      { id: 'sub-8', name: 'Consumables', slug: 'consumables', imageUrl: 'sub-consumables' },
+      { id: 'sub-9', name: 'Adhesives & Sealants', slug: 'adhesives-sealants', imageUrl: 'sub-adhesives' },
+      { id: 'sub-10', name: 'Construction Profiles & Accessories', slug: 'profiles-accessories', imageUrl: 'sub-profiles' },
+      { id: 'sub-11', name: 'Construction Liquids & Solutions', slug: 'liquids-solutions', imageUrl: 'sub-liquids' },
+      { id: 'sub-12', name: 'Warehouse Products', slug: 'warehouse-products', imageUrl: 'sub-warehouse' },
+      { id: 'sub-13', name: 'Stair Treads & Railings', slug: 'stairs-railings', imageUrl: 'sub-stairs' },
+    ]
+  },
   { id: 'cat-2', name: 'Renovation', slug: 'renovation' },
   { id: 'cat-3', name: 'Plumbing', slug: 'plumbing' },
   { id: 'cat-4', name: 'Climate Control', slug: 'climate-control' },

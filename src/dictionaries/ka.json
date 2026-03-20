@@ -1,3 +1,4 @@
+
 {
     "header": {
       "home": "მთავარი",
@@ -56,7 +57,20 @@
       "plumbing": "სანტექნიკა",
       "climate-control": "კლიმატური ტექნიკა",
       "tools": "ხელსაწყოები",
-      "lighting": "განათება"
+      "lighting": "განათება",
+      "paints-varnishes": "ლაქ-საღებავები",
+      "insulation-materials": "საიზოლაციო მასალები",
+      "roofing-facade": "სახურავები და ფასადის სისტემები",
+      "wood-systems": "საკარსაკე-საყალიბე აღჭურვილობა და ხის სისტემები",
+      "construction-powders": "სამშენებლო ფხვნილები",
+      "construction-boards": "სამშენებლო და თაბაშირ-მუყაოს ფილა",
+      "bricks-blocks": "აგური და ბლოკი",
+      "consumables": "სახარჯი მასალა",
+      "adhesives-sealants": "წებოს და საჰერმეტიზაციო მასალა",
+      "profiles-accessories": "სამშენებლო პროფილი და სხვა აქსესუარები",
+      "liquids-solutions": "სამშენებლო სითხეები და ხსნარები",
+      "warehouse-products": "სასაწყობე პროდუქცია",
+      "stairs-railings": "კიბის საფეხური და მოაჯირი"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",

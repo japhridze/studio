@@ -61,16 +61,82 @@
       "imageHint": "wrench set"
     },
     {
-      "id": "prod-ladder",
-      "description": "A stepladder",
-      "imageUrl": "https://images.unsplash.com/photo-1725119574221-492633f52640?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdGVwbGFkZGVyfGVufDB8fHx8MTc3MDgxMTI1MXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "stepladder"
+      "id": "sub-paints",
+      "description": "Varnishes and Paints",
+      "imageUrl": "https://picsum.photos/seed/paints/150/150",
+      "imageHint": "paints varnishes"
     },
     {
-      "id": "prod-gloves",
-      "description": "A pair of work gloves",
-      "imageUrl": "https://images.unsplash.com/photo-1582586131076-6c308a437385?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b3JrJTIwZ2xvdmVzfGVufDB8fHx8MTc3MDgxMTI1MXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "work gloves"
+      "id": "sub-insulation",
+      "description": "Insulation Materials",
+      "imageUrl": "https://picsum.photos/seed/insulation/150/150",
+      "imageHint": "insulation materials"
+    },
+    {
+      "id": "sub-roofing",
+      "description": "Roofing and Facade Systems",
+      "imageUrl": "https://picsum.photos/seed/roofing/150/150",
+      "imageHint": "roofing facade"
+    },
+    {
+      "id": "sub-wood",
+      "description": "Wood Systems",
+      "imageUrl": "https://picsum.photos/seed/wood/150/150",
+      "imageHint": "wood systems"
+    },
+    {
+      "id": "sub-powders",
+      "description": "Construction Powders",
+      "imageUrl": "https://picsum.photos/seed/powders/150/150",
+      "imageHint": "construction powders"
+    },
+    {
+      "id": "sub-boards",
+      "description": "Construction Boards",
+      "imageUrl": "https://picsum.photos/seed/boards/150/150",
+      "imageHint": "gypsum boards"
+    },
+    {
+      "id": "sub-bricks",
+      "description": "Bricks and Blocks",
+      "imageUrl": "https://picsum.photos/seed/bricks/150/150",
+      "imageHint": "bricks blocks"
+    },
+    {
+      "id": "sub-consumables",
+      "description": "Consumables",
+      "imageUrl": "https://picsum.photos/seed/consumables/150/150",
+      "imageHint": "consumables"
+    },
+    {
+      "id": "sub-adhesives",
+      "description": "Adhesives and Sealants",
+      "imageUrl": "https://picsum.photos/seed/adhesives/150/150",
+      "imageHint": "adhesives sealants"
+    },
+    {
+      "id": "sub-profiles",
+      "description": "Construction Profiles",
+      "imageUrl": "https://picsum.photos/seed/profiles/150/150",
+      "imageHint": "profiles accessories"
+    },
+    {
+      "id": "sub-liquids",
+      "description": "Construction Liquids",
+      "imageUrl": "https://picsum.photos/seed/liquids/150/150",
+      "imageHint": "construction liquids"
+    },
+    {
+      "id": "sub-warehouse",
+      "description": "Warehouse Products",
+      "imageUrl": "https://picsum.photos/seed/warehouse/150/150",
+      "imageHint": "warehouse equipment"
+    },
+    {
+      "id": "sub-stairs",
+      "description": "Stair Treads and Railings",
+      "imageUrl": "https://picsum.photos/seed/stairs/150/150",
+      "imageHint": "stairs railings"
     }
   ]
 }
