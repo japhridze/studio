@@ -111,8 +111,8 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
-      <div className="container mx-auto flex h-16 items-center px-4">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md shadow-sm">
+      <div className="container mx-auto flex h-20 items-center px-4">
         <div className="flex items-center">
             {hasMounted ? (
                 <Sheet>
@@ -169,22 +169,22 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
                     <span className="sr-only">{dict.header.toggleNav}</span>
                 </Button>
             )}
-            <Logo lang={lang} dictionary={dict} />
+            <Logo lang={lang} dictionary={dict} className="text-2xl" />
         </div>
 
-        <nav className="hidden lg:flex items-center gap-1 text-sm font-medium mx-auto">
+        <nav className="hidden lg:flex items-center gap-2 text-sm font-bold mx-8">
             {hasMounted ? navLinks.map((link) => (
                 (link.subcategories && link.subcategories.length > 0) ? (
                 <DropdownMenu key={link.name}>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="transition-colors hover:text-primary data-[state=open]:bg-accent data-[state=open]:text-accent-foreground h-auto px-3 py-2">
+                        <Button variant="ghost" className="transition-all hover:text-primary hover:bg-slate-50 h-10 px-4 rounded-xl">
                             {link.name}
                             <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
+                    <DropdownMenuContent align="start" className="rounded-xl border-slate-100 shadow-xl">
                         {link.subcategories.map(subLink => (
-                            <DropdownMenuItem key={subLink.name} asChild>
+                            <DropdownMenuItem key={subLink.name} asChild className="rounded-lg">
                                 <Link href={subLink.href}>{subLink.name}</Link>
                             </DropdownMenuItem>
                         ))}
@@ -194,95 +194,88 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
                 <Link
                 key={link.name}
                 href={link.href}
-                className="transition-colors hover:text-primary px-3 py-2"
+                className="transition-all hover:text-primary px-4 py-2 hover:bg-slate-50 rounded-xl"
                 >
                 {link.name}
                 </Link>
             )
-            )) : navLinks.map(link => (
-                <Link
-                    key={link.name}
-                    href={link.href}
-                    className="transition-colors hover:text-primary px-3 py-2"
-                >
-                    {link.name}
-                </Link>
-            ))}
+            )) : null}
         </nav>
 
         <div className="flex items-center gap-4 ml-auto">
-          {hasMounted ? (
-            <LanguageSwitcher locale={lang} dictionary={dict.languageSwitcher}/>
-          ) : (
-            <Skeleton className="h-10 w-[120px]" />
-          )}
-          <div className="relative hidden md:block">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <div className="relative hidden xl:block">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               type="search"
               placeholder={dict.header.searchPlaceholder}
-              className="pl-8 sm:w-[200px] lg:w-[300px]"
+              className="pl-10 sm:w-[200px] lg:w-[350px] bg-slate-50 border-slate-100 rounded-xl focus-visible:ring-primary/20 h-11"
             />
           </div>
           
-          {hasMounted ? (
-            user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="overflow-hidden rounded-full"
-                  >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName || 'User'} />
-                      <AvatarFallback>{user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {userProfile?.role === 'admin' && (
-                    <DropdownMenuItem asChild>
-                        <Link href={`/${lang}/admin`}>
-                            <Wrench className="mr-2 h-4 w-4" />
-                            {dict.header.adminDashboard || "Admin Dashboard"}
-                        </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link href={`/${lang}/account`}>{dict.header.myAccount}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    {dict.header.logout}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+          <div className="flex items-center gap-2">
+            {hasMounted ? (
+                <LanguageSwitcher locale={lang as 'en' | 'ka'} dictionary={dict.languageSwitcher}/>
             ) : (
-              <Button asChild variant="ghost" size="icon">
-                <Link href={`/${lang}/login`}>
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">{dict.header.login}</span>
-                </Link>
-              </Button>
-            )
-          ) : (
-             <div className="h-10 w-10 flex items-center justify-center">
-                <Skeleton className="h-8 w-8 rounded-full" />
-             </div>
-          )}
+                <Skeleton className="h-10 w-[100px] rounded-xl" />
+            )}
+            
+            {hasMounted ? (
+                user ? (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="overflow-hidden rounded-xl h-11 w-11 hover:bg-slate-50"
+                    >
+                        <Avatar className="h-9 w-9 border-2 border-slate-100">
+                        <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName || 'User'} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-bold">{user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                    </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="rounded-xl shadow-xl border-slate-100">
+                    <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {userProfile?.role === 'admin' && (
+                        <DropdownMenuItem asChild className="rounded-lg">
+                            <Link href={`/${lang}/admin`}>
+                                <Wrench className="mr-2 h-4 w-4" />
+                                {dict.header.adminDashboard || "Admin Dashboard"}
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild className="rounded-lg">
+                        <Link href={`/${lang}/account`}>{dict.header.myAccount}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout} className="rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        {dict.header.logout}
+                    </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                ) : (
+                <Button asChild variant="ghost" size="icon" className="h-11 w-11 rounded-xl hover:bg-slate-50">
+                    <Link href={`/${lang}/login`}>
+                    <User className="h-5 w-5 text-slate-600" />
+                    <span className="sr-only">{dict.header.login}</span>
+                    </Link>
+                </Button>
+                )
+            ) : (
+                <Skeleton className="h-11 w-11 rounded-xl" />
+            )}
 
-          <Button asChild variant="ghost" size="icon" className="relative">
-            <Link href={`/${lang}/cart`}>
-              <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">{dict.header.shoppingCart}</span>
-              {hasMounted && cartCount > 0 && (
-                <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{cartCount}</Badge>
-              )}
-            </Link>
-          </Button>
+            <Button asChild variant="ghost" size="icon" className="relative h-11 w-11 rounded-xl hover:bg-slate-50">
+                <Link href={`/${lang}/cart`}>
+                <ShoppingCart className="h-5 w-5 text-slate-600" />
+                <span className="sr-only">{dict.header.shoppingCart}</span>
+                {hasMounted && cartCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-1 bg-accent text-white font-bold border-2 border-white">{cartCount}</Badge>
+                )}
+                </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </header>

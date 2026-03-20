@@ -38,7 +38,6 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
   }
 
   const discount = product.discountPercentage || 0;
-  // Current logic: price is the ORIGINAL price, calculate SELLING price
   const sellingPrice = discount > 0 ? (product.price * (1 - discount / 100)) : product.price;
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -48,12 +47,11 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
       title: dictionary.addedToCartTitle,
       description: dictionary.addedToCartDescription.replace('{quantity}', '1').replace('{productName}', product.name)
     };
-    // We pass the calculated selling price to the cart
     addToCart({ ...product, price: sellingPrice }, 1, messages);
   }
 
   return (
-    <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 border-none shadow-sm hover:shadow-md bg-white rounded-xl">
+    <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 border border-slate-100 shadow-sm hover:shadow-xl bg-white rounded-xl">
       <CardHeader className="p-0 relative">
         <Link href={`/${lang}/products/${product.slug}`} className="block">
           <div className="aspect-square relative overflow-hidden bg-white flex items-center justify-center p-4">
@@ -72,16 +70,16 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
             )}
             
             {discount > 0 && (
-                <Badge className="absolute top-3 left-3 bg-rose-500 hover:bg-rose-600 text-white border-none font-bold text-xs py-1">
+                <Badge className="absolute top-3 left-3 bg-rose-500 hover:bg-rose-600 text-white border-none font-bold text-xs py-1 px-2 rounded-lg">
                     -{discount}%
                 </Badge>
             )}
 
-            <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-2 group-hover:translate-x-0">
-               <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm">
+            <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+               <Button size="icon" variant="secondary" className="h-9 w-9 rounded-full shadow-md bg-white/90 backdrop-blur-sm hover:bg-primary hover:text-white transition-colors">
                  <Eye className="h-4 w-4" />
                </Button>
-               <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm">
+               <Button size="icon" variant="secondary" className="h-9 w-9 rounded-full shadow-md bg-white/90 backdrop-blur-sm hover:bg-rose-500 hover:text-white transition-colors">
                  <Heart className="h-4 w-4" />
                </Button>
             </div>
@@ -89,53 +87,49 @@ export default function ProductCard({ product, dictionary, lang }: ProductCardPr
         </Link>
       </CardHeader>
 
-      <CardContent className="p-4 pt-0 flex-grow flex flex-col">
+      <CardContent className="p-4 pt-2 flex-grow flex flex-col">
         <div className="mb-2">
-            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Comfort House</span>
+            <span className="text-[10px] uppercase tracking-widest text-primary font-bold mb-1 block">Comfort House</span>
             <Link href={`/${lang}/products/${product.slug}`} className="block">
-                <CardTitle className="text-sm md:text-base font-medium leading-snug mb-1 text-slate-800 hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
+                <CardTitle className="text-sm md:text-base font-semibold leading-snug mb-2 text-slate-800 hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
                 {product.name}
                 </CardTitle>
             </Link>
         </div>
 
         <div className="mt-auto pt-2">
-            {product.stock > 0 ? (
-                <span className="text-[10px] font-semibold text-emerald-600 flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    {dictionary.inStock?.replace('{count}', String(product.stock)) || 'In stock'}
-                </span>
-            ) : (
-                <span className="text-[10px] font-semibold text-rose-500 flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                    {dictionary.outOfStock}
-                </span>
-            )}
-            
-            <div className="flex flex-col mt-2">
+            <div className="flex flex-col">
                 {discount > 0 && (
                     <span className="text-xs text-slate-400 line-through decoration-slate-300">
                         ₾{(product.price || 0).toFixed(2)}
                     </span>
                 )}
-                <span className="text-xl font-bold text-slate-900 leading-none">
-                    ₾{sellingPrice.toFixed(2)}
-                </span>
+                <div className="flex items-baseline gap-2">
+                    <span className="text-xl font-bold text-slate-900">
+                        ₾{sellingPrice.toFixed(2)}
+                    </span>
+                    {product.stock > 0 && product.stock < 5 && (
+                       <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 rounded-sm">
+                           {dictionary.lowStock || 'Low Stock'}
+                       </span>
+                    )}
+                </div>
             </div>
         </div>
       </CardContent>
 
       <CardFooter className="p-4 pt-0 flex justify-between items-center gap-2">
-        <div className="text-[10px] text-slate-400 font-mono">
-            {product.sku || 'N/A'}
+        <div className="text-[10px] text-slate-400 font-medium">
+            SKU: {product.sku || 'N/A'}
         </div>
         <Button 
-            size="icon"
-            className="h-10 w-10 bg-primary hover:bg-primary/90 rounded-lg shadow-sm"
+            size="sm"
+            className="flex-1 bg-primary hover:bg-primary/90 rounded-lg shadow-sm gap-2 font-bold"
             onClick={handleAddToCart}
             disabled={product.stock === 0}
         >
-          <ShoppingCart className="h-5 w-5" />
+          <ShoppingCart className="h-4 w-4" />
+          <span className="hidden sm:inline">{dictionary.addToCart}</span>
         </Button>
       </CardFooter>
     </Card>
