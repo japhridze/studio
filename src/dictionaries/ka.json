@@ -51,18 +51,12 @@
     },
     "companyName": "კომფორტის სახლი",
     "categories": {
-      "discounts": "ფასდაკლებები",
       "construction": "მშენებლობა",
       "renovation": "რემონტი",
-      "furniture": "ავეჯი",
-      "appliances": "ტექნიკა",
       "plumbing": "სანტექნიკა",
       "climate-control": "კლიმატური ტექნიკა",
       "tools": "ხელსაწყოები",
-      "ikea": "IKEA-ს პროდუქცია",
-      "garden": "ბაღი",
-      "lighting": "განათება",
-      "household": "საყოფაცხოვრებო"
+      "lighting": "განათება"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",

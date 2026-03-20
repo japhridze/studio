@@ -51,18 +51,12 @@
     },
     "companyName": "Comfort House",
     "categories": {
-      "discounts": "Discounts",
       "construction": "Construction",
       "renovation": "Renovation",
-      "furniture": "Furniture",
-      "appliances": "Appliances",
       "plumbing": "Plumbing",
       "climate-control": "Climate Control",
       "tools": "Tools",
-      "ikea": "IKEA Products",
-      "garden": "Garden",
-      "lighting": "Lighting",
-      "household": "Household"
+      "lighting": "Lighting"
     },
     "productDetails": {
       "inStock": "{count} in stock",

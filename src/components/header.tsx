@@ -23,15 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
     Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
   } from "@/components/ui/accordion";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from '@/components/ui/badge';
 import Logo from '@/components/logo';
@@ -69,7 +61,7 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
   };
 
   const navLinks = [
-    ...categories.slice(1, 10).map(c => ({ 
+    ...categories.map(c => ({ 
         name: (dict.categories as any)[c.slug] || c.name, 
         href: `/${lang}/products?category=${c.id}`
     }))
@@ -145,15 +137,13 @@ export default function Header({ lang = 'en', dictionary }: { lang?: 'en' | 'ka'
                                 href={`/${lang}/products?category=${cat.id}`}
                                 className={cn(
                                     "flex items-center justify-between p-3.5 text-[13px] font-bold border-b border-slate-50 transition-all group",
-                                    cat.slug === 'discounts' 
-                                        ? "bg-red-600 text-white hover:bg-red-700" 
-                                        : "text-slate-700 hover:bg-slate-50 hover:text-[#0091d5]"
+                                    "text-slate-700 hover:bg-slate-50 hover:text-[#0091d5]"
                                 )}
                             >
                                 <span>{(dict.categories as any)[cat.slug] || cat.name}</span>
                                 <ChevronRight className={cn(
                                     "h-4 w-4 transition-transform group-hover:translate-x-1",
-                                    cat.slug === 'discounts' ? "text-white/70" : "text-slate-300"
+                                    "text-slate-300"
                                 )} />
                             </Link>
                         ))}
