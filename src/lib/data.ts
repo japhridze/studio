@@ -12,7 +12,7 @@ export const categories: Category[] = [
       { id: 'sub-3', name: 'Roofing & Facade Systems', slug: 'roofing-facade', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGqmEWfg78v9YP7vlWpYQdH6Qrd0WAaZmXUHsYRcnzcQ&s&ec=121585071' },
       { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-materials', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW1xr47Vo_yts1kjKNgT2UcxJxlNlXc95zidLti5Fi6w&s&ec=121585071' },
       { id: 'sub-5', name: 'Construction Powders', slug: 'construction-powders', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkHkAUZFyBZxTYTCG92j1CXjpJiyAal4Kut0vYoodYQQ&s&ec=121585071' },
-      { id: 'sub-6', name: 'Construction & Gypsum Boards', slug: 'construction-boards', imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=400&fit=crop' },
+      { id: 'sub-6', name: 'Construction & Gypsum Boards', slug: 'construction-boards', imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a04b9?w=400&h=400&fit=crop' },
       { id: 'sub-7', name: 'Bricks & Blocks', slug: 'bricks-blocks', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk4HD07epzBmFE2ECW8c221yh2vDPJXoc9YbVwhfaZRQ&s&ec=121585071' },
       { id: 'sub-8', name: 'Consumables', slug: 'consumables', imageUrl: 'https://images.unsplash.com/photo-1581147036324-c17da42ef5e0?w=400&h=400&fit=crop' },
       { id: 'sub-9', name: 'Adhesives & Sealants', slug: 'adhesives-sealants', imageUrl: 'https://images.unsplash.com/photo-1563214591-e4905324316d?w=400&h=400&fit=crop' },
@@ -27,7 +27,7 @@ export const categories: Category[] = [
     name: 'Renovation', 
     slug: 'renovation',
     subcategories: [
-      { id: 'sub-r-1', name: 'Doors', slug: 'doors', imageUrl: 'https://images.unsplash.com/photo-1510074377623-8cf13fb86c08?auto=format&fit=crop&q=80&w=400' },
+      { id: 'sub-r-1', name: 'Doors', slug: 'doors', imageUrl: 'https://images.unsplash.com/photo-1510074377623-8cf13fb86c08?w=400&h=400&fit=crop' },
       { id: 'sub-r-2', name: 'Flooring', slug: 'flooring', imageUrl: 'https://images.unsplash.com/photo-1581850518616-cee815377afb?w=400&h=400&fit=crop' },
       { id: 'sub-r-3', name: 'Ceramic Tiles', slug: 'ceramic-tiles', imageUrl: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=400&h=400&fit=crop' },
       { id: 'sub-r-4', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://images.unsplash.com/photo-1562624312-e2ec29a18d99?w=400&h=400&fit=crop' },
