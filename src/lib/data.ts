@@ -13,7 +13,7 @@ export const categories: Category[] = [
       { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-systems', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW1xr47Vo_yts1kjKNgT2UcxJxlNlXc95zidLti5Fi6w&s&ec=121585071' },
       { id: 'sub-5', name: 'Construction Powders', slug: 'construction-powders', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkHkAUZFyBZxTYTCG92j1CXjpJiyAal4Kut0vYoodYQQ&s&ec=121585071' },
       { id: 'sub-6', name: 'Construction & Gypsum Boards', slug: 'construction-boards', imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=400&fit=crop' },
-      { id: 'sub-7', name: 'Bricks & Blocks', slug: 'bricks-blocks', imageUrl: 'https://images.unsplash.com/photo-1523413555809-0fb8a4a2c71a?w=400&h=400&fit=crop' },
+      { id: 'sub-7', name: 'Bricks & Blocks', slug: 'bricks-blocks', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk4HD07epzBmFE2ECW8c221yh2vDPJXoc9YbVwhfaZRQ&s&ec=121585071' },
       { id: 'sub-8', name: 'Consumables', slug: 'consumables', imageUrl: 'https://images.unsplash.com/photo-1581147036324-c17da42ef5e0?w=400&h=400&fit=crop' },
       { id: 'sub-9', name: 'Adhesives & Sealants', slug: 'adhesives-sealants', imageUrl: 'https://images.unsplash.com/photo-1563214591-e4905324316d?w=400&h=400&fit=crop' },
       { id: 'sub-10', name: 'Construction Profiles & Accessories', slug: 'profiles-accessories', imageUrl: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&h=400&fit=crop' },
