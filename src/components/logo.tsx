@@ -1,9 +1,9 @@
 
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { getDictionary } from '@/lib/dictionaries';
+import { Home } from 'lucide-react';
 
 type LogoProps = {
   className?: string;
@@ -15,9 +15,6 @@ type LogoProps = {
 export default function Logo({ className, isAdmin = false, lang = 'en', dictionary }: LogoProps) {
   const href = isAdmin ? `/${lang}/admin` : `/${lang}`;
   
-  // URL from the uploaded image in the prompt
-  const logoUrl = "https://firebasestorage.googleapis.com/v0/b/studio-d7293.appspot.com/o/Comfort%20House%20Logo.jpg?alt=media&token=80f74a0c-4632-4919-866b-4e6377e8a342";
-
   return (
     <Link
       href={href}
@@ -26,14 +23,8 @@ export default function Logo({ className, isAdmin = false, lang = 'en', dictiona
         className
       )}
     >
-      <div className="relative w-10 h-10 md:w-12 md:h-12 overflow-hidden rounded-full border-2 border-slate-100 shadow-sm bg-white shrink-0 group-hover:border-primary/20">
-        <Image 
-          src={logoUrl} 
-          alt="Comfort House Logo" 
-          fill
-          className="object-cover"
-          priority
-        />
+      <div className="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border-2 border-slate-100 shadow-sm bg-white shrink-0 group-hover:border-primary/20">
+        <Home className="w-5 h-5 md:w-6 md:h-6 text-primary" />
       </div>
       <div className="flex flex-col">
         <span className={cn(
