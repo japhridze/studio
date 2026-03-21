@@ -52,7 +52,7 @@ export const categories: Category[] = [
     name: 'Climate Control', 
     slug: 'climate-control',
     subcategories: [
-      { id: 'sub-c-1', name: 'Central Heating System', slug: 'central-heating', imageUrl: 'https://images.unsplash.com/photo-1585129638136-1e072911b30f?w=400&h=400&fit=crop' },
+      { id: 'sub-c-1', name: 'Central Heating System', slug: 'central-heating', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhc4XLvRix38xznJQ0F34LYCkIWcMGmYIlCDuM0Wf4Dw&s&ec=121585071' },
       { id: 'sub-c-2', name: 'Air Conditioner', slug: 'air-conditioner', imageUrl: 'https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=400&h=400&fit=crop' },
       { id: 'sub-c-3', name: 'Fan', slug: 'fan', imageUrl: 'https://images.unsplash.com/photo-1618939337063-d62ee46603a1?w=400&h=400&fit=crop' },
       { id: 'sub-c-4', name: 'Water Heaters', slug: 'water-heaters', imageUrl: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=400&h=400&fit=crop' },
