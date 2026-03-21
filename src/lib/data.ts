@@ -57,7 +57,7 @@ export const categories: Category[] = [
       { id: 'sub-c-3', name: 'Fan', slug: 'fan', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfiNv0iqQ2BzDfqY0X6KrCJr8v0lg7zIj0er-eOqC1zw&s&ec=121585071' },
       { id: 'sub-c-4', name: 'Water Heaters', slug: 'water-heaters', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR15DA0WtlL7XVft466bHfnTC821APaobvcAca4IGJ2glFaDl2wig&s&ec=121585071' },
       { id: 'sub-c-5', name: 'Heaters', slug: 'heaters', imageUrl: 'https://nova.ge/images/thumbs/0077393_eleqtro-gamatbobeli-ks-2760-soba-beyaz-2200w_600.jpeg' },
-      { id: 'sub-c-6', name: 'Ventilation System', slug: 'ventilation', imageUrl: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&h=400&fit=crop' },
+      { id: 'sub-c-6', name: 'Ventilation System', slug: 'ventilation', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzDLMb0EvwOmfkb30XQ83vEqLxgYfhWWpNLEVbnLTQPXk1jTmSFw&s&ec=121585071' },
       { id: 'sub-c-7', name: 'Collectors & Boilers', slug: 'collectors-boilers', imageUrl: 'https://images.unsplash.com/photo-1585129638136-1e072911b30f?w=400&h=400&fit=crop' },
     ]
   },
