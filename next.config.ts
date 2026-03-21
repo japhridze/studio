@@ -52,6 +52,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.directdoors.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.homeis.ge',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
