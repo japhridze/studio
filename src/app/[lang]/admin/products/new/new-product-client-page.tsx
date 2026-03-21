@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -29,6 +29,7 @@ const formSchema = z.object({
   discountPercentage: z.coerce.number().min(0).max(100).default(0),
   stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
   categoryId: z.string().min(1, 'Category is required'),
+  subCategoryId: z.string().optional(),
   image: z.instanceof(File).optional(),
 });
 
@@ -75,8 +76,17 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
       discountPercentage: 0,
       stock: 0,
       categoryId: '',
+      subCategoryId: '',
     },
   });
+
+  const selectedCategoryId = form.watch('categoryId');
+
+  const availableSubcategories = useMemo(() => {
+    if (!selectedCategoryId) return [];
+    const category = categories.find(c => c.id === selectedCategoryId);
+    return category?.subcategories || [];
+  }, [selectedCategoryId]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -111,6 +121,7 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
             discountPercentage: values.discountPercentage,
             stock: values.stock,
             categoryId: values.categoryId,
+            subCategoryId: values.subCategoryId || "",
             imageUrl: imageUrl, 
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
@@ -233,26 +244,59 @@ export default function NewProductClientPage({ lang, dictionary }: { lang: 'en' 
                 />
             </div>
             
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{dictionary.admin.category}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger><SelectValue placeholder={dictionary.admin.selectCategory} /></SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map(cat => (
-                        <SelectItem key={cat.id} value={cat.id}>{(dictionary.categories as any)[cat.slug] || cat.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.admin.category}</FormLabel>
+                    <Select 
+                      onValueChange={(val) => {
+                        field.onChange(val);
+                        form.setValue('subCategoryId', ''); // Reset subcategory when category changes
+                      }} 
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger><SelectValue placeholder={dictionary.admin.selectCategory} /></SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map(cat => (
+                          <SelectItem key={cat.id} value={cat.id}>{(dictionary.categories as any)[cat.slug] || cat.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="subCategoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.admin.subCategory || 'Subcategory'}</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={!selectedCategoryId || availableSubcategories.length === 0}
+                    >
+                      <FormControl>
+                        <SelectTrigger><SelectValue placeholder={dictionary.admin.selectSubCategory || 'Select a subcategory'} /></SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {availableSubcategories.map(sub => (
+                          <SelectItem key={sub.id} value={sub.id}>{(dictionary.categories as any)[sub.slug] || sub.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}

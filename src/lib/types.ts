@@ -8,6 +8,7 @@ export type Product = {
   discountPercentage?: number;
   imageUrl: string;
   categoryId: string;
+  subCategoryId?: string;
   stock: number;
   sku: string;
 };
@@ -21,6 +22,7 @@ export type FirestoreProduct = {
   discountPercentage?: number;
   imageUrl: string;
   categoryId: string;
+  subCategoryId?: string;
   stock: number;
   sku: string;
 };

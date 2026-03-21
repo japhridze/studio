@@ -1,3 +1,4 @@
+
 {
     "header": {
       "home": "მთავარი",
@@ -223,7 +224,9 @@
         "stock": "მარაგი",
         "stockPlaceholder": "100",
         "category": "კატეგორია",
+        "subCategory": "ქვეკატეგორია",
         "selectCategory": "აირჩიეთ კატეგორია",
+        "selectSubCategory": "აირჩიეთ ქვეკატეგორია",
         "productImage": "პროდუქტის სურათი",
         "addProduct": "პროდუქტის დამატება",
         "addingProduct": "პროდუქტი ემატება...",

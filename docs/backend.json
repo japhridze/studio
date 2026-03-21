@@ -133,7 +133,11 @@
         },
         "categoryId": {
           "type": "string",
-          "description": "Reference to the category this product belongs to. (Relationship: Category 1:N Product)"
+          "description": "Reference to the category this product belongs to."
+        },
+        "subCategoryId": {
+          "type": "string",
+          "description": "Reference to the subcategory this product belongs to."
         },
         "sku": {
           "type": "string",

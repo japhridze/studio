@@ -1,3 +1,4 @@
+
 {
     "header": {
       "home": "Home",
@@ -211,7 +212,6 @@
         "userUpdated": "User Updated",
         "userUpdatedDescription": "The user's profile has been successfully updated.",
         "addNewProduct": "Add New Product",
-        "addNewProduct": "Add New Product",
         "addNewProductDescription": "Fill out the form below to add a new product to your store.",
         "productName": "Product Name",
         "productNamePlaceholder": "e.g., Cordless Drill Pro",
@@ -224,7 +224,9 @@
         "stock": "Stock",
         "stockPlaceholder": "100",
         "category": "Category",
+        "subCategory": "Subcategory",
         "selectCategory": "Select a category",
+        "selectSubCategory": "Select a subcategory",
         "productImage": "Product Image",
         "addProduct": "Add Product",
         "addingProduct": "Adding Product...",
