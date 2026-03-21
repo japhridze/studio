@@ -70,6 +70,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.betterbathrooms.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'c8.alamy.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

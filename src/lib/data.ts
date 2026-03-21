@@ -41,7 +41,7 @@ export const categories: Category[] = [
       { id: 'sub-p-1', name: 'Bathroom Furniture', slug: 'bathroom-furniture', imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop' },
       { id: 'sub-p-2', name: 'Faucets & Shower Systems', slug: 'faucets-showers', imageUrl: 'https://kohler.scene7.com/is/image/kohlergbhcloudprod/One-Column-PLP-Promos-aai44030_rgb:PLP-Promo-One-Column-Filters-Open-Small-Desktop?wid=1001&hei=1001&dpr=off' },
       { id: 'sub-p-3', name: 'Bathtubs & Shower Cabins', slug: 'bathtub-cabins', imageUrl: 'https://www.betterbathrooms.com/files/images/bb/image-hub/Showering/bb-shower-enclosures-rectangular.jpg' },
-      { id: 'sub-p-4', name: 'Toilets & Accessories', slug: 'toilets', imageUrl: 'https://images.unsplash.com/photo-1585338447937-7082f89763d5?w=400&h=400&fit=crop' },
+      { id: 'sub-p-4', name: 'Toilets & Accessories', slug: 'toilets', imageUrl: 'https://c8.alamy.com/comp/2RE1D8K/modern-bathroom-interior-with-shower-cabin-and-white-toilet-bowl-2RE1D8K.jpg' },
       { id: 'sub-p-5', name: 'Water Supply & Sewerage', slug: 'water-sewerage', imageUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop' },
       { id: 'sub-p-6', name: 'Bathroom & Toilet Accessories', slug: 'bathroom-accessories', imageUrl: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=400&h=400&fit=crop' },
       { id: 'sub-p-7', name: 'Washbasins & Accessories', slug: 'washbasins', imageUrl: 'https://images.unsplash.com/photo-1610972323719-75691062b325?w=400&h=400&fit=crop' },
