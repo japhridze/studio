@@ -20,11 +20,11 @@ export default function Logo({ className, isAdmin = false, lang = 'en', dictiona
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 md:gap-4 transition-all hover:opacity-95 group",
+        "flex items-center gap-2 md:gap-3 transition-all hover:opacity-95 group",
         className
       )}
     >
-      <div className="relative w-40 h-14 md:w-56 md:h-16 flex items-center justify-center bg-transparent shrink-0 overflow-hidden">
+      <div className="relative w-24 h-10 md:w-32 md:h-12 flex items-center justify-center bg-transparent shrink-0 overflow-hidden">
         <Image 
           src={logoUrl}
           alt="Comfort House Logo"
@@ -33,15 +33,15 @@ export default function Logo({ className, isAdmin = false, lang = 'en', dictiona
           priority
         />
       </div>
-      <div className="flex flex-col border-l border-slate-200 pl-3 md:pl-4">
+      <div className="flex flex-col border-l border-slate-200 pl-2 md:pl-3">
         <span className={cn(
-          "text-sm md:text-xl font-black font-headline leading-none tracking-tighter uppercase",
+          "text-xs md:text-base font-black font-headline leading-none tracking-tighter uppercase",
           isAdmin ? 'text-sidebar-foreground' : 'text-[#0091d5]'
         )}>
           {dictionary?.companyName || 'Comfort House'}
         </span>
-        <span className="text-[9px] md:text-[11px] font-bold font-headline leading-tight text-slate-500 uppercase mt-1 tracking-widest">
-          კომფორტ ჰაუსი
+        <span className="text-[8px] md:text-[10px] font-bold font-headline leading-tight text-slate-500 uppercase mt-0.5 tracking-wider">
+          კომფორტის სახლი
         </span>
       </div>
     </Link>
