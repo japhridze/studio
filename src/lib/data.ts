@@ -45,7 +45,7 @@ export const categories: Category[] = [
       { id: 'sub-p-5', name: 'Water Supply & Sewerage', slug: 'water-sewerage', imageUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop' },
       { id: 'sub-p-6', name: 'Bathroom & Toilet Accessories', slug: 'bathroom-accessories', imageUrl: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=400&h=400&fit=crop' },
       { id: 'sub-p-7', name: 'Washbasins & Accessories', slug: 'washbasins', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVW9WiA2_d0zgIr25gqiqhk2_PRgVdrMKHHE7tiVpbPA&s&ec=121585071' },
-      { id: 'sub-p-8', name: 'Bidet & Urinal', slug: 'bidet-urinal', imageUrl: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=400&h=400&fit=crop' },
+      { id: 'sub-p-8', name: 'Bidet & Urinal', slug: 'bidet-urinal', imageUrl: 'https://www.homeis.ge/wp-content/uploads/2023/08/wall-hung-wc-and-bidet-wall-hung-sanitary-toilets-baden-baden-simas-spa.jpg' },
     ]
   },
   { id: 'cat-4', name: 'Climate Control', slug: 'climate-control' },
