@@ -73,7 +73,15 @@
       "stairs-railings": "კიბის საფეხური და მოაჯირი",
       "doors": "კარი",
       "flooring": "იატაკი",
-      "ceramic-tiles": "კერამიკული ფილები"
+      "ceramic-tiles": "კერამიკული ფილები",
+      "bathroom-furniture": "სააბაზანოს ავეჯი",
+      "faucets-showers": "ონკანები და საშხაპე სისტემები",
+      "bathtub-cabins": "აბაზანა და საშხაპე კაბინა",
+      "toilets": "უნიტაზი და მაკომპლექტები",
+      "water-sewerage": "წყალმომარაგება და საკანალიზაციო სისტემები",
+      "bathroom-accessories": "სააბაზანოს და ტუალეტის აქსესუარები",
+      "washbasins": "ხელსაბანი და აქსესუარები",
+      "bidet-urinal": "ბიდე და პისუარი"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",

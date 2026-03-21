@@ -73,7 +73,15 @@
       "stairs-railings": "Stairs & Railings",
       "doors": "Doors",
       "flooring": "Flooring",
-      "ceramic-tiles": "Ceramic Tiles"
+      "ceramic-tiles": "Ceramic Tiles",
+      "bathroom-furniture": "Bathroom Furniture",
+      "faucets-showers": "Faucets & Shower Systems",
+      "bathtub-cabins": "Bathtubs & Shower Cabins",
+      "toilets": "Toilets & Accessories",
+      "water-sewerage": "Water Supply & Sewerage",
+      "bathroom-accessories": "Bathroom & Toilet Accessories",
+      "washbasins": "Washbasins & Accessories",
+      "bidet-urinal": "Bidet & Urinal"
     },
     "productDetails": {
       "inStock": "{count} in stock",

@@ -33,7 +33,21 @@ export const categories: Category[] = [
       { id: 'sub-r-4', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkATr5xoI8LtHysZBmz3Lx8G4GuLCPq07lcTepNylnRA&s&ec=121585071' },
     ]
   },
-  { id: 'cat-3', name: 'Plumbing', slug: 'plumbing' },
+  { 
+    id: 'cat-3', 
+    name: 'Plumbing', 
+    slug: 'plumbing',
+    subcategories: [
+      { id: 'sub-p-1', name: 'Bathroom Furniture', slug: 'bathroom-furniture', imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop' },
+      { id: 'sub-p-2', name: 'Faucets & Shower Systems', slug: 'faucets-showers', imageUrl: 'https://images.unsplash.com/photo-1585338043034-7a91694f9e16?w=400&h=400&fit=crop' },
+      { id: 'sub-p-3', name: 'Bathtubs & Shower Cabins', slug: 'bathtub-cabins', imageUrl: 'https://images.unsplash.com/photo-1620626011761-9963d7521477?w=400&h=400&fit=crop' },
+      { id: 'sub-p-4', name: 'Toilets & Accessories', slug: 'toilets', imageUrl: 'https://images.unsplash.com/photo-1585338447937-7082f89763d5?w=400&h=400&fit=crop' },
+      { id: 'sub-p-5', name: 'Water Supply & Sewerage', slug: 'water-sewerage', imageUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop' },
+      { id: 'sub-p-6', name: 'Bathroom & Toilet Accessories', slug: 'bathroom-accessories', imageUrl: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=400&h=400&fit=crop' },
+      { id: 'sub-p-7', name: 'Washbasins & Accessories', slug: 'washbasins', imageUrl: 'https://images.unsplash.com/photo-1610972323719-75691062b325?w=400&h=400&fit=crop' },
+      { id: 'sub-p-8', name: 'Bidet & Urinal', slug: 'bidet-urinal', imageUrl: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=400&h=400&fit=crop' },
+    ]
+  },
   { id: 'cat-4', name: 'Climate Control', slug: 'climate-control' },
   { id: 'cat-5', name: 'Tools', slug: 'tools' },
   { id: 'cat-6', name: 'Lighting', slug: 'lighting' },
