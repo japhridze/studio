@@ -1,4 +1,3 @@
-
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -74,6 +73,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'c8.alamy.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'nova.ge',
         port: '',
         pathname: '/**',
       }
