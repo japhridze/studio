@@ -87,7 +87,20 @@
       "water-heaters": "წყლის გამაცხელებლები",
       "heaters": "გამათბობლები",
       "ventilation": "სავენტილაციო სისტემა",
-      "collectors-boilers": "კოლექტორები და ბოილერები"
+      "collectors-boilers": "კოლექტორები და ბოილერები",
+      "drilling-demolition": "სახვრეტი და სატეხ-სანგრევი",
+      "sawing-cutting": "სახერხი და საჭრელები",
+      "ladders": "კიბეები",
+      "welding": "შესადუღებლები",
+      "uniform-safety": "უნიფორმა და უსაფრთხოება",
+      "fixing-fastening": "მაფიქსირებელი",
+      "measuring-marking": "საზომები და მოსანიშნები",
+      "grinding-sharpening": "სალესი",
+      "automotive-accessories": "საავტომობილო აქსესუარები",
+      "energy-air-generation": "ენერგიის და ჰაერის წარმომქმნელი",
+      "mixed-tools": "შერეული ხელსაწყოები",
+      "cleaning-pressure-washing": "საწმენდი და წნევით სარეცხი",
+      "mixing-dilution": "შერევა-გაზავება"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",

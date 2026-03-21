@@ -61,7 +61,26 @@ export const categories: Category[] = [
       { id: 'sub-c-7', name: 'Collectors & Boilers', slug: 'collectors-boilers', imageUrl: 'https://encrypted-tbn.gstatic.com/images?q=tbn:ANd9GcQLvbswzsRF1qbQgmeY-he0flOZ42Hfp4okCr4BfpiMKg&s&ec=121585071' },
     ]
   },
-  { id: 'cat-5', name: 'Tools', slug: 'tools' },
+  { 
+    id: 'cat-5', 
+    name: 'Tools', 
+    slug: 'tools',
+    subcategories: [
+      { id: 'sub-t-1', name: 'Drilling and Demolition', slug: 'drilling-demolition', imageUrl: 'https://picsum.photos/seed/drill1/400/400' },
+      { id: 'sub-t-2', name: 'Sawing and Cutting', slug: 'sawing-cutting', imageUrl: 'https://picsum.photos/seed/saw1/400/400' },
+      { id: 'sub-t-3', name: 'Ladders', slug: 'ladders', imageUrl: 'https://picsum.photos/seed/ladder1/400/400' },
+      { id: 'sub-t-4', name: 'Welding', slug: 'welding', imageUrl: 'https://picsum.photos/seed/weld1/400/400' },
+      { id: 'sub-t-5', name: 'Uniform and Safety', slug: 'uniform-safety', imageUrl: 'https://picsum.photos/seed/safety1/400/400' },
+      { id: 'sub-t-6', name: 'Fixing and Fastening', slug: 'fixing-fastening', imageUrl: 'https://picsum.photos/seed/fix1/400/400' },
+      { id: 'sub-t-7', name: 'Measuring and Marking', slug: 'measuring-marking', imageUrl: 'https://picsum.photos/seed/measure1/400/400' },
+      { id: 'sub-t-8', name: 'Grinding and Sharpening', slug: 'grinding-sharpening', imageUrl: 'https://picsum.photos/seed/grind1/400/400' },
+      { id: 'sub-t-9', name: 'Automotive Accessories', slug: 'automotive-accessories', imageUrl: 'https://picsum.photos/seed/auto1/400/400' },
+      { id: 'sub-t-10', name: 'Energy and Air Generation', slug: 'energy-air-generation', imageUrl: 'https://picsum.photos/seed/energy1/400/400' },
+      { id: 'sub-t-11', name: 'Mixed Tools', slug: 'mixed-tools', imageUrl: 'https://picsum.photos/seed/mixed1/400/400' },
+      { id: 'sub-t-12', name: 'Cleaning and Pressure Washing', slug: 'cleaning-pressure-washing', imageUrl: 'https://picsum.photos/seed/clean1/400/400' },
+      { id: 'sub-t-13', name: 'Mixing and Dilution', slug: 'mixing-dilution', imageUrl: 'https://picsum.photos/seed/mix1/400/400' },
+    ]
+  },
   { id: 'cat-6', name: 'Lighting', slug: 'lighting' },
 ];
 

@@ -87,7 +87,20 @@
       "water-heaters": "Water Heaters",
       "heaters": "Heaters",
       "ventilation": "Ventilation System",
-      "collectors-boilers": "Collectors & Boilers"
+      "collectors-boilers": "Collectors & Boilers",
+      "drilling-demolition": "Drilling and Demolition",
+      "sawing-cutting": "Sawing and Cutting",
+      "ladders": "Ladders",
+      "welding": "Welding",
+      "uniform-safety": "Uniform and Safety",
+      "fixing-fastening": "Fixing and Fastening",
+      "measuring-marking": "Measuring and Marking",
+      "grinding-sharpening": "Grinding and Sharpening",
+      "automotive-accessories": "Automotive Accessories",
+      "energy-air-generation": "Energy and Air Generation",
+      "mixed-tools": "Mixed Tools",
+      "cleaning-pressure-washing": "Cleaning and Pressure Washing",
+      "mixing-dilution": "Mixing and Dilution"
     },
     "productDetails": {
       "inStock": "{count} in stock",
