@@ -29,7 +29,7 @@ export const categories: Category[] = [
     subcategories: [
       { id: 'sub-r-1', name: 'Doors', slug: 'doors', imageUrl: 'https://www.directdoors.com/cdn/shop/files/coloured-glazed-doors-tri-glazed-lpd-derb_02153a76-fda7-4c13-b066-12bffa2ce15d.jpg?v=1725436026' },
       { id: 'sub-r-2', name: 'Flooring', slug: 'flooring', imageUrl: 'https://www.homeis.ge/wp-content/uploads/2022/12/iataki-tchrialebs-rogor-moviqtseth-758x398.png' },
-      { id: 'sub-r-3', name: 'Ceramic Tiles', slug: 'ceramic-tiles', imageUrl: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=400&h=400&fit=crop' },
+      { id: 'sub-r-3', name: 'Ceramic Tiles', slug: 'ceramic-tiles', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLJbIH22dvcVnV33XaQF4ISHWJuNT01rSR2p-VrwEO2g&s&ec=121585071' },
       { id: 'sub-r-4', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkATr5xoI8LtHysZBmz3Lx8G4GuLCPq07lcTepNylnRA&s&ec=121585071' },
     ]
   },
