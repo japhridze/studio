@@ -20,27 +20,27 @@ export default function Logo({ className, isAdmin = false, lang = 'en', dictiona
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-4 transition-all hover:opacity-95 group",
+        "flex items-center gap-2 md:gap-4 transition-all hover:opacity-95 group",
         className
       )}
     >
-      <div className="relative w-32 h-14 md:w-40 md:h-16 flex items-center justify-center rounded-md border border-slate-100 shadow-sm bg-white shrink-0 group-hover:border-primary/30 transition-colors overflow-hidden">
+      <div className="relative w-40 h-14 md:w-56 md:h-16 flex items-center justify-center bg-transparent shrink-0 overflow-hidden">
         <Image 
           src={logoUrl}
           alt="Comfort House Logo"
           fill
-          className="object-contain p-1"
+          className="object-contain"
           priority
         />
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col border-l border-slate-200 pl-3 md:pl-4">
         <span className={cn(
-          "text-base md:text-lg font-bold font-headline leading-tight tracking-tight uppercase",
-          isAdmin ? 'text-sidebar-foreground' : 'text-slate-900'
+          "text-sm md:text-xl font-black font-headline leading-none tracking-tighter uppercase",
+          isAdmin ? 'text-sidebar-foreground' : 'text-[#0091d5]'
         )}>
           {dictionary?.companyName || 'Comfort House'}
         </span>
-        <span className="text-[11px] md:text-xs font-bold font-headline leading-none text-primary uppercase">
+        <span className="text-[9px] md:text-[11px] font-bold font-headline leading-tight text-slate-500 uppercase mt-1 tracking-widest">
           კომფორტ ჰაუსი
         </span>
       </div>
