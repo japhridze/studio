@@ -54,7 +54,7 @@ export const categories: Category[] = [
     subcategories: [
       { id: 'sub-c-1', name: 'Central Heating System', slug: 'central-heating', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhc4XLvRix38xznJQ0F34LYCkIWcMGmYIlCDuM0Wf4Dw&s&ec=121585071' },
       { id: 'sub-c-2', name: 'Air Conditioner', slug: 'air-conditioner', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_7EEElY-AXNcuT-4bzPWwy92F8nN1woThrzmKMa5u-w&s&ec=121585071' },
-      { id: 'sub-c-3', name: 'Fan', slug: 'fan', imageUrl: 'https://images.unsplash.com/photo-1618939337063-d62ee46603a1?w=400&h=400&fit=crop' },
+      { id: 'sub-c-3', name: 'Fan', slug: 'fan', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfiNv0iqQ2BzDfqY0X6KrCJr8v0lg7zIj0er-eOqC1zw&s&ec=121585071' },
       { id: 'sub-c-4', name: 'Water Heaters', slug: 'water-heaters', imageUrl: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=400&h=400&fit=crop' },
       { id: 'sub-c-5', name: 'Heaters', slug: 'heaters', imageUrl: 'https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?w=400&h=400&fit=crop' },
       { id: 'sub-c-6', name: 'Ventilation System', slug: 'ventilation', imageUrl: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&h=400&fit=crop' },
