@@ -1,4 +1,3 @@
-
 import type { Category, Order, Product, User } from './types';
 
 export const categories: Category[] = [
@@ -48,7 +47,20 @@ export const categories: Category[] = [
       { id: 'sub-p-8', name: 'Bidet & Urinal', slug: 'bidet-urinal', imageUrl: 'https://www.homeis.ge/wp-content/uploads/2023/08/wall-hung-wc-and-bidet-wall-hung-sanitary-toilets-baden-baden-simas-spa.jpg' },
     ]
   },
-  { id: 'cat-4', name: 'Climate Control', slug: 'climate-control' },
+  { 
+    id: 'cat-4', 
+    name: 'Climate Control', 
+    slug: 'climate-control',
+    subcategories: [
+      { id: 'sub-c-1', name: 'Central Heating System', slug: 'central-heating', imageUrl: 'https://images.unsplash.com/photo-1585129638136-1e072911b30f?w=400&h=400&fit=crop' },
+      { id: 'sub-c-2', name: 'Air Conditioner', slug: 'air-conditioner', imageUrl: 'https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=400&h=400&fit=crop' },
+      { id: 'sub-c-3', name: 'Fan', slug: 'fan', imageUrl: 'https://images.unsplash.com/photo-1618939337063-d62ee46603a1?w=400&h=400&fit=crop' },
+      { id: 'sub-c-4', name: 'Water Heaters', slug: 'water-heaters', imageUrl: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=400&h=400&fit=crop' },
+      { id: 'sub-c-5', name: 'Heaters', slug: 'heaters', imageUrl: 'https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?w=400&h=400&fit=crop' },
+      { id: 'sub-c-6', name: 'Ventilation System', slug: 'ventilation', imageUrl: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&h=400&fit=crop' },
+      { id: 'sub-c-7', name: 'Collectors & Boilers', slug: 'collectors-boilers', imageUrl: 'https://images.unsplash.com/photo-1585129638136-1e072911b30f?w=400&h=400&fit=crop' },
+    ]
+  },
   { id: 'cat-5', name: 'Tools', slug: 'tools' },
   { id: 'cat-6', name: 'Lighting', slug: 'lighting' },
 ];

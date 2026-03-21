@@ -1,4 +1,3 @@
-
 {
     "header": {
       "home": "Home",
@@ -81,7 +80,14 @@
       "water-sewerage": "Water Supply & Sewerage",
       "bathroom-accessories": "Bathroom & Toilet Accessories",
       "washbasins": "Washbasins & Accessories",
-      "bidet-urinal": "Bidet & Urinal"
+      "bidet-urinal": "Bidet & Urinal",
+      "central-heating": "Central Heating System",
+      "air-conditioner": "Air Conditioner",
+      "fan": "Fan",
+      "water-heaters": "Water Heaters",
+      "heaters": "Heaters",
+      "ventilation": "Ventilation System",
+      "collectors-boilers": "Collectors & Boilers"
     },
     "productDetails": {
       "inStock": "{count} in stock",
