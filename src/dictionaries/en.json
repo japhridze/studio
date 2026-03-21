@@ -100,7 +100,12 @@
       "energy-air-generation": "Energy and Air Generation",
       "mixed-tools": "Mixed Tools",
       "cleaning-pressure-washing": "Cleaning and Pressure Washing",
-      "mixing-dilution": "Mixing and Dilution"
+      "mixing-dilution": "Mixing and Dilution",
+      "extensions-adapters": "Extension Cords & Adapters",
+      "installation-acc": "Installation Equipment & Accessories",
+      "technical-lighting": "Technical Lighting",
+      "cable-products": "Cable-Conductor Products",
+      "batteries": "Elements & Batteries"
     },
     "productDetails": {
       "inStock": "{count} in stock",
@@ -205,6 +210,7 @@
         "updatingUser": "Updating...",
         "userUpdated": "User Updated",
         "userUpdatedDescription": "The user's profile has been successfully updated.",
+        "addNewProduct": "Add New Product",
         "addNewProduct": "Add New Product",
         "addNewProductDescription": "Fill out the form below to add a new product to your store.",
         "productName": "Product Name",

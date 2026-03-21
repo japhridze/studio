@@ -100,7 +100,12 @@
       "energy-air-generation": "ენერგიის და ჰაერის წარმომქმნელი",
       "mixed-tools": "შერეული ხელსაწყოები",
       "cleaning-pressure-washing": "საწმენდი და წნევით სარეცხი",
-      "mixing-dilution": "შერევა-გაზავება"
+      "mixing-dilution": "შერევა-გაზავება",
+      "extensions-adapters": "დამაგრძელებლები და გადამყვანები",
+      "installation-acc": "სამონტაჟო მოწყობილებები და აქსესუარები",
+      "technical-lighting": "ტექნიკური განათება",
+      "cable-products": "საკაბელო-გამტარი პროდუქცია",
+      "batteries": "ელემენტები და ბატარეები"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",

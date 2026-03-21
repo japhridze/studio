@@ -81,7 +81,18 @@ export const categories: Category[] = [
       { id: 'sub-t-13', name: 'Mixing and Dilution', slug: 'mixing-dilution', imageUrl: 'https://picsum.photos/seed/mix1/400/400' },
     ]
   },
-  { id: 'cat-6', name: 'Lighting', slug: 'lighting' },
+  { 
+    id: 'cat-6', 
+    name: 'Lighting', 
+    slug: 'lighting',
+    subcategories: [
+      { id: 'sub-l-1', name: 'Extension Cords and Adapters', slug: 'extensions-adapters', imageUrl: 'https://picsum.photos/seed/ext1/400/400' },
+      { id: 'sub-l-2', name: 'Installation Equipment and Accessories', slug: 'installation-acc', imageUrl: 'https://picsum.photos/seed/inst1/400/400' },
+      { id: 'sub-l-3', name: 'Technical Lighting', slug: 'technical-lighting', imageUrl: 'https://picsum.photos/seed/tech1/400/400' },
+      { id: 'sub-l-4', name: 'Cable-Conductor Products', slug: 'cable-products', imageUrl: 'https://picsum.photos/seed/cable1/400/400' },
+      { id: 'sub-l-5', name: 'Elements and Batteries', slug: 'batteries', imageUrl: 'https://picsum.photos/seed/batt1/400/400' },
+    ]
+  },
 ];
 
 export const products: Product[] = [
