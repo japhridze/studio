@@ -64,6 +64,12 @@ const nextConfig: NextConfig = {
         hostname: 'kohler.scene7.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.betterbathrooms.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

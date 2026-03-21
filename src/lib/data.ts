@@ -40,7 +40,7 @@ export const categories: Category[] = [
     subcategories: [
       { id: 'sub-p-1', name: 'Bathroom Furniture', slug: 'bathroom-furniture', imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop' },
       { id: 'sub-p-2', name: 'Faucets & Shower Systems', slug: 'faucets-showers', imageUrl: 'https://kohler.scene7.com/is/image/kohlergbhcloudprod/One-Column-PLP-Promos-aai44030_rgb:PLP-Promo-One-Column-Filters-Open-Small-Desktop?wid=1001&hei=1001&dpr=off' },
-      { id: 'sub-p-3', name: 'Bathtubs & Shower Cabins', slug: 'bathtub-cabins', imageUrl: 'https://images.unsplash.com/photo-1620626011761-9963d7521477?w=400&h=400&fit=crop' },
+      { id: 'sub-p-3', name: 'Bathtubs & Shower Cabins', slug: 'bathtub-cabins', imageUrl: 'https://www.betterbathrooms.com/files/images/bb/image-hub/Showering/bb-shower-enclosures-rectangular.jpg' },
       { id: 'sub-p-4', name: 'Toilets & Accessories', slug: 'toilets', imageUrl: 'https://images.unsplash.com/photo-1585338447937-7082f89763d5?w=400&h=400&fit=crop' },
       { id: 'sub-p-5', name: 'Water Supply & Sewerage', slug: 'water-sewerage', imageUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop' },
       { id: 'sub-p-6', name: 'Bathroom & Toilet Accessories', slug: 'bathroom-accessories', imageUrl: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=400&h=400&fit=crop' },
@@ -57,7 +57,7 @@ export const products: Product[] = [
   { id: '1', name: 'Cordless Drill Pro', slug: 'cordless-drill-pro', sku: 'CDP-001', description: 'High-performance cordless drill for all your DIY needs. Comes with two batteries.', price: 129.99, imageUrl: 'prod-drill', categoryId: 'cat-5', stock: 50 },
   { id: '2', name: 'Premium Wall Paint', slug: 'premium-wall-paint', sku: 'PWP-001', description: '1 gallon of premium, low-odor white wall paint. Easy to clean and durable.', price: 39.99, imageUrl: 'prod-paint', categoryId: 'cat-1', stock: 120 },
   { id: '3', name: 'Heavy Duty Circular Saw', slug: 'heavy-duty-circular-saw', sku: 'HDCS-001', description: '15-Amp 7-1/4-Inch circular saw with laser guide for precise cuts.', price: 89.99, imageUrl: 'prod-saw', categoryId: 'cat-5', stock: 30 },
-  { id: '4', name: '20oz Claw Hammer', slug: '20oz-claw-hammer', sku: 'CH-020', description: 'Ergonomic claw hammer with anti-vibration grip. Built to last.', price: 24.99, imageUrl: 'prod-hammer', categoryId: 'cat-5', stock: 200 },
+  { id: '4', name: '20oz Claw Hammer', slug: '20oz-claw-hammer', sku: 'CH-020', description: 'Erგonomic claw hammer with anti-vibration grip. Built to last.', price: 24.99, imageUrl: 'prod-hammer', categoryId: 'cat-5', stock: 200 },
   { id: '5', name: 'Portable Red Toolbox', slug: 'portable-red-toolbox', sku: 'PRT-001', description: 'Durable steel toolbox with multiple compartments to keep your tools organized.', price: 49.99, imageUrl: 'prod-toolbox', categoryId: 'cat-5', stock: 75 },
   { id: '6', name: 'LED Smart Bulb', slug: 'led-smart-bulb', sku: 'LSB-A19', description: 'Energy-efficient A19 smart bulb. Controllable via app, works with Alexa and Google Assistant.', price: 19.99, imageUrl: 'prod-lightbulb', categoryId: 'cat-6', stock: 300 },
   { id: '7', name: '25ft Measuring Tape', slug: '25ft-measuring-tape', sku: 'MT-025', description: 'Self-locking measuring tape with a durable case and easy-to-read markings.', price: 12.99, imageUrl: 'prod-tape', categoryId: 'cat-5', stock: 150 },
