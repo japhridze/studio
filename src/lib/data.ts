@@ -8,7 +8,7 @@ export const categories: Category[] = [
     slug: 'construction',
     subcategories: [
       { id: 'sub-1', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkATr5xoI8LtHysZBmz3Lx8G4GuLCPq07lcTepNylnRA&s&ec=121585071' },
-      { id: 'sub-2', name: 'Insulation Materials', slug: 'insulation-materials', imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=400&fit=crop' },
+      { id: 'sub-2', name: 'Insulation Materials', slug: 'insulation-materials', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUAAlCsYCUjYHNXbNZmTQe824IRbvbD-GNAFdhM7UT-g&s&ec=121585071' },
       { id: 'sub-3', name: 'Roofing & Facade Systems', slug: 'roofing-facade', imageUrl: 'https://images.unsplash.com/photo-1633420804561-39656461c390?w=400&h=400&fit=crop' },
       { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-systems', imageUrl: 'https://images.unsplash.com/photo-1585741980753-40394b0c3a54?w=400&h=400&fit=crop' },
       { id: 'sub-5', name: 'Construction Powders', slug: 'construction-powders', imageUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?w=400&h=400&fit=crop' },
