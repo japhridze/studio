@@ -87,6 +87,12 @@ const nextConfig: NextConfig = {
         hostname: 'nova.ge',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'scontent.ftbs4-2.fna.fbcdn.net',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

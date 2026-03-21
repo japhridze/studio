@@ -1,9 +1,8 @@
-
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { getDictionary } from '@/lib/dictionaries';
-import { Home } from 'lucide-react';
 
 type LogoProps = {
   className?: string;
@@ -14,6 +13,7 @@ type LogoProps = {
 
 export default function Logo({ className, isAdmin = false, lang = 'en', dictionary }: LogoProps) {
   const href = isAdmin ? `/${lang}/admin` : `/${lang}`;
+  const logoUrl = "https://scontent.ftbs4-2.fna.fbcdn.net/v/t39.30808-6/558683570_122110180238999376_2579761153003142071_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=s2XrcrANcUoQ7kNvwHwmG4L&_nc_oc=AdpWSbqhnytnbJJ8GYpPf2Hx0BWMkfsrtEhDToRxgQR1cnBM7TXT8UDo4_sVSDumVI0&_nc_zt=23&_nc_ht=scontent.ftbs4-2.fna&_nc_gid=nFkFYfJcwVuwvLlInXP4vg&_nc_ss=7a30f&oh=00_Afy3nyZBg6FDr6K4oIP8Nmw_P72FHFEk7o7tujIrJNtfAg&oe=69C4D670";
   
   return (
     <Link
@@ -23,8 +23,13 @@ export default function Logo({ className, isAdmin = false, lang = 'en', dictiona
         className
       )}
     >
-      <div className="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border-2 border-slate-100 shadow-sm bg-white shrink-0 group-hover:border-primary/20">
-        <Home className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+      <div className="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border-2 border-slate-100 shadow-sm bg-white shrink-0 group-hover:border-primary/20 overflow-hidden">
+        <Image 
+          src={logoUrl}
+          alt="Comfort House Logo"
+          fill
+          className="object-cover"
+        />
       </div>
       <div className="flex flex-col">
         <span className={cn(
