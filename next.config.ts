@@ -58,6 +58,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.homeis.ge',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'kohler.scene7.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

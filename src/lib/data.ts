@@ -39,7 +39,7 @@ export const categories: Category[] = [
     slug: 'plumbing',
     subcategories: [
       { id: 'sub-p-1', name: 'Bathroom Furniture', slug: 'bathroom-furniture', imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop' },
-      { id: 'sub-p-2', name: 'Faucets & Shower Systems', slug: 'faucets-showers', imageUrl: 'https://images.unsplash.com/photo-1585338043034-7a91694f9e16?w=400&h=400&fit=crop' },
+      { id: 'sub-p-2', name: 'Faucets & Shower Systems', slug: 'faucets-showers', imageUrl: 'https://kohler.scene7.com/is/image/kohlergbhcloudprod/One-Column-PLP-Promos-aai44030_rgb:PLP-Promo-One-Column-Filters-Open-Small-Desktop?wid=1001&hei=1001&dpr=off' },
       { id: 'sub-p-3', name: 'Bathtubs & Shower Cabins', slug: 'bathtub-cabins', imageUrl: 'https://images.unsplash.com/photo-1620626011761-9963d7521477?w=400&h=400&fit=crop' },
       { id: 'sub-p-4', name: 'Toilets & Accessories', slug: 'toilets', imageUrl: 'https://images.unsplash.com/photo-1585338447937-7082f89763d5?w=400&h=400&fit=crop' },
       { id: 'sub-p-5', name: 'Water Supply & Sewerage', slug: 'water-sewerage', imageUrl: 'https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop' },
