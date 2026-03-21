@@ -48,6 +48,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'encrypted-tbn.gstatic.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'www.directdoors.com',
         port: '',
         pathname: '/**',
