@@ -7,10 +7,10 @@ export const categories: Category[] = [
     name: 'Construction', 
     slug: 'construction',
     subcategories: [
-      { id: 'sub-1', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkATr5xoI8LtHysZBmz3Lx8G4GuLCPq07lcTepNylnRA&s&ec=121585071' },
+      { id: 'sub-1', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9<QkATr5xoI8LtHysZBmz3Lx8G4GuLCPq07lcTepNylnRA&s&ec=121585071' },
       { id: 'sub-2', name: 'Insulation Materials', slug: 'insulation-materials', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUAAlCsYCUjYHNXbNZmTQe824IRbvbD-GNAFdhM7UT-g&s&ec=121585071' },
       { id: 'sub-3', name: 'Roofing & Facade Systems', slug: 'roofing-facade', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGqmEWfg78v9YP7vlWpYQdH6Qrd0WAaZmXUHsYRcnzcQ&s&ec=121585071' },
-      { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-systems', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW1xr47Vo_yts1kjKNgT2UcxJxlNlXc95zidLti5Fi6w&s&ec=121585071' },
+      { id: 'sub-4', name: 'Formwork & Wood Systems', slug: 'wood-materials', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW1xr47Vo_yts1kjKNgT2UcxJxlNlXc95zidLti5Fi6w&s&ec=121585071' },
       { id: 'sub-5', name: 'Construction Powders', slug: 'construction-powders', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkHkAUZFyBZxTYTCG92j1CXjpJiyAal4Kut0vYoodYQQ&s&ec=121585071' },
       { id: 'sub-6', name: 'Construction & Gypsum Boards', slug: 'construction-boards', imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=400&fit=crop' },
       { id: 'sub-7', name: 'Bricks & Blocks', slug: 'bricks-blocks', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk4HD07epzBmFE2ECW8c221yh2vDPJXoc9YbVwhfaZRQ&s&ec=121585071' },
@@ -22,7 +22,17 @@ export const categories: Category[] = [
       { id: 'sub-13', name: 'Stair Treads & Railings', slug: 'stairs-railings', imageUrl: 'https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?w=400&h=400&fit=crop' },
     ]
   },
-  { id: 'cat-2', name: 'Renovation', slug: 'renovation' },
+  { 
+    id: 'cat-2', 
+    name: 'Renovation', 
+    slug: 'renovation',
+    subcategories: [
+      { id: 'sub-r-1', name: 'Doors', slug: 'doors', imageUrl: 'https://images.unsplash.com/photo-1506377247377-2a5b3b0ca7df?w=400&h=400&fit=crop' },
+      { id: 'sub-r-2', name: 'Flooring', slug: 'flooring', imageUrl: 'https://images.unsplash.com/photo-1581850518616-cee815377afb?w=400&h=400&fit=crop' },
+      { id: 'sub-r-3', name: 'Ceramic Tiles', slug: 'ceramic-tiles', imageUrl: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=400&h=400&fit=crop' },
+      { id: 'sub-r-4', name: 'Varnishes & Paints', slug: 'paints-varnishes', imageUrl: 'https://images.unsplash.com/photo-1562624312-e2ec29a18d99?w=400&h=400&fit=crop' },
+    ]
+  },
   { id: 'cat-3', name: 'Plumbing', slug: 'plumbing' },
   { id: 'cat-4', name: 'Climate Control', slug: 'climate-control' },
   { id: 'cat-5', name: 'Tools', slug: 'tools' },

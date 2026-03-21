@@ -61,7 +61,7 @@
       "paints-varnishes": "ლაქ-საღებავები",
       "insulation-materials": "საიზოლაციო მასალები",
       "roofing-facade": "სახურავები და ფასადის სისტემები",
-      "wood-systems": "საკარსაკე-საყალიბე აღჭურვილობა და ხის სისტემები",
+      "wood-materials": "საკარსაკე-საყალიბე აღჭურვილობა და ხის მასალები",
       "construction-powders": "სამშენებლო ფხვნილები",
       "construction-boards": "სამშენებლო და თაბაშირ-მუყაოს ფილა",
       "bricks-blocks": "აგური და ბლოკი",
@@ -70,7 +70,10 @@
       "profiles-accessories": "სამშენებლო პროფილი და სხვა აქსესუარები",
       "liquids-solutions": "სამშენებლო სითხეები და ხსნარები",
       "warehouse-products": "სასაწყობე პროდუქცია",
-      "stairs-railings": "კიბის საფეხური და მოაჯირი"
+      "stairs-railings": "კიბის საფეხური და მოაჯირი",
+      "doors": "კარი",
+      "flooring": "იატაკი",
+      "ceramic-tiles": "კერამიკული ფილები"
     },
     "productDetails": {
       "inStock": "{count} მარაგშია",
@@ -140,7 +143,7 @@
         "forgotPassword": "დაგავიწყდათ პაროლი?",
         "submit": "შესვლა",
         "submitting": "შედის...",
-        "google": "Google-ით შესვლა",
+        "google": "Login with Google",
         "noAccount": "არ გაქვთ ანგარიში?",
         "signUp": "რეგისტრაცია",
         "loggedInTitle": "თქვენ შეხვედით",
@@ -160,7 +163,7 @@
         "passwordLabel": "პაროლი",
         "submit": "ანგარიშის შექმნა",
         "submitting": "მიმდინარეობს შექმნა...",
-        "google": "Google-ით რეგისტრაცია",
+        "google": "Sign up with Google",
         "hasAccount": "უკვე გაქვთ ანგარიში?",
         "login": "ავტორიზაცია",
         "accountCreatedTitle": "ანგარიში შეიქმნა",

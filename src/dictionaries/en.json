@@ -1,3 +1,4 @@
+
 {
     "header": {
       "home": "Home",
@@ -56,7 +57,23 @@
       "plumbing": "Plumbing",
       "climate-control": "Climate Control",
       "tools": "Tools",
-      "lighting": "Lighting"
+      "lighting": "Lighting",
+      "paints-varnishes": "Varnishes & Paints",
+      "insulation-materials": "Insulation Materials",
+      "roofing-facade": "Roofing & Facade",
+      "wood-materials": "Wood Materials",
+      "construction-powders": "Construction Powders",
+      "construction-boards": "Construction Boards",
+      "bricks-blocks": "Bricks & Blocks",
+      "consumables": "Consumables",
+      "adhesives-sealants": "Adhesives & Sealants",
+      "profiles-accessories": "Profiles & Accessories",
+      "liquids-solutions": "Liquids & Solutions",
+      "warehouse-products": "Warehouse Products",
+      "stairs-railings": "Stairs & Railings",
+      "doors": "Doors",
+      "flooring": "Flooring",
+      "ceramic-tiles": "Ceramic Tiles"
     },
     "productDetails": {
       "inStock": "{count} in stock",
